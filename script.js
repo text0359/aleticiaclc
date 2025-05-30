@@ -261,7 +261,7 @@ function launchSnakeGame() {
     <style>
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #fce4ec; font-family: 'Arial', sans-serif; color: #880e4f; }
         h1 { color: #c2185b; margin-bottom: 10px; }
-        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; /* Para garantir que é visível */ }
+        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; }
         .controls-info, .score-info { margin-top: 15px; font-size: 0.9rem; text-align: center; }
         .score-info span { font-weight: bold; color: #ec407a; }
         .game-button { background-color: #ec407a; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 10px; }
@@ -276,7 +276,7 @@ function launchSnakeGame() {
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score-info">Pontuação: <span id="score">0</span></div>
     <div class="controls-info">Use as teclas de seta (↑, ↓, ←, →) para mover.</div>
-    <button id="backToCalculatorButton" class="game-button">Voltar à Calculadora</button>
+    <button id="backToCalculatorButtonSnake" class="game-button">Voltar à Calculadora</button>
     <div id="gameOverMessage">
         Game Over!
         <button id="gameOverRestartButton" class="game-button">Jogar Novamente</button>
@@ -295,27 +295,27 @@ function launchSnakeGame() {
                 document.body.innerHTML = "<h1>Erro Crítico: Não foi possível iniciar o motor gráfico do jogo.</h1>";
             } else {
                 console.log('Snake Game: Contexto 2D obtido.');
-                ctx.fillStyle = '#fff0f6'; // Cor de fundo do canvas
-                ctx.fillRect(0, 0, canvas.width, canvas.height); // Limpa o canvas com a cor de fundo
+                ctx.fillStyle = '#fff0f6'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height); 
 
                 const scoreElement = document.getElementById('score');
                 const gameOverMessageDiv = document.getElementById('gameOverMessage');
                 const gameOverRestartButton = document.getElementById('gameOverRestartButton');
-                const backToCalculatorButton = document.getElementById('backToCalculatorButton');
+                const backButton = document.getElementById('backToCalculatorButtonSnake');
 
                 const gridSize = 20;
                 const tileCount = canvas.width / gridSize;
                 let snake, food, dx, dy, score, gameLoopInterval, gameActive;
 
                 function initializeGame() {
-                    console.log("Snake Game: Initializing game logic...");
+                    console.log("Snake Game: Initializing game logic in new tab...");
                     snake = [{ x: 10, y: 10 }];
                     food = getRandomFoodPosition();
                     dx = 1; dy = 0; score = 0; gameActive = true;
                     updateScoreDisplay();
                     if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
                     if (gameLoopInterval) clearInterval(gameLoopInterval);
-                    gameLoopInterval = setInterval(gameLoop, 180); // <<< VELOCIDADE AJUSTADA AQUI (ex: 180ms)
+                    gameLoopInterval = setInterval(gameLoop, 180); // Velocidade ajustada
                     console.log("Snake Game: Initialized. Snake:", snake[0], "Food:", food);
                 }
                 function getRandomFoodPosition() {
@@ -329,7 +329,7 @@ function launchSnakeGame() {
                 }
                 function drawSnakePart(snakePart) {
                     ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
-                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1); // -1 para pequena margem
+                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1); 
                     ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1);
                 }
                 function drawSnake() { snake.forEach(drawSnakePart); }
@@ -368,7 +368,7 @@ function launchSnakeGame() {
                 }
                 document.addEventListener('keydown', (event) => {
                     if (!gameActive && event.key !== "Enter" && event.keyCode !== 13) return; 
-                    const keyPressed = event.key; // Usar event.key para consistência
+                    const keyPressed = event.key; 
                     const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
 
                     if ((keyPressed === "ArrowLeft" || keyPressed.toLowerCase() === "a") && !goingRight) { dx = -1; dy = 0; }
@@ -377,13 +377,13 @@ function launchSnakeGame() {
                     else if ((keyPressed === "ArrowDown" || keyPressed.toLowerCase() === "s") && !goingUp) { dx = 0; dy = 1; }
                 });
                 if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
-                if(backToCalculatorButton) {
-                    backToCalculatorButton.addEventListener('click', () => {
-                        window.close(); // Tenta fechar a aba do jogo
-                    });
-                }
+                if(backButton) backButton.addEventListener('click', () => window.close());
                 
-                initializeGame();
+                if (canvas && ctx) {
+                    initializeGame();
+                } else {
+                    console.error("Snake Game: Não foi possível iniciar o jogo pois o canvas ou o contexto não foram encontrados na nova aba.");
+                }
             }
         }
     <\/script>
@@ -392,19 +392,277 @@ function launchSnakeGame() {
     `;
     const gameWindow = window.open('', '_blank');
     if (gameWindow) {
-        // É importante esperar um pouco para o document da nova aba estar pronto antes de escrever
-        // No entanto, para _blank, o document.write geralmente funciona imediatamente.
         gameWindow.document.open();
         gameWindow.document.write(snakeGameHTML);
         gameWindow.document.close(); 
         console.log("Jogo da Cobrinha aberto em nova aba.");
-        // Focar na nova janela pode ser útil se o navegador não o fizer automaticamente
         gameWindow.focus(); 
     } else {
         alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
     }
 }
 window.launchSnakeGame = launchSnakeGame; 
+
+function launchTankGame() { 
+    console.log("launchTankGame: Abrindo Jogo de Tanque em nova aba.");
+    const gamesModal = document.getElementById('gamesModal');
+    if (gamesModal) gamesModal.style.display = 'none'; 
+
+    const tankGameHTML = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defesa de Tanques para Leticia ♡</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #ffe0e0; font-family: 'Arial', sans-serif; color: #7c1c3a; }
+        h1 { color: #c2185b; margin-bottom: 10px; }
+        #gameCanvas { border: 5px solid #f06292; background-color: #fdf0f3; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; }
+        .info-container { display: flex; justify-content: space-around; width: 500px; margin-top: 10px; font-size: 1rem; }
+        .score-info span, .enemies-info span { font-weight: bold; color: #ec407a; }
+        .controls-info { margin-top: 10px; font-size: 0.85rem; text-align: center; max-width: 500px; }
+        .game-button { background-color: #e91e63; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 15px; margin-left: 5px; margin-right: 5px; }
+        .game-button:hover { background-color: #c2185b; }
+        #gameOverMessage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.75); color: white; padding: 25px; border-radius: 10px; text-align: center; font-size: 1.8rem; display: none; z-index: 100; }
+        #gameOverMessage .game-button { margin-top: 15px; background-color: #f48fb1; color: #880e4f; }
+        #gameOverMessage .game-button:hover { background-color: #f8bbd0; }
+    </style>
+</head>
+<body>
+    <h1>Defesa de Tanques <i class="fas fa-shield-heart" style="color: #e91e63;"></i>♡</h1>
+    <canvas id="gameCanvas" width="500" height="450"></canvas>
+    <div class="info-container">
+        <div class="score-info">Pontuação: <span id="score">0</span></div>
+        <div class="enemies-info">Inimigos Restantes: <span id="enemiesLeft">0</span></div>
+    </div>
+    <div class="controls-info">
+        Setas: Mover Tanque | A/D: Rodar Torre | Espaço: Atirar
+    </div>
+    <div>
+        <button id="backToCalculatorButtonTank" class="game-button">Voltar à Calculadora</button>
+    </div>
+    <div id="gameOverMessage">
+        Fim de Jogo!
+        <div class="score-info" style="font-size: 1.2rem; margin-top:10px;">Pontuação Final: <span id="finalScore">0</span></div>
+        <button id="gameOverRestartButton" class="game-button">Jogar Novamente</button>
+    </div>
+    <script>
+        // JavaScript completo do Jogo de Tanque (como fornecido anteriormente)
+        // ... (Este é o local do script do jogo que lhe dei no Canvas "jogoTanqueGuerraHTML")
+        console.log("Tank Defense Game Script: Iniciando...");
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) {
+            console.error('Tank Game Error: Canvas not found in new tab!');
+            document.body.innerHTML = "<h1>Erro Crítico: Canvas do jogo não encontrado.</h1>";
+        } else {
+            console.log('Tank Game: Canvas encontrado', canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Tank Game Error: Contexto 2D não obtido!');
+                document.body.innerHTML = "<h1>Erro Crítico: Não foi possível iniciar o motor gráfico do jogo.</h1>";
+            } else {
+                console.log('Tank Game: Contexto 2D obtido.');
+                ctx.fillStyle = '#fdf0f3'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const scoreElement = document.getElementById('score');
+                const enemiesLeftElement = document.getElementById('enemiesLeft');
+                const gameOverMessageDiv = document.getElementById('gameOverMessage');
+                const finalScoreElement = document.getElementById('finalScore');
+                const gameOverRestartButton = document.getElementById('gameOverRestartButton');
+                const backButton = document.getElementById('backToCalculatorButtonTank'); // ID único para este botão
+
+                const TANK_SIZE = 30; 
+                const TURRET_WIDTH = 6;
+                const TURRET_LENGTH = 25;
+                const BULLET_RADIUS = 4;
+                const BULLET_SPEED = 5;
+                const BASE_SIZE = 40;
+                const BRICK_SIZE = 20;
+
+                let player, bullets, enemyBullets, enemies, playerBase, bricks, score, gameActive, gameLoopInterval, enemiesToSpawn, spawnTimer, spawnInterval;
+
+                const PLAYER_TANK_COLOR = '#ec407a'; 
+                const PLAYER_TURRET_COLOR = '#c2185b'; 
+                const ENEMY_TANK_COLOR = '#ad1457'; 
+                const ENEMY_TURRET_COLOR = '#880e4f'; 
+                const BULLET_COLOR = '#7c1c3a'; 
+                const BASE_COLOR = '#ff80ab'; 
+                const BASE_BORDER_COLOR = '#f50057';
+                const BRICK_COLOR = '#f48fb1'; 
+                const BRICK_BORDER_COLOR = '#e91e63';
+
+                function initializeGame() {
+                    console.log("Tank Defense Game: Initializing game logic...");
+                    player = { x: canvas.width / 2 - TANK_SIZE / 2, y: canvas.height - TANK_SIZE - BRICK_SIZE - 5, width: TANK_SIZE, height: TANK_SIZE, turretAngle: -Math.PI / 2, speed: 2.5, rotationSpeed: 0.04, color: PLAYER_TANK_COLOR, shootCooldown: 0, maxCooldown: 20 };
+                    playerBase = { x: canvas.width / 2 - BASE_SIZE / 2, y: canvas.height - BASE_SIZE - 5, width: BASE_SIZE, height: BASE_SIZE, color: BASE_COLOR, borderColor: BASE_BORDER_COLOR, isAlive: true };
+                    bullets = []; enemyBullets = []; enemies = []; bricks = [];
+                    score = 0; enemiesToSpawn = 5; spawnTimer = 0; spawnInterval = 180; gameActive = true;
+                    updateScoreDisplay(); updateEnemiesLeftDisplay(); createBrickWall();
+                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
+                    if (gameLoopInterval) clearInterval(gameLoopInterval);
+                    gameLoopInterval = setInterval(gameLoop, 1000 / 60); 
+                    console.log("Tank Defense Game: Initialized.");
+                }
+                function createBrickWall() {
+                    bricks = []; 
+                    const wallY = playerBase.y - BRICK_SIZE - 2; 
+                    const wallStartX = playerBase.x - BRICK_SIZE;
+                    const wallEndX = playerBase.x + BASE_SIZE + BRICK_SIZE;
+                    for (let x = wallStartX; x < wallEndX; x += BRICK_SIZE) { bricks.push({ x: x, y: wallY, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });}
+                    bricks.push({ x: playerBase.x - BRICK_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
+                    bricks.push({ x: playerBase.x - BRICK_SIZE, y: playerBase.y + BRICK_SIZE/2 , width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 }); 
+                    bricks.push({ x: playerBase.x + BASE_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
+                    bricks.push({ x: playerBase.x + BASE_SIZE, y: playerBase.y + BRICK_SIZE/2, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
+                }
+                function spawnEnemy() {
+                    if (enemiesToSpawn <= 0) return;
+                    const spawnX = Math.random() * (canvas.width - TANK_SIZE);
+                    enemies.push({ x: spawnX, y: -TANK_SIZE, width: TANK_SIZE, height: TANK_SIZE, turretAngle: Math.PI / 2, speed: 1 + Math.random() * 0.5, color: ENEMY_TANK_COLOR, shootCooldown: Math.floor(Math.random() * 100) + 80, maxCooldown: 120 + Math.floor(Math.random() * 60) });
+                    enemiesToSpawn--; updateEnemiesLeftDisplay();
+                }
+                function updateEnemiesLeftDisplay() { if(enemiesLeftElement) enemiesLeftElement.textContent = enemies.length + enemiesToSpawn; }
+                function drawRect(obj, color, borderColor) {
+                    ctx.fillStyle = color; ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+                    if (borderColor) { ctx.strokeStyle = borderColor; ctx.strokeRect(obj.x, obj.y, obj.width, obj.height); }
+                }
+                function drawTank(tank, turretColor) {
+                    drawRect(tank, tank.color); 
+                    ctx.save(); ctx.translate(tank.x + tank.width / 2, tank.y + tank.height / 2); ctx.rotate(tank.turretAngle);
+                    ctx.fillStyle = turretColor; ctx.fillRect(-TURRET_WIDTH / 2, -TURRET_LENGTH / 2, TURRET_WIDTH, TURRET_LENGTH);
+                    ctx.beginPath(); ctx.arc(0, 0, tank.width / 3.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                }
+                function drawBullet(bullet) { ctx.beginPath(); ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2); ctx.fillStyle = BULLET_COLOR; ctx.fill(); ctx.closePath(); }
+                function drawBricks() { bricks.forEach(brick => { drawRect(brick, BRICK_COLOR, BRICK_BORDER_COLOR); }); }
+                function updatePlayer() { if (player.shootCooldown > 0) player.shootCooldown--; }
+                function updateEnemies() {
+                    enemies.forEach(enemy => {
+                        enemy.y += enemy.speed;
+                        if (enemy.y > canvas.height) { enemies.splice(enemies.indexOf(enemy), 1); updateEnemiesLeftDisplay(); return; }
+                        enemy.turretAngle = Math.PI / 2; 
+                        if (enemy.shootCooldown <= 0) {
+                            enemyBullets.push({ x: enemy.x + enemy.width / 2 + (TURRET_LENGTH - 5) * Math.cos(enemy.turretAngle), y: enemy.y + enemy.height / 2 + (TURRET_LENGTH - 5) * Math.sin(enemy.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(enemy.turretAngle), dy: BULLET_SPEED * Math.sin(enemy.turretAngle) });
+                            enemy.shootCooldown = enemy.maxCooldown;
+                        } else { enemy.shootCooldown--; }
+                    });
+                }
+                function updateBullets(bulletArray) {
+                    for (let i = bulletArray.length - 1; i >= 0; i--) {
+                        const bullet = bulletArray[i];
+                        bullet.x += bullet.dx; bullet.y += bullet.dy;
+                        if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) { bulletArray.splice(i, 1); }
+                    }
+                }
+                function checkCollisions() {
+                    for (let i = bullets.length - 1; i >= 0; i--) {
+                        for (let j = enemies.length - 1; j >= 0; j--) {
+                            if (rectCollision(bullets[i], enemies[j], BULLET_RADIUS)) {
+                                bullets.splice(i, 1); enemies.splice(j, 1); score += 10;
+                                updateScoreDisplay(); updateEnemiesLeftDisplay(); break; 
+                            }
+                        }
+                    }
+                    for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                        if (rectCollision(enemyBullets[i], player, BULLET_RADIUS)) {
+                            enemyBullets.splice(i, 1); gameOver("Seu tanque foi atingido!"); return;
+                        }
+                    }
+                    const allBullets = [...bullets, ...enemyBullets];
+                    for (let i = allBullets.length - 1; i >= 0; i--) {
+                        for (let j = bricks.length - 1; j >= 0; j--) {
+                             if (rectCollision(allBullets[i], bricks[j], BULLET_RADIUS)) {
+                                allBullets.splice(i,1); bricks.splice(j, 1); break; 
+                            }
+                        }
+                    }
+                    if (playerBase.isAlive) {
+                        for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                            if (rectCollision(enemyBullets[i], playerBase, BULLET_RADIUS)) {
+                                enemyBullets.splice(i, 1); playerBase.isAlive = false; playerBase.color = "#555"; 
+                                gameOver("Sua base foi destruída!"); return;
+                            }
+                        }
+                        enemies.forEach(enemy => {
+                            if (rectsOverlap(enemy, playerBase)) {
+                                playerBase.isAlive = false; playerBase.color = "#555";
+                                gameOver("Um inimigo alcançou sua base!");
+                            }
+                        });
+                    }
+                }
+                function rectCollision(circle, rect, circleRadius) { 
+                    let testX = circle.x; let testY = circle.y;
+                    if (circle.x < rect.x) testX = rect.x; else if (circle.x > rect.x + rect.width) testX = rect.x + rect.width;
+                    if (circle.y < rect.y) testY = rect.y; else if (circle.y > rect.y + rect.height) testY = rect.y + rect.height;
+                    const distX = circle.x - testX; const distY = circle.y - testY;
+                    return Math.sqrt((distX * distX) + (distY * distY)) <= circleRadius;
+                }
+                function rectsOverlap(rect1, rect2) { return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y; }
+                function updateScoreDisplay() { if(scoreElement) scoreElement.textContent = score; }
+                function gameLoop() {
+                    if (!gameActive) return;
+                    spawnTimer++;
+                    if (spawnTimer >= spawnInterval && enemiesToSpawn > 0) { spawnEnemy(); spawnTimer = 0; }
+                    handleInput(); updatePlayer(); updateEnemies(); updateBullets(bullets); updateBullets(enemyBullets); checkCollisions();
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#fdf0f3'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    drawBricks(); 
+                    if (playerBase.isAlive) drawRect(playerBase, playerBase.color, playerBase.borderColor); else drawRect(playerBase, "#777", "#555"); 
+                    drawTank(player, PLAYER_TURRET_COLOR); enemies.forEach(enemy => drawTank(enemy, ENEMY_TURRET_COLOR));
+                    bullets.forEach(drawBullet); enemyBullets.forEach(drawBullet);
+                    if (enemiesToSpawn === 0 && enemies.length === 0 && playerBase.isAlive) { gameOver("Vitória! Todos os inimigos destruídos!"); }
+                }
+                function gameOver(message = "Fim de Jogo!") {
+                    console.log("Tank Defense Game: Game Over. Score:", score, "Message:", message);
+                    gameActive = false; clearInterval(gameLoopInterval);
+                    if(finalScoreElement) finalScoreElement.textContent = score;
+                    const gameOverTextElement = gameOverMessageDiv.firstChild; 
+                    if (gameOverTextElement && gameOverTextElement.nodeType === Node.TEXT_NODE) { gameOverTextElement.nodeValue = message; } 
+                    else if (gameOverMessageDiv) { gameOverMessageDiv.childNodes[0].nodeValue = message; } // Tenta o primeiro filho de qualquer forma
+                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'block';
+                }
+                const keys = {};
+                document.addEventListener('keydown', (event) => {
+                    keys[event.key.toLowerCase()] = true;
+                    if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "a", "d"].includes(event.key.toLowerCase())) { event.preventDefault(); }
+                    if (event.key === ' ' && gameActive && player.shootCooldown <= 0) { 
+                        bullets.push({ x: player.x + player.width / 2 + (TURRET_LENGTH - 5) * Math.cos(player.turretAngle), y: player.y + player.height / 2 + (TURRET_LENGTH - 5) * Math.sin(player.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(player.turretAngle), dy: BULLET_SPEED * Math.sin(player.turretAngle) });
+                        player.shootCooldown = player.maxCooldown;
+                    }
+                });
+                document.addEventListener('keyup', (event) => { keys[event.key.toLowerCase()] = false; });
+                function handleInput() {
+                    if (!gameActive) return;
+                    if (keys['arrowleft']) player.x -= player.speed; if (keys['arrowright']) player.x += player.speed;
+                    if (keys['arrowup']) player.y -= player.speed; if (keys['arrowdown']) player.y += player.speed;
+                    if (keys['a']) player.turretAngle -= player.rotationSpeed; if (keys['d']) player.turretAngle += player.rotationSpeed;
+                    player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
+                    player.y = Math.max(0, Math.min(player.y, canvas.height - player.height));
+                }
+                if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
+                if(backButton) backButton.addEventListener('click', () => window.close());
+                
+                if (canvas && ctx && scoreElement && enemiesLeftElement) { initializeGame(); } 
+                else { console.error("Tank Defense Game: Elementos essenciais do DOM não encontrados ao tentar inicializar o jogo."); document.body.innerHTML = "<h1>Erro ao carregar o jogo. Elementos em falta.</h1>"; }
+                console.log("Tank Defense Game Script: Fim da execução.");
+            }
+        }
+    <\/script>
+</body>
+</html>
+    `;
+    const gameWindow = window.open('', '_blank');
+    if (gameWindow) {
+        gameWindow.document.open();
+        gameWindow.document.write(tankGameHTML);
+        gameWindow.document.close(); 
+        console.log("Jogo de Tanque aberto em nova aba.");
+        gameWindow.focus();
+    } else {
+        alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
+    }
+}
+window.launchTankGame = launchTankGame; // Expor para onclick no HTML
 
 
 async function shareMessage() {
@@ -522,7 +780,7 @@ function checkDisplay() {
 
 function appendNumber(number) {
     if (!checkDisplay()) return;
-    // console.log("appendNumber:", number); // Descomentar para depuração intensa
+    // console.log("appendNumber:", number); 
     if (resultCalculated) {
         currentExpression = '';
         resultCalculated = false;
@@ -543,7 +801,7 @@ window.appendNumber = appendNumber;
 
 function appendOperator(operator) {
     if (!checkDisplay()) return;
-    // console.log("appendOperator:", operator); // Descomentar para depuração intensa
+    // console.log("appendOperator:", operator); 
     if (currentExpression === '' && operator !== '-') {
         return;
     }
@@ -564,7 +822,7 @@ window.appendOperator = appendOperator;
 
 function appendDecimal() {
     if (!checkDisplay()) return;
-    // console.log("appendDecimal"); // Descomentar para depuração intensa
+    // console.log("appendDecimal"); 
     if (resultCalculated) {
         currentExpression = '0.';
         resultCalculated = false;
@@ -595,7 +853,7 @@ window.clearAll = clearAll;
 
 function deleteLast() {
     if (!checkDisplay()) return;
-    // console.log("deleteLast"); // Descomentar para depuração intensa
+    // console.log("deleteLast"); 
     if (resultCalculated) {
         clearAll();
         return;
@@ -690,7 +948,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const localShareButton = document.getElementById('shareMessageButton');
     const localDarkModeToggle = document.getElementById('darkModeToggle');
-    const localGamesTabButton = document.getElementById('gamesTabButton'); // Já tem onclick no HTML
 
     if (localShareButton) {
         localShareButton.addEventListener('click', shareMessage);
