@@ -247,13 +247,132 @@ function toggleGamesModal() {
 }
 window.toggleGamesModal = toggleGamesModal; 
 
-function launchSnakeGamePlaceholder() {
-    console.log("launchSnakeGamePlaceholder: Chamada. (Jogo da Cobrinha ainda não implementado).");
+function launchSnakeGame() { // Renomeado de launchSnakeGamePlaceholder
+    console.log("launchSnakeGame: Abrindo Jogo da Cobrinha em nova aba.");
     const gamesModal = document.getElementById('gamesModal');
-    if (gamesModal) gamesModal.style.display = 'none';
-    alert("O Jogo da Cobrinha ainda será adicionado! Aguarde as próximas atualizações. ♡");
+    if (gamesModal) gamesModal.style.display = 'none'; 
+
+    const snakeGameHTML = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Cobrinha para Leticia ♡</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #fce4ec; font-family: 'Arial', sans-serif; color: #880e4f; }
+        h1 { color: #c2185b; margin-bottom: 10px; }
+        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .controls-info, .score-info { margin-top: 15px; font-size: 0.9rem; text-align: center; }
+        .score-info span { font-weight: bold; color: #ec407a; }
+        button { background-color: #ec407a; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 15px; }
+        button:hover { background-color: #d81b60; }
+        #gameOverMessage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.5rem; display: none; z-index: 100; }
+        #gameOverMessage button { margin-top: 10px; background-color: #f48fb1; color: #880e4f; }
+        #gameOverMessage button:hover { background-color: #f8bbd0; }
+    </style>
+</head>
+<body>
+    <h1>Jogo da Cobrinha <i style="color: #e91e63;">♡</i></h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="score-info">Pontuação: <span id="score">0</span></div>
+    <div class="controls-info">Use as teclas de seta (↑, ↓, ←, →) para mover.</div>
+    <div id="gameOverMessage">
+        Game Over!
+        <button id="gameOverRestartButton">Jogar Novamente</button>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const gameOverMessageDiv = document.getElementById('gameOverMessage');
+        const gameOverRestartButton = document.getElementById('gameOverRestartButton');
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+        let snake, food, dx, dy, score, gameLoopInterval, gameActive;
+
+        function initializeGame() {
+            snake = [{ x: 10, y: 10 }];
+            food = getRandomFoodPosition();
+            dx = 1; dy = 0; score = 0; gameActive = true;
+            updateScoreDisplay();
+            gameOverMessageDiv.style.display = 'none';
+            if (gameLoopInterval) clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(gameLoop, 120);
+        }
+        function getRandomFoodPosition() {
+            let newFoodPosition;
+            while (true) {
+                newFoodPosition = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+                let collisionWithSnake = snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y);
+                if (!collisionWithSnake) break;
+            }
+            return newFoodPosition;
+        }
+        function drawSnakePart(snakePart) {
+            ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
+            ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+            ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+        }
+        function drawSnake() { snake.forEach(drawSnakePart); }
+        function drawFood() {
+            ctx.fillStyle = '#880e4f'; ctx.strokeStyle = '#5c1a3c';
+            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+            ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+        }
+        function moveSnake() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                score++; updateScoreDisplay(); food = getRandomFoodPosition();
+            } else {
+                snake.pop();
+            }
+        }
+        function updateScoreDisplay() { scoreElement.textContent = score; }
+        function checkCollision() {
+            const head = snake[0];
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
+            for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
+            return false;
+        }
+        function gameLoop() {
+            if (!gameActive) return;
+            ctx.fillStyle = '#fff0f6'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            moveSnake();
+            if (checkCollision()) { gameOver(); return; }
+            drawFood(); drawSnake();
+        }
+        function gameOver() {
+            gameActive = false; clearInterval(gameLoopInterval);
+            gameOverMessageDiv.style.display = 'block';
+        }
+        document.addEventListener('keydown', (event) => {
+            if (!gameActive && event.keyCode !== 13) return; // Allow Enter for restart from message
+            const keyPressed = event.keyCode;
+            const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+            if (keyPressed === 37 && !goingRight) { dx = -1; dy = 0; } // Left
+            if (keyPressed === 38 && !goingDown) { dx = 0; dy = -1; } // Up
+            if (keyPressed === 39 && !goingLeft) { dx = 1; dy = 0; }  // Right
+            if (keyPressed === 40 && !goingUp) { dx = 0; dy = 1; }   // Down
+        });
+        gameOverRestartButton.addEventListener('click', initializeGame);
+        initializeGame();
+    <\/script>
+</body>
+</html>
+    `;
+    const gameWindow = window.open('', '_blank');
+    if (gameWindow) {
+        gameWindow.document.open();
+        gameWindow.document.write(snakeGameHTML);
+        gameWindow.document.close();
+        console.log("Jogo da Cobrinha aberto em nova aba.");
+    } else {
+        alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
+    }
 }
-window.launchSnakeGamePlaceholder = launchSnakeGamePlaceholder; 
+window.launchSnakeGame = launchSnakeGame; // Expor para onclick no HTML (renomeado)
 
 
 async function shareMessage() {
