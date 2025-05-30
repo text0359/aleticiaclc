@@ -1,7 +1,7 @@
 // script.js - Lógica da Calculadora e Modal de Mensagens
+console.log("script.js: Iniciando execução...");
 
 // --- Lista de Mensagens Estáticas ---
-// O bibleVerseText aqui servirá de fallback caso a API falhe.
 const staticDailyMessages = [
     { messageText: "Leticia, meu amor, que seu dia seja tão radiante quanto seu sorriso.", bibleVerseRef: "Salmos 118:24", bibleVerseText: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele." },
     { messageText: "Para você, Leticia, todo o meu carinho e admiração. Você é luz!", bibleVerseRef: "Filipenses 4:13", bibleVerseText: "Tudo posso naquele que me fortalece." },
@@ -102,25 +102,24 @@ const staticDailyMessages = [
 ];
 
 // --- Lógica do Modal de Mensagens Diárias ---
-// Cache de elementos DOM que são frequentemente acedidos
-let dailyMessageModal, notificationBadge, messageTextElement, verseTextElement, copiedMessageElement, darkModeToggle;
+// As variáveis de elementos DOM serão obtidas dentro das funções ou no DOMContentLoaded
 
 // Função para buscar o texto do versículo de uma API
 async function fetchVerseTextFromAPI(verseRef) {
     if (!verseRef || typeof verseRef !== 'string' || verseRef.trim() === '') {
-        console.warn("Referência do versículo inválida para API:", verseRef);
+        console.warn("fetchVerseTextFromAPI: Referência do versículo inválida:", verseRef);
         throw new Error("Referência do versículo inválida.");
     }
     const translation = "almeida"; 
     const normalizedVerseRef = verseRef.replace(/\s*:\s*/g, ':').replace(/\s+/g, ' ').trim();
     const apiUrl = `https://bible-api.com/${encodeURIComponent(normalizedVerseRef)}?translation=${translation}&verse_numbers=false`;
-    console.log(`Buscando versículo: ${apiUrl}`);
+    console.log(`fetchVerseTextFromAPI: Buscando versículo: ${apiUrl}`);
 
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
             const errorText = await response.text();
-            console.error(`Erro da API Bible (${response.status}) para ${normalizedVerseRef}:`, errorText);
+            console.error(`fetchVerseTextFromAPI: Erro da API Bible (${response.status}) para ${normalizedVerseRef}:`, errorText);
             throw new Error(`Falha ao buscar o versículo (${response.status}). Ref: ${normalizedVerseRef}`);
         }
         const data = await response.json();
@@ -129,32 +128,35 @@ async function fetchVerseTextFromAPI(verseRef) {
         } else if (data && Array.isArray(data.verses) && data.verses.length > 0 && typeof data.verses[0].text === 'string') {
             return data.verses.map(v => v.text).join(" ").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
         } else if (data && data.error) {
-            console.error("Erro retornado pela API Bible:", data.error, "Ref:", normalizedVerseRef);
+            console.error("fetchVerseTextFromAPI: Erro retornado pela API Bible:", data.error, "Ref:", normalizedVerseRef);
             throw new Error(`API Bible: ${data.error} (Ref: ${normalizedVerseRef})`);
         } else {
-            console.warn("Resposta da API Bible não continha texto do versículo para", normalizedVerseRef, ":", data);
+            console.warn("fetchVerseTextFromAPI: Resposta da API Bible não continha texto do versículo para", normalizedVerseRef, ":", data);
             throw new Error(`Resposta inesperada da API Bible para ${normalizedVerseRef}.`);
         }
     } catch (error) {
-        console.error(`Erro na função fetchVerseTextFromAPI para ${normalizedVerseRef}:`, error);
+        console.error(`fetchVerseTextFromAPI: Erro na função para ${normalizedVerseRef}:`, error);
         throw error; 
     }
 }
-window.fetchVerseTextFromAPI = fetchVerseTextFromAPI; // Expor globalmente
+// Expor globalmente para o módulo HTML poder chamar
+window.fetchVerseTextFromAPI = fetchVerseTextFromAPI;
 
 
 async function displayStaticMessage() {
-    // Obter referências DOM aqui, pois a função pode ser chamada antes do DOMContentLoaded do final do script
+    console.log("displayStaticMessage: Chamada.");
     const currentMessageTextElement = document.getElementById('messageText');
     const currentVerseTextElement = document.getElementById('verseText');
     const currentNotificationBadgeEl = document.getElementById('notificationBadge');
 
     if (currentNotificationBadgeEl) {
-        currentNotificationBadgeEl.style.display = 'none'; // Mensagens estáticas não são "novas"
+        currentNotificationBadgeEl.style.display = 'none'; 
     }
 
     if (!currentMessageTextElement || !currentVerseTextElement) {
-        console.error("Elementos do modal de mensagem não encontrados no DOM dentro de displayStaticMessage.");
+        console.error("displayStaticMessage: Elementos do modal de mensagem não encontrados.");
+        if (currentMessageTextElement) currentMessageTextElement.textContent = "Erro ao carregar mensagem.";
+        if (currentVerseTextElement) currentVerseTextElement.textContent = "Tente novamente.";
         return;
     }
 
@@ -171,11 +173,11 @@ async function displayStaticMessage() {
                 const fetchedVerseText = await fetchVerseTextFromAPI(selectedMessage.bibleVerseRef);
                 currentVerseTextElement.textContent = `${selectedMessage.bibleVerseRef} - "${fetchedVerseText}"`;
             } catch (error) {
-                console.warn(`Falha ao buscar versículo da API para mensagem estática (${selectedMessage.bibleVerseRef}). Usando fallback interno. Erro: ${error.message}`);
+                console.warn(`displayStaticMessage: Falha ao buscar versículo da API (${selectedMessage.bibleVerseRef}). Usando fallback interno. Erro: ${error.message}`);
                 if (selectedMessage.bibleVerseText && selectedMessage.bibleVerseText.trim() !== "") {
                     currentVerseTextElement.textContent = `${selectedMessage.bibleVerseRef} - "${selectedMessage.bibleVerseText}" (API indisponível)`;
                 } else {
-                    currentVerseTextElement.textContent = `${selectedMessage.bibleVerseRef} (Não foi possível carregar o texto do versículo.)`;
+                    currentVerseTextElement.textContent = `${selectedMessage.bibleVerseRef} (Texto do versículo indisponível)`;
                 }
             }
         } else {
@@ -187,19 +189,19 @@ async function displayStaticMessage() {
         currentVerseTextElement.textContent = "Por favor, verifique mais tarde.";
     }
 }
+// Expor globalmente para o módulo HTML poder chamar
 window.displayStaticMessage = displayStaticMessage; 
 
 function toggleMessageModal() {
-    // Obter referências DOM aqui
+    console.log("toggleMessageModal: Chamada.");
     const currentDailyMessageModal = document.getElementById('dailyMessageModal');
     const currentMessageTextElement = document.getElementById('messageText');
-    const currentVerseTextElement = document.getElementById('verseText'); // Para verificar o estado de carregamento
+    const currentVerseTextElement = document.getElementById('verseText'); 
     const currentCopiedMessageElement = document.getElementById('copiedMessage');
     const currentNotificationBadge = document.getElementById('notificationBadge');
 
-
     if (!currentDailyMessageModal || !currentMessageTextElement) { 
-        console.error("Modal ou área de texto da mensagem não encontrado em toggleMessageModal.");
+        console.error("toggleMessageModal: Modal ou área de texto da mensagem não encontrado.");
         return;
     }
 
@@ -210,11 +212,9 @@ function toggleMessageModal() {
         const today = new Date();
         const dateString = today.toISOString().split('T')[0];
         
-        // Se a mensagem dinâmica do dia foi carregada com sucesso (sinalizado pelo módulo HTML),
-        // marca-a como vista.
         if (localStorage.getItem(`dynamicMessageLoaded_${dateString}`) === 'true') {
              localStorage.setItem(`messageSeen_${dateString}`, 'true'); 
-             console.log(`Mensagem dinâmica do dia ${dateString} marcada como vista ao abrir o modal.`);
+             console.log(`toggleMessageModal: Mensagem dinâmica do dia ${dateString} marcada como vista.`);
         }
         
         if (currentNotificationBadge) currentNotificationBadge.style.display = 'none'; 
@@ -222,7 +222,7 @@ function toggleMessageModal() {
         if (typeof window.loadDailyMessage === 'function' && 
             (currentMessageTextElement.textContent === 'Carregando mensagem...' || 
              (currentVerseTextElement && currentVerseTextElement.textContent === 'A carregar versículo...'))) {
-            console.log("Modal aberto com estado de carregamento, chamando window.loadDailyMessage().");
+            console.log("toggleMessageModal: Modal aberto com estado de carregamento, chamando window.loadDailyMessage().");
             window.loadDailyMessage(); 
         }
 
@@ -230,16 +230,17 @@ function toggleMessageModal() {
         currentDailyMessageModal.style.display = 'none';
     }
 }
+// Expor globalmente para o HTML (onclick)
 window.toggleMessageModal = toggleMessageModal;
 
 async function shareMessage() {
-    // Obter referências DOM aqui
+    console.log("shareMessage: Chamada.");
     const currentMessageTextElement = document.getElementById('messageText');
     const currentVerseTextElement = document.getElementById('verseText');
     const currentCopiedMessageElement = document.getElementById('copiedMessage');
 
     if (!currentMessageTextElement || !currentVerseTextElement) {
-        console.error("Elementos de texto da mensagem não encontrados para partilha.");
+        console.error("shareMessage: Elementos de texto da mensagem não encontrados.");
         return;
     }
 
@@ -253,17 +254,20 @@ async function shareMessage() {
                 title: 'Mensagem Especial para Leticia',
                 text: fullTextToShare,
             });
-            console.log('Mensagem partilhada com sucesso!');
+            console.log('Mensagem partilhada com sucesso via API de Partilha!');
         } catch (error) {
-            console.error('Erro ao partilhar:', error);
+            console.error('Erro ao partilhar via API:', error);
             copyToClipboard(fullTextToShare, currentCopiedMessageElement);
         }
     } else {
+        console.log("API de Partilha não suportada, a recorrer a copiar para a área de transferência.");
         copyToClipboard(fullTextToShare, currentCopiedMessageElement);
     }
 }
+// Não precisa expor shareMessage globalmente se for chamada apenas por event listener
 
 function copyToClipboard(text, feedbackElement) {
+    console.log("copyToClipboard: Tentando copiar texto.");
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed'; 
@@ -280,9 +284,9 @@ function copyToClipboard(text, feedbackElement) {
                     if (feedbackElement) feedbackElement.style.display = 'none';
                 }, 2000);
             }
-            console.log('Texto copiado para a área de transferência');
+            console.log('Texto copiado para a área de transferência com sucesso.');
         } else {
-            throw new Error('Falha ao copiar o texto.');
+            throw new Error('document.execCommand("copy") falhou.');
         }
     } catch (err) {
         console.error('Não foi possível copiar o texto:', err);
@@ -299,7 +303,6 @@ function copyToClipboard(text, feedbackElement) {
 
 // --- Lógica do Modo Escuro ---
 function applyDarkModePreference() {
-    // Obter referência DOM aqui
     const currentDarkModeToggle = document.getElementById('darkModeToggle');
     const darkModeEnabled = localStorage.getItem('darkModeEnabled') === 'true';
     const toggleButtonIcon = currentDarkModeToggle ? currentDarkModeToggle.querySelector('i') : null;
@@ -317,6 +320,7 @@ function applyDarkModePreference() {
             toggleButtonIcon.classList.add('fa-moon');
         }
     }
+    console.log(`applyDarkModePreference: Modo escuro ${darkModeEnabled ? 'ativado' : 'desativado'}.`);
 }
 
 function toggleDarkMode() {
@@ -324,22 +328,20 @@ function toggleDarkMode() {
     const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkModeEnabled', isDarkMode);
     applyDarkModePreference(); 
+    console.log(`toggleDarkMode: Modo escuro alterado para ${isDarkMode}.`);
 }
-
+// Não precisa expor toggleDarkMode globalmente se for chamada apenas por event listener
 
 // --- Lógica da Calculadora ---
-const display = document.getElementById('display'); // Este pode ficar global se o script tem defer
+const display = document.getElementById('display'); 
 let currentExpression = '';
 let lastInputIsOperator = false;
 let resultCalculated = false;
 
-// As funções da calculadora (appendNumber, etc.) assumem que 'display' está disponível.
-// Se 'display' for null, estas funções falharão.
-// Adicionar uma verificação no início de cada uma ou um guarda geral.
-
 function checkDisplay() {
     if (!display) {
-        console.error("Visor da calculadora não encontrado!");
+        // Este erro é crítico para a calculadora. Se ocorrer, os botões não funcionarão.
+        console.error("Visor da calculadora (elemento com ID 'display') NÃO ENCONTRADO!");
         return false;
     }
     return true;
@@ -347,6 +349,7 @@ function checkDisplay() {
 
 function appendNumber(number) {
     if (!checkDisplay()) return;
+    console.log("appendNumber:", number);
     if (resultCalculated) {
         currentExpression = '';
         resultCalculated = false;
@@ -363,9 +366,11 @@ function appendNumber(number) {
     updateDisplay();
     lastInputIsOperator = false;
 }
+window.appendNumber = appendNumber; // Expor para onclick
 
 function appendOperator(operator) {
     if (!checkDisplay()) return;
+    console.log("appendOperator:", operator);
     if (currentExpression === '' && operator !== '-') {
         return;
     }
@@ -382,9 +387,11 @@ function appendOperator(operator) {
     lastInputIsOperator = true;
     resultCalculated = false;
 }
+window.appendOperator = appendOperator; // Expor para onclick
 
 function appendDecimal() {
     if (!checkDisplay()) return;
+    console.log("appendDecimal");
     if (resultCalculated) {
         currentExpression = '0.';
         resultCalculated = false;
@@ -400,18 +407,22 @@ function appendDecimal() {
     updateDisplay();
     lastInputIsOperator = false;
 }
+window.appendDecimal = appendDecimal; // Expor para onclick
 
 function clearAll() {
     if (!checkDisplay()) return;
+    console.log("clearAll");
     currentExpression = '0';
     updateDisplay();
     currentExpression = '';
     lastInputIsOperator = false;
     resultCalculated = false;
 }
+window.clearAll = clearAll; // Expor para onclick
 
 function deleteLast() {
     if (!checkDisplay()) return;
+    console.log("deleteLast");
     if (resultCalculated) {
         clearAll();
         return;
@@ -433,9 +444,11 @@ function deleteLast() {
         currentExpression = '';
     }
 }
+window.deleteLast = deleteLast; // Expor para onclick
 
 function calculateResult() {
     if (!checkDisplay()) return;
+    console.log("calculateResult");
     if (currentExpression === '' || (lastInputIsOperator && !(currentExpression.startsWith('-') && currentExpression.match(/^-?\d+(\.\d+)?$/)))) {
         return;
     }
@@ -475,6 +488,7 @@ function calculateResult() {
         lastInputIsOperator = false;
     }
 }
+window.calculateResult = calculateResult; // Expor para onclick
 
 function updateDisplay() {
     if (!checkDisplay()) return;
@@ -499,38 +513,31 @@ function updateDisplay() {
 
 // Adicionar event listeners após o DOM estar completamente carregado
 document.addEventListener('DOMContentLoaded', () => {
-    // Cachear elementos após o DOM estar pronto, se ainda não foram
-    // (Alguns já são obtidos dentro das funções para segurança)
-    const localDailyMessageModal = document.getElementById('dailyMessageModal');
-    const localNotificationBadge = document.getElementById('notificationBadge');
-    const localMessageTextElement = document.getElementById('messageText');
-    const localVerseTextElement = document.getElementById('verseText');
+    console.log("DOMContentLoaded: Configurando listeners e estado inicial.");
+    
     const localShareButton = document.getElementById('shareMessageButton');
-    const localCopiedMessageElement = document.getElementById('copiedMessage');
     const localDarkModeToggle = document.getElementById('darkModeToggle');
-
-    // Atribuir os elementos globais cacheados se ainda não definidos (embora o ideal seja dentro das funções)
-    // Esta abordagem de cache global no DOMContentLoaded pode ser uma alternativa
-    // dailyMessageModal = localDailyMessageModal; // Exemplo, mas preferi buscar dentro da função
 
     if (localShareButton) {
         localShareButton.addEventListener('click', shareMessage);
+        console.log("Listener para shareMessageButton configurado.");
     } else {
         console.warn("Botão de partilha (shareMessageButton) não encontrado no DOM.");
     }
 
     if (localDarkModeToggle) {
         localDarkModeToggle.addEventListener('click', toggleDarkMode);
+        console.log("Listener para darkModeToggle configurado.");
     } else {
         console.warn("Botão de modo escuro (darkModeToggle) não encontrado no DOM.");
     }
 
-    applyDarkModePreference(); // Aplicar preferência ao carregar
+    applyDarkModePreference(); 
 
     // Listener para teclado
     document.addEventListener('keydown', function(event) {
         const key = event.key;
-        const currentModal = document.getElementById('dailyMessageModal'); // Re-obter para o contexto do evento
+        const currentModal = document.getElementById('dailyMessageModal'); 
 
         if (key >= '0' && key <= '9') appendNumber(key);
         else if (key === '.') appendDecimal();
@@ -549,16 +556,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else if (key.toLowerCase() === 'c' && !(event.metaKey || event.ctrlKey)) clearAll();
     });
+    console.log("Listener de teclado configurado.");
 
     if (display) { 
         clearAll();
+        console.log("Calculadora inicializada.");
     } else {
-        console.error("Elemento de display da calculadora não encontrado no DOM ao inicializar no DOMContentLoaded.");
+        // Este é um ponto crítico. Se o display não for encontrado aqui, a calculadora não funcionará.
+        console.error("CRÍTICO: Elemento de display da calculadora (ID 'display') não encontrado no DOMContentLoaded. Os botões da calculadora não funcionarão.");
     }
 
-    console.log("Script.js carregado e listeners DOM configurados.");
-    // A lógica de carregamento inicial da mensagem é tratada pelo módulo no HTML.
-    // Se o módulo HTML falhar em chamar window.displayStaticMessage, e esta função estiver
-    // definida, ela será usada como fallback. Se window.displayStaticMessage não estiver
-    // definida a tempo para o módulo HTML, o erro "não definida" ocorrerá lá.
+    // A chamada inicial para carregar a mensagem (dinâmica ou estática)
+    // deve ser feita pelo script do módulo no HTML, que por sua vez chamará
+    // window.loadDailyMessage() ou window.displayStaticMessage().
+    // Se o módulo HTML falhar em chamar window.displayStaticMessage() como fallback,
+    // e essa função estiver definida aqui, ela poderá ser chamada.
+    // No entanto, é melhor que o módulo controle o fluxo inicial.
+    console.log("Script.js: Execução de DOMContentLoaded concluída.");
 });
+
+console.log("script.js: Fim da execução do script (antes de DOMContentLoaded para alguns listeners).");
