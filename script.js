@@ -2,7 +2,6 @@
 console.log("script.js: Iniciando execução...");
 
 // --- Lista de Mensagens Estáticas ---
-// O bibleVerseText aqui servirá de fallback caso a API falhe.
 const staticDailyMessages = [
     { messageText: "Leticia, meu amor, que seu dia seja tão radiante quanto seu sorriso.", bibleVerseRef: "Salmos 118:24", bibleVerseText: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele." },
     { messageText: "Para você, Leticia, todo o meu carinho e admiração. Você é luz!", bibleVerseRef: "Filipenses 4:13", bibleVerseText: "Tudo posso naquele que me fortalece." },
@@ -247,18 +246,11 @@ function toggleGamesModal() {
 }
 window.toggleGamesModal = toggleGamesModal; 
 
-// No seu ficheiro script.js
-
-// ... (outras funções como displayStaticMessage, toggleMessageModal, etc.) ...
-
-function launchSnakeGame() { // Certifique-se que o nome é exatamente este
+function launchSnakeGame() { 
     console.log("launchSnakeGame: Abrindo Jogo da Cobrinha em nova aba.");
     const gamesModal = document.getElementById('gamesModal');
-    if (gamesModal) {
-        gamesModal.style.display = 'none'; // Fecha o modal da central de jogos
-    }
+    if (gamesModal) gamesModal.style.display = 'none'; 
 
-    // snakeGameHTML contém TODO o código do Jogo da Cobrinha (HTML, CSS, JS do jogo)
     const snakeGameHTML = `
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -269,14 +261,14 @@ function launchSnakeGame() { // Certifique-se que o nome é exatamente este
     <style>
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #fce4ec; font-family: 'Arial', sans-serif; color: #880e4f; }
         h1 { color: #c2185b; margin-bottom: 10px; }
-        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; /* Para garantir que é visível */ }
         .controls-info, .score-info { margin-top: 15px; font-size: 0.9rem; text-align: center; }
         .score-info span { font-weight: bold; color: #ec407a; }
-        button { background-color: #ec407a; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 15px; }
-        button:hover { background-color: #d81b60; }
+        .game-button { background-color: #ec407a; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 10px; }
+        .game-button:hover { background-color: #d81b60; }
         #gameOverMessage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.5rem; display: none; z-index: 100; }
-        #gameOverMessage button { margin-top: 10px; background-color: #f48fb1; color: #880e4f; }
-        #gameOverMessage button:hover { background-color: #f8bbd0; }
+        #gameOverMessage .game-button { margin-top: 10px; background-color: #f48fb1; color: #880e4f; }
+        #gameOverMessage .game-button:hover { background-color: #f8bbd0; }
     </style>
 </head>
 <body>
@@ -284,43 +276,46 @@ function launchSnakeGame() { // Certifique-se que o nome é exatamente este
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score-info">Pontuação: <span id="score">0</span></div>
     <div class="controls-info">Use as teclas de seta (↑, ↓, ←, →) para mover.</div>
+    <button id="backToCalculatorButton" class="game-button">Voltar à Calculadora</button>
     <div id="gameOverMessage">
         Game Over!
-        <button id="gameOverRestartButton">Jogar Novamente</button>
+        <button id="gameOverRestartButton" class="game-button">Jogar Novamente</button>
     </div>
     <script>
-        // JavaScript completo do Jogo da Cobrinha (como fornecido anteriormente)
-        // ... (Este é o local do script do jogo que lhe dei no Canvas "jogoCobrinhaHTML")
+        console.log("Snake Game Script: Iniciando...");
         const canvas = document.getElementById('gameCanvas');
         if (!canvas) {
             console.error('Snake Game Error: Canvas not found in new tab!');
+            document.body.innerHTML = "<h1>Erro Crítico: Canvas do jogo não encontrado.</h1>";
         } else {
-            console.log('Snake Game: Canvas found in new tab', canvas.width, canvas.height);
+            console.log('Snake Game: Canvas encontrado', canvas.width, canvas.height);
             const ctx = canvas.getContext('2d');
             if (!ctx) {
-                console.error('Snake Game Error: Context not obtained in new tab!');
+                console.error('Snake Game Error: Contexto 2D não obtido!');
+                document.body.innerHTML = "<h1>Erro Crítico: Não foi possível iniciar o motor gráfico do jogo.</h1>";
             } else {
-                console.log('Snake Game: Context obtained in new tab.');
-                // Teste de desenho simples
-                ctx.fillStyle = 'green'; // Diferente do fundo para ser visível
-                ctx.fillRect(10,10,50,50);
-                // Restante do código do jogo...
+                console.log('Snake Game: Contexto 2D obtido.');
+                ctx.fillStyle = '#fff0f6'; // Cor de fundo do canvas
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Limpa o canvas com a cor de fundo
+
                 const scoreElement = document.getElementById('score');
                 const gameOverMessageDiv = document.getElementById('gameOverMessage');
                 const gameOverRestartButton = document.getElementById('gameOverRestartButton');
+                const backToCalculatorButton = document.getElementById('backToCalculatorButton');
+
                 const gridSize = 20;
                 const tileCount = canvas.width / gridSize;
                 let snake, food, dx, dy, score, gameLoopInterval, gameActive;
 
                 function initializeGame() {
-                    console.log("Snake Game: Initializing game logic in new tab...");
+                    console.log("Snake Game: Initializing game logic...");
                     snake = [{ x: 10, y: 10 }];
                     food = getRandomFoodPosition();
                     dx = 1; dy = 0; score = 0; gameActive = true;
                     updateScoreDisplay();
-                    gameOverMessageDiv.style.display = 'none';
+                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
                     if (gameLoopInterval) clearInterval(gameLoopInterval);
-                    gameLoopInterval = setInterval(gameLoop, 120); // Ajuste a velocidade aqui
+                    gameLoopInterval = setInterval(gameLoop, 180); // <<< VELOCIDADE AJUSTADA AQUI (ex: 180ms)
                     console.log("Snake Game: Initialized. Snake:", snake[0], "Food:", food);
                 }
                 function getRandomFoodPosition() {
@@ -334,14 +329,14 @@ function launchSnakeGame() { // Certifique-se que o nome é exatamente este
                 }
                 function drawSnakePart(snakePart) {
                     ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
-                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-                    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1); // -1 para pequena margem
+                    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1);
                 }
                 function drawSnake() { snake.forEach(drawSnakePart); }
                 function drawFood() {
                     ctx.fillStyle = '#880e4f'; ctx.strokeStyle = '#5c1a3c';
-                    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-                    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+                    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize -1, gridSize-1);
+                    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize-1, gridSize-1);
                 }
                 function moveSnake() {
                     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
@@ -372,42 +367,44 @@ function launchSnakeGame() { // Certifique-se que o nome é exatamente este
                      console.log("Snake Game: Game Over! Score: " + score);
                 }
                 document.addEventListener('keydown', (event) => {
-                    if (!gameActive && event.keyCode !== 13) return; 
-                    const keyPressed = event.keyCode;
+                    if (!gameActive && event.key !== "Enter" && event.keyCode !== 13) return; 
+                    const keyPressed = event.key; // Usar event.key para consistência
                     const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
-                    if (keyPressed === 37 && !goingRight) { dx = -1; dy = 0; } // Left
-                    if (keyPressed === 38 && !goingDown) { dx = 0; dy = -1; } // Up
-                    if (keyPressed === 39 && !goingLeft) { dx = 1; dy = 0; }  // Right
-                    if (keyPressed === 40 && !goingUp) { dx = 0; dy = 1; }   // Down
+
+                    if ((keyPressed === "ArrowLeft" || keyPressed.toLowerCase() === "a") && !goingRight) { dx = -1; dy = 0; }
+                    else if ((keyPressed === "ArrowUp" || keyPressed.toLowerCase() === "w") && !goingDown) { dx = 0; dy = -1; }
+                    else if ((keyPressed === "ArrowRight" || keyPressed.toLowerCase() === "d") && !goingLeft) { dx = 1; dy = 0; }
+                    else if ((keyPressed === "ArrowDown" || keyPressed.toLowerCase() === "s") && !goingUp) { dx = 0; dy = 1; }
                 });
                 if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
-
-                // Garante que o jogo só inicia se o canvas e o contexto forem válidos
-                if (canvas && ctx) {
-                    initializeGame();
-                } else {
-                    console.error("Snake Game: Não foi possível iniciar o jogo pois o canvas ou o contexto não foram encontrados na nova aba.");
-                    document.body.innerHTML = "<h1>Erro ao carregar o jogo da cobrinha. Canvas não encontrado.</h1>";
+                if(backToCalculatorButton) {
+                    backToCalculatorButton.addEventListener('click', () => {
+                        window.close(); // Tenta fechar a aba do jogo
+                    });
                 }
+                
+                initializeGame();
             }
         }
     <\/script>
 </body>
 </html>
-    `; // Fim da string snakeGameHTML
-
+    `;
     const gameWindow = window.open('', '_blank');
     if (gameWindow) {
+        // É importante esperar um pouco para o document da nova aba estar pronto antes de escrever
+        // No entanto, para _blank, o document.write geralmente funciona imediatamente.
         gameWindow.document.open();
         gameWindow.document.write(snakeGameHTML);
-        gameWindow.document.close(); // Importante para finalizar o carregamento e permitir que scripts rodem
+        gameWindow.document.close(); 
         console.log("Jogo da Cobrinha aberto em nova aba.");
+        // Focar na nova janela pode ser útil se o navegador não o fizer automaticamente
+        gameWindow.focus(); 
     } else {
         alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
     }
 }
-// Certifique-se que esta função está no escopo global para o onclick funcionar
-window.launchSnakeGame = launchSnakeGame;
+window.launchSnakeGame = launchSnakeGame; 
 
 
 async function shareMessage() {
@@ -525,13 +522,13 @@ function checkDisplay() {
 
 function appendNumber(number) {
     if (!checkDisplay()) return;
-    console.log("appendNumber:", number);
+    // console.log("appendNumber:", number); // Descomentar para depuração intensa
     if (resultCalculated) {
         currentExpression = '';
         resultCalculated = false;
     }
     if (currentExpression.length > 18 && !lastInputIsOperator) {
-        console.warn("Limite de caracteres atingido para o número.");
+        // console.warn("Limite de caracteres atingido para o número.");
         return;
     }
     if (currentExpression === '0' && number !== '.') {
@@ -546,7 +543,7 @@ window.appendNumber = appendNumber;
 
 function appendOperator(operator) {
     if (!checkDisplay()) return;
-    console.log("appendOperator:", operator);
+    // console.log("appendOperator:", operator); // Descomentar para depuração intensa
     if (currentExpression === '' && operator !== '-') {
         return;
     }
@@ -567,7 +564,7 @@ window.appendOperator = appendOperator;
 
 function appendDecimal() {
     if (!checkDisplay()) return;
-    console.log("appendDecimal");
+    // console.log("appendDecimal"); // Descomentar para depuração intensa
     if (resultCalculated) {
         currentExpression = '0.';
         resultCalculated = false;
@@ -598,7 +595,7 @@ window.clearAll = clearAll;
 
 function deleteLast() {
     if (!checkDisplay()) return;
-    console.log("deleteLast");
+    // console.log("deleteLast"); // Descomentar para depuração intensa
     if (resultCalculated) {
         clearAll();
         return;
@@ -693,10 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const localShareButton = document.getElementById('shareMessageButton');
     const localDarkModeToggle = document.getElementById('darkModeToggle');
-    // O botão gamesTabButton já tem onclick no HTML, mas se quiser adicionar aqui:
-    // const localGamesTabButton = document.getElementById('gamesTabButton');
-    // if (localGamesTabButton) localGamesTabButton.addEventListener('click', toggleGamesModal);
-
+    const localGamesTabButton = document.getElementById('gamesTabButton'); // Já tem onclick no HTML
 
     if (localShareButton) {
         localShareButton.addEventListener('click', shareMessage);
