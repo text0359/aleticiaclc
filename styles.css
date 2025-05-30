@@ -19,10 +19,12 @@
     --cor-modal-actions-claro: #e91e63;
     --cor-sombra-claro: rgba(0, 0, 0, 0.1);
     --cor-sombra-hover-claro: rgba(0,0,0,0.15);
+    --cor-botao-jogo-claro: #ff80ab; /* Rosa mais vibrante para botões de jogo */
+    --cor-botao-jogo-hover-claro: #f50057;
 
     --cor-fundo-escuro: linear-gradient(135deg, #4a0e2e 0%, #2c0b1a 100%);
     --cor-texto-principal-escuro: #f8bbd0;
-    --cor-calculadora-fundo-escuro: #3e1429; /* Um pouco mais claro que o fundo do body */
+    --cor-calculadora-fundo-escuro: #3e1429; 
     --cor-display-fundo-escuro: #5c1a3c;
     --cor-display-texto-escuro: #fce4ec;
     --cor-botao-escuro: #6d204b;
@@ -38,6 +40,8 @@
     --cor-modal-actions-escuro: #f48fb1;
     --cor-sombra-escuro: rgba(255, 255, 255, 0.05);
     --cor-sombra-hover-escuro: rgba(255,255,255,0.1);
+    --cor-botao-jogo-escuro: #f48fb1;
+    --cor-botao-jogo-hover-escuro: #ffc1e3;
 }
 
 body {
@@ -59,11 +63,17 @@ body.dark-mode {
     color: var(--cor-texto-principal-escuro);
 }
 
-/* Botão de Modo Escuro */
-.dark-mode-toggle-button {
+/* Container para botões de ação no topo */
+.top-action-buttons {
     position: absolute;
     top: 20px;
-    left: 20px; /* Movido para a esquerda */
+    left: 20px; /* Alinha o container à esquerda */
+    display: flex;
+    gap: 10px; /* Espaço entre os botões */
+    z-index: 1002;
+}
+
+.action-button {
     background-color: rgba(255,255,255,0.3);
     color: var(--cor-texto-principal-claro);
     border: 1px solid var(--cor-texto-principal-claro);
@@ -74,73 +84,58 @@ body.dark-mode {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1002;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    font-size: 1.2rem; /* Tamanho do ícone */
 }
-body.dark-mode .dark-mode-toggle-button {
+body.dark-mode .action-button {
     background-color: rgba(0,0,0,0.3);
     color: var(--cor-texto-principal-escuro);
     border-color: var(--cor-texto-principal-escuro);
 }
-.dark-mode-toggle-button:hover {
+.action-button:hover {
     background-color: rgba(255,255,255,0.5);
 }
-body.dark-mode .dark-mode-toggle-button:hover {
+body.dark-mode .action-button:hover {
     background-color: rgba(0,0,0,0.5);
 }
 
-
-/* Estilos do Ícone da Mensagem Diária */
+/* Ajuste para o ícone de mensagem que está dentro de um div */
 .daily-message-icon-container {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    cursor: pointer;
-    color: var(--cor-texto-principal-claro); 
-    z-index: 1001; 
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    box-shadow: 0 2px 10px var(--cor-sombra-claro);
-    transition: color 0.3s, background-color 0.3s;
+    padding: 0; /* Remover padding se o div já tem tamanho fixo */
+    /* Mantém o posicionamento relativo dentro de .top-action-buttons */
+    position: relative; 
+    box-shadow: 0 2px 10px var(--cor-sombra-claro); /* Sombra para o ícone de mensagem */
 }
 body.dark-mode .daily-message-icon-container {
-    color: var(--cor-texto-principal-escuro);
-    background-color: rgba(0,0,0,0.5);
     box-shadow: 0 2px 10px var(--cor-sombra-escuro);
 }
 
-.daily-message-icon-container:hover {
-    color: #e91e63; 
-}
-body.dark-mode .daily-message-icon-container:hover {
-    color: #f48fb1;
-}
 
 .notification-badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: -5px; /* Ajustado para melhor posicionamento */
+    right: -5px; /* Ajustado */
     background-color: red;
     color: white;
     border-radius: 50%;
-    width: 15px;
-    height: 15px;
+    width: 18px; /* Um pouco maior */
+    height: 18px; /* Um pouco maior */
     font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    border: 1px solid white; /* Borda para destaque */
 }
 
-/* Estilos do Modal da Mensagem Diária */
+/* Estilos do Modal (Comum para Mensagens e Jogos) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.7); /* Mais escuro */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -151,37 +146,41 @@ body.dark-mode .daily-message-icon-container:hover {
 
 .modal-content {
     background-color: var(--cor-modal-fundo-claro); 
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px var(--cor-sombra-claro);
+    padding: 25px; /* Reduzido um pouco */
+    border-radius: 20px; /* Mais arredondado */
+    box-shadow: 0 8px 25px var(--cor-sombra-claro); /* Sombra mais suave */
     width: 100%;
     max-width: 500px;
     text-align: center;
     position: relative;
     animation: fadeInModal 0.3s ease-out;
     transition: background-color 0.3s;
+    max-height: 90vh; /* Para permitir scroll em telas pequenas */
+    overflow-y: auto; /* Scroll vertical se necessário */
 }
 body.dark-mode .modal-content {
     background-color: var(--cor-modal-fundo-escuro);
-    box-shadow: 0 5px 20px var(--cor-sombra-escuro);
+    box-shadow: 0 8px 25px var(--cor-sombra-escuro);
 }
 
 @keyframes fadeInModal {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .modal-content h2 {
     color: var(--cor-modal-titulo-claro); 
     margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.6rem;
+    margin-bottom: 25px; /* Mais espaço */
+    font-size: 1.8rem; /* Maior */
+    font-weight: 600;
     transition: color 0.3s;
 }
 body.dark-mode .modal-content h2 {
     color: var(--cor-modal-titulo-escuro);
 }
-body.dark-mode .modal-content h2 .fa-heart { /* Mantém o coração rosa */
+body.dark-mode .modal-content h2 .fa-heart, 
+body.dark-mode .modal-content h2 .fa-dice-d6 { 
     color: #e91e63 !important; 
 }
 
@@ -193,9 +192,9 @@ body.dark-mode .modal-content h2 .fa-heart { /* Mantém o coração rosa */
     line-height: 1.6;
     min-height: 60px;
     text-align: left;
-    padding: 10px;
-    background-color: var(--cor-display-fundo-claro); /* Reutilizando cor do display */
-    border-radius: 8px;
+    padding: 15px; /* Mais padding */
+    background-color: var(--cor-display-fundo-claro); 
+    border-radius: 10px; /* Mais arredondado */
     transition: color 0.3s, background-color 0.3s;
 }
 body.dark-mode .message-text-area {
@@ -211,9 +210,9 @@ body.dark-mode .message-text-area {
     line-height: 1.5;
     min-height: 40px;
     text-align: left;
-    padding: 10px;
-    background-color: var(--cor-botao-claro); /* Reutilizando cor de botão */
-    border-radius: 8px;
+    padding: 15px; /* Mais padding */
+    background-color: var(--cor-botao-claro); 
+    border-radius: 10px; /* Mais arredondado */
     transition: color 0.3s, background-color 0.3s;
 }
 body.dark-mode .verse-text-area {
@@ -264,7 +263,7 @@ body.dark-mode .btn-share:hover {
     margin-top: 5px;
 }
 body.dark-mode .copied-message-feedback {
-    color: #80cbc4; /* Verde mais claro para modo escuro */
+    color: #80cbc4; 
 }
 
 
@@ -301,6 +300,77 @@ body.dark-mode .close-button:hover {
     color: #f48fb1;
 }
 
+/* Estilos para Modal de Jogos */
+.games-modal-content {
+    /* Pode ter estilos específicos se necessário, mas herda de .modal-content */
+}
+
+.games-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os itens do menu de jogos */
+    margin-top: 10px;
+}
+
+.game-menu-item {
+    background-color: var(--cor-display-fundo-claro); /* Fundo do item */
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+body.dark-mode .game-menu-item {
+    background-color: var(--cor-display-fundo-escuro);
+}
+
+.game-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--cor-display-texto-claro);
+}
+body.dark-mode .game-info {
+    color: var(--cor-display-texto-escuro);
+}
+
+.game-icon {
+    font-size: 1.8rem; /* Tamanho do ícone do jogo */
+    color: var(--cor-botao-operador-claro); /* Cor do ícone */
+    width: 30px; /* Para alinhar */
+    text-align: center;
+}
+body.dark-mode .game-icon {
+    color: var(--cor-botao-operador-escuro);
+}
+
+.btn-play-game {
+    background-color: var(--cor-botao-jogo-claro);
+    color: white;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+body.dark-mode .btn-play-game {
+    background-color: var(--cor-botao-jogo-escuro);
+    color: var(--cor-calculadora-fundo-escuro); /* Texto escuro para contraste */
+}
+
+.btn-play-game:hover {
+    background-color: var(--cor-botao-jogo-hover-claro);
+    transform: translateY(-1px);
+}
+body.dark-mode .btn-play-game:hover {
+    background-color: var(--cor-botao-jogo-hover-escuro);
+}
+
 
 /* Estilos da Calculadora */
 .calculator-container {
@@ -321,6 +391,7 @@ body.dark-mode .calculator-container {
 .special-message {
     font-size: 1.5rem;
     color: var(--cor-texto-principal-claro);
+    margin-top: 70px; /* Aumentado para dar espaço aos botões de ação no topo */
     margin-bottom: 24px;
     text-align: center;
     font-weight: 600;
@@ -329,7 +400,7 @@ body.dark-mode .calculator-container {
 body.dark-mode .special-message {
     color: var(--cor-texto-principal-escuro);
 }
-body.dark-mode .special-message .fa-heart { /* Mantém o coração rosa */
+body.dark-mode .special-message .fa-heart { 
     color: #e91e63 !important;
 }
 
@@ -385,7 +456,7 @@ body.dark-mode .btn {
     box-shadow: 0 6px 10px var(--cor-sombra-hover-claro);
 }
 body.dark-mode .btn:hover {
-    background-color: #8e2b5a; /* Um pouco mais claro que o botão operador escuro */
+    background-color: #8e2b5a; 
     box-shadow: 0 6px 10px var(--cor-sombra-hover-escuro);
 }
 
@@ -440,45 +511,41 @@ body.dark-mode .btn-clear:hover, body.dark-mode .btn-del:hover { background-colo
 body.dark-mode .btn-clear:active, body.dark-mode .btn-del:active { background-color: #8e2b5a; }
 
 
-/* Responsividade para o modal e ícone */
+/* Responsividade */
 @media (max-width: 600px) {
-    .dark-mode-toggle-button {
+    .top-action-buttons {
         top: 10px;
         left: 10px;
+        gap: 8px;
+    }
+    .action-button {
         width: 35px;
         height: 35px;
-    }
-    .daily-message-icon-container {
-        top: 10px;
-        right: 10px;
-        padding: 8px;
-    }
-    .daily-message-icon-container .fa-2x {
-        font-size: 1.8em; 
+        font-size: 1rem;
     }
     .notification-badge {
-        width: 12px;
-        height: 12px;
-        font-size: 8px;
-        top: 3px;
-        right: 3px;
+        width: 15px; /* Mantido */
+        height: 15px; /* Mantido */
+        font-size: 9px; /* Ajustado */
+        top: -4px; /* Ajustado */
+        right: -4px; /* Ajustado */
     }
     .modal-content {
         padding: 20px;
-        max-height: 90vh;
-        overflow-y: auto;
     }
     .modal-content h2 {
-        font-size: 1.3rem;
+        font-size: 1.5rem; /* Ajustado */
     }
-    .message-text-area {
-        font-size: 1rem;
+    .message-text-area, .verse-text-area {
+        font-size: 0.95rem; /* Ajustado */
+        padding: 10px;
     }
-    .verse-text-area {
-        font-size: 0.9rem;
-    }
-    .btn-share {
+    .btn-share, .btn-play-game {
         padding: 8px 15px;
         font-size: 0.9rem;
+    }
+    .special-message {
+        margin-top: 60px; /* Ajustado para telas menores */
+        font-size: 1.3rem;
     }
 }
