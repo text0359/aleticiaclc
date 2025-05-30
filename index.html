@@ -6,7 +6,7 @@
     <title>Calculadora para Leticia ♡ com Extras</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="top-action-buttons">
@@ -16,7 +16,8 @@
             <i class="fas fa-gamepad"></i>
         </button>
         <div id="dailyMessageIconContainer" class="action-button daily-message-icon-container" role="button" tabindex="0" aria-label="Abrir mensagem diária" onclick="toggleMessageModal()">
-            <i class="fas fa-envelope-open-text"></i> <span id="notificationBadge" class="notification-badge" style="display:none;" aria-hidden="true">!</span>
+            <i class="fas fa-envelope-open-text"></i> 
+            <span id="notificationBadge" class="notification-badge" style="display:none;" aria-hidden="true">!</span>
         </div>
     </div>
 
@@ -46,13 +47,19 @@
             <button class="close-button" onclick="toggleGamesModal()" aria-label="Fechar central de jogos">&times;</button>
             <h2 id="gamesModalTitle">Central de Jogos <i class="fas fa-dice-d6" style="color: #e91e63;"></i></h2>
             <div class="games-menu">
-                <div class="game-menu-item">
+                <div class="game-menu-item" onclick="launchSnakeGame()" role="button" tabindex="0" aria-label="Jogar Jogo da Cobrinha">
                     <div class="game-info">
                         <i class="fas fa-ghost game-icon"></i> <span>Jogo da Cobrinha</span>
                     </div>
-                    <button class="btn btn-play-game" onclick="launchSnakeGamePlaceholder()">Jogar</button>
+                    <i class="fas fa-play-circle play-indicator-icon"></i> </div>
+                <div class="game-menu-item-disabled" aria-disabled="true">
+                    <div class="game-info">
+                        <i class="fas fa-puzzle-piece game-icon"></i>
+                        <span>Jogo da Memória (Em breve!)</span>
+                    </div>
+                     <i class="fas fa-hourglass-half play-indicator-icon"></i>
                 </div>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -91,7 +98,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Adicionado deleteDoc
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
 
         const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
         const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator';
