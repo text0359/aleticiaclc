@@ -96,32 +96,36 @@
     </div>
 
     <script type="module">
-        // As importações e a lógica do Firebase permanecem aqui.
-        // Esta parte é crucial para o carregamento dinâmico das mensagens.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
 
         const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator'; // Use um ID de app específico ou fallback
+        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app, auth, db;
         let firebaseInitializedSuccessfully = false;
 
         function callStaticMessageFallback(reason) {
-            console.warn(`Fallback para mensagem estática devido a: ${reason}`);
-            // Tenta chamar a função global definida em script.js
-            if (typeof window.displayStaticMessage === 'function') {
-                window.displayStaticMessage(); 
-            } else {
-                // Fallback extremo se window.displayStaticMessage não estiver pronta
-                const messageTextArea = document.getElementById('messageText');
-                const verseTextArea = document.getElementById('verseText');
-                if (messageTextArea) messageTextArea.textContent = "Erro ao carregar mensagem. Tente mais tarde.";
-                if (verseTextArea) verseTextArea.textContent = "";
-                console.error("window.displayStaticMessage não está definida no momento do fallback. Verifique a ordem de carregamento dos scripts ou erros no script.js.");
-            }
+            console.warn(`[MÓDULO HTML] Fallback para mensagem estática devido a: ${reason}`);
+            
+            const attemptDisplayStatic = () => {
+                if (typeof window.displayStaticMessage === 'function') {
+                    console.log("[MÓDULO HTML] window.displayStaticMessage encontrada. A chamar...");
+                    window.displayStaticMessage();
+                } else {
+                    console.error("[MÓDULO HTML] window.displayStaticMessage NÃO encontrada após espera. O script.js pode não ter sido carregado/executado a tempo, ou há um erro nele.");
+                    const messageTextArea = document.getElementById('messageText');
+                    const verseTextArea = document.getElementById('verseText');
+                    if (messageTextArea) messageTextArea.textContent = "Erro ao carregar a mensagem do dia. Tente abrir novamente.";
+                    if (verseTextArea) verseTextArea.textContent = "(Falha no carregamento da mensagem)";
+                }
+            };
+
+            // Tenta chamar após um pequeno delay para dar hipótese ao script.js (com defer) de executar.
+            // Se o DOM já estiver carregado, o setTimeout ainda ajuda a colocar na próxima volta do event loop.
+            setTimeout(attemptDisplayStatic, 200); // Pequeno delay (200ms)
         }
         
         async function updateDynamicMessageDOM(msgData, dateString) {
@@ -170,14 +174,8 @@
         }
 
         if (!firebaseConfigFromEnv) {
-            console.error("Configuração do Firebase (firebaseConfigFromEnv) não encontrada. As mensagens dinâmicas não funcionarão.");
-            // A chamada para o fallback estático será feita após o DOMContentLoaded em script.js se esta falha persistir.
-            // Ou podemos forçar aqui após um timeout para garantir que displayStaticMessage esteja definida.
-            setTimeout(() => {
-                if (document.getElementById('messageText').textContent === 'A carregar mensagem...') { // Verifica se ainda não foi preenchido
-                     callStaticMessageFallback("Configuração do Firebase ausente no módulo.");
-                }
-            }, 1500); // Aumentado o delay para dar mais tempo ao script.js
+            console.error("Configuração do Firebase (firebaseConfigFromEnv) não encontrada.");
+            callStaticMessageFallback("Configuração do Firebase ausente no módulo.");
         } else {
             try {
                 const firebaseConfig = JSON.parse(firebaseConfigFromEnv);
@@ -188,11 +186,7 @@
                 console.log("Firebase inicializado com sucesso no módulo.");
             } catch (e) {
                 console.error("Erro ao inicializar o Firebase no módulo:", e);
-                setTimeout(() => {
-                    if (document.getElementById('messageText').textContent === 'A carregar mensagem...') {
-                        callStaticMessageFallback(`Erro de inicialização do Firebase no módulo: ${e.message}`);
-                    }
-                }, 1500);
+                callStaticMessageFallback(`Erro de inicialização do Firebase no módulo: ${e.message}`);
             }
         }
 
@@ -200,7 +194,7 @@
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     console.log("Utilizador autenticado no módulo:", user.uid);
-                    window.currentUserId = user.uid; // Torna acessível globalmente se necessário
+                    window.currentUserId = user.uid; 
                     await loadDailyMessage();
                 } else {
                     console.log("Nenhum utilizador autenticado no módulo. A tentar login...");
@@ -230,7 +224,7 @@
                 }
             });
         } else {
-             console.log("Firebase não foi inicializado com sucesso no módulo. A lógica de fallback para mensagens estáticas deve ser acionada.");
+             console.log("Firebase não foi inicializado com sucesso no módulo. A lógica de fallback para mensagens estáticas deve ser acionada (ou já foi).");
         }
 
 
@@ -244,7 +238,6 @@
             const today = new Date();
             const dateString = today.toISOString().split('T')[0];
             
-            // Limpar sinalizadores de dias anteriores para garantir que a notificação seja apenas para o dia atual
             Object.keys(localStorage).forEach(key => {
                 if (key.startsWith('dynamicMessageLoaded_') && key !== `dynamicMessageLoaded_${dateString}`) {
                     localStorage.removeItem(key);
@@ -331,9 +324,11 @@
                 callStaticMessageFallback(`Falha no Firestore: ${firestoreError.message}`);
             }
         }
-        // Expor a função globalmente para que o script.js possa chamá-la se necessário (ex: ao abrir o modal)
         window.loadDailyMessage = loadDailyMessage; 
     </script>
+    <!-- O script.js com 'defer' será executado após o parse do HTML, mas antes do DOMContentLoaded.
+         As funções globais definidas nele (como displayStaticMessage) devem estar disponíveis
+         para o módulo acima quando este precisar delas (ex: no fallback). -->
     <script src="script.js" defer></script>
 </body>
 </html>
