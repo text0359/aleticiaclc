@@ -1,0 +1,110 @@
+/* Estilos personalizados para complementar o Tailwind */
+/* Certifique-se de que este arquivo se chama 'style.css' e está na mesma pasta que o HTML */
+
+body {
+    font-family: 'Inter', sans-serif; /* O Tailwind geralmente lida com fontes, mas 'Inter' é uma boa escolha */
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%); /* Gradiente rosa suave */
+    display: flex;
+    flex-direction: column; /* Para empilhar a mensagem e a calculadora */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 16px; /* Adiciona padding para evitar que o conteúdo toque as bordas em telas pequenas */
+}
+
+.calculator-container {
+    background-color: #ffffff; /* Fundo branco para a calculadora */
+    padding: 24px; /* Aumentado para mais espaço interno */
+    border-radius: 24px; /* Bordas mais arredondadas */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0,0,0,0.05); /* Sombra mais pronunciada */
+    width: 100%;
+    max-width: 360px; /* Largura máxima aumentada */
+}
+
+.special-message {
+    font-size: 1.5rem; /* Tamanho da fonte aumentado */
+    color: #ad1457; /* Rosa escuro para a mensagem */
+    margin-bottom: 24px; /* Mais espaço abaixo da mensagem */
+    text-align: center;
+    font-weight: 600;
+}
+
+.display {
+    background-color: #fce4ec; /* Rosa bem clarinho para o display */
+    color: #880e4f; /* Rosa escuro para o texto do display */
+    font-size: 2.5rem; /* Tamanho da fonte do display aumentado */
+    padding: 20px; /* Padding aumentado */
+    text-align: right;
+    border-radius: 12px; /* Bordas arredondadas para o display */
+    margin-bottom: 20px; /* Espaço aumentado */
+    word-wrap: break-word; /* Quebra palavras longas */
+    word-break: break-all; /* Quebra em qualquer caractere se necessário */
+    min-height: 70px; /* Altura mínima para o display */
+    box-sizing: border-box; /* Garante que padding não aumente o tamanho total */
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px; /* Espaçamento entre botões aumentado */
+}
+
+.btn {
+    background-color: #f8bbd0; /* Rosa médio para os botões */
+    color: #880e4f; /* Rosa escuro para o texto dos botões */
+    font-size: 1.5rem; /* Tamanho da fonte dos botões aumentado */
+    padding: 20px; /* Padding aumentado para botões maiores */
+    border: none;
+    border-radius: 12px; /* Bordas arredondadas para os botões */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex; /* Para centralizar o conteúdo do botão */
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    background-color: #f48fb1; /* Rosa um pouco mais escuro no hover */
+    transform: translateY(-2px); /* Efeito de levantar sutil */
+}
+
+.btn:active {
+    background-color: #f06292; /* Rosa mais escuro ao clicar */
+    transform: translateY(0px); /* Remove o efeito de levantar ao clicar */
+}
+
+.btn-operator {
+    background-color: #ec407a; /* Rosa mais vibrante para operadores */
+    color: white;
+}
+.btn-operator:hover {
+    background-color: #e91e63;
+}
+.btn-operator:active {
+    background-color: #d81b60;
+}
+
+.btn-equals {
+    background-color: #ad1457; /* Rosa bem escuro para o igual */
+    color: white;
+    grid-column: span 2; /* Botão de igual ocupa duas colunas */
+}
+.btn-equals:hover {
+    background-color: #9c114c;
+}
+.btn-equals:active {
+    background-color: #880e4f;
+}
+
+.btn-clear, .btn-del {
+    background-color: #fce4ec; /* Rosa clarinho para C e DEL */
+    color: #ad1457;
+}
+.btn-clear:hover, .btn-del:hover {
+    background-color: #f8bbd0;
+}
+ .btn-clear:active, .btn-del:active {
+    background-color: #f48fb1;
+}
