@@ -1,7 +1,8 @@
-// script.js - Lógica da Calculadora e Modal de Mensagens
+// script.js - Lógica da Calculadora, Modais e Temas
 console.log("script.js: Iniciando execução...");
 
 // --- Lista de Mensagens Estáticas ---
+// O bibleVerseText aqui servirá de fallback caso a API falhe.
 const staticDailyMessages = [
     { messageText: "Leticia, meu amor, que seu dia seja tão radiante quanto seu sorriso.", bibleVerseRef: "Salmos 118:24", bibleVerseText: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele." },
     { messageText: "Para você, Leticia, todo o meu carinho e admiração. Você é luz!", bibleVerseRef: "Filipenses 4:13", bibleVerseText: "Tudo posso naquele que me fortalece." },
@@ -139,12 +140,11 @@ async function fetchVerseTextFromAPI(verseRef) {
         throw error; 
     }
 }
-// Expor globalmente para o módulo HTML poder chamar
 window.fetchVerseTextFromAPI = fetchVerseTextFromAPI;
 
 
 async function displayStaticMessage() {
-    console.log("displayStaticMessage: Chamada.");
+    console.log("displayStaticMessage: Chamada para exibir mensagem estática aleatória.");
     const currentMessageTextElement = document.getElementById('messageText');
     const currentVerseTextElement = document.getElementById('verseText');
     const currentNotificationBadgeEl = document.getElementById('notificationBadge');
@@ -189,7 +189,6 @@ async function displayStaticMessage() {
         currentVerseTextElement.textContent = "Por favor, verifique mais tarde.";
     }
 }
-// Expor globalmente para o módulo HTML poder chamar
 window.displayStaticMessage = displayStaticMessage; 
 
 function toggleMessageModal() {
@@ -230,8 +229,32 @@ function toggleMessageModal() {
         currentDailyMessageModal.style.display = 'none';
     }
 }
-// Expor globalmente para o HTML (onclick)
 window.toggleMessageModal = toggleMessageModal;
+
+// --- Lógica do Modal de Jogos ---
+function toggleGamesModal() {
+    console.log("toggleGamesModal: Chamada.");
+    const gamesModal = document.getElementById('gamesModal');
+    if (gamesModal) {
+        if (gamesModal.style.display === 'none' || gamesModal.style.display === '') {
+            gamesModal.style.display = 'flex';
+        } else {
+            gamesModal.style.display = 'none';
+        }
+    } else {
+        console.error("toggleGamesModal: Modal de jogos (gamesModal) não encontrado.");
+    }
+}
+window.toggleGamesModal = toggleGamesModal; 
+
+function launchSnakeGamePlaceholder() {
+    console.log("launchSnakeGamePlaceholder: Chamada. (Jogo da Cobrinha ainda não implementado).");
+    const gamesModal = document.getElementById('gamesModal');
+    if (gamesModal) gamesModal.style.display = 'none';
+    alert("O Jogo da Cobrinha ainda será adicionado! Aguarde as próximas atualizações. ♡");
+}
+window.launchSnakeGamePlaceholder = launchSnakeGamePlaceholder; 
+
 
 async function shareMessage() {
     console.log("shareMessage: Chamada.");
@@ -264,7 +287,7 @@ async function shareMessage() {
         copyToClipboard(fullTextToShare, currentCopiedMessageElement);
     }
 }
-// Não precisa expor shareMessage globalmente se for chamada apenas por event listener
+// shareMessage é chamado por um event listener no DOMContentLoaded
 
 function copyToClipboard(text, feedbackElement) {
     console.log("copyToClipboard: Tentando copiar texto.");
@@ -330,7 +353,7 @@ function toggleDarkMode() {
     applyDarkModePreference(); 
     console.log(`toggleDarkMode: Modo escuro alterado para ${isDarkMode}.`);
 }
-// Não precisa expor toggleDarkMode globalmente se for chamada apenas por event listener
+// toggleDarkMode é chamado por um event listener no DOMContentLoaded
 
 // --- Lógica da Calculadora ---
 const display = document.getElementById('display'); 
@@ -340,8 +363,7 @@ let resultCalculated = false;
 
 function checkDisplay() {
     if (!display) {
-        // Este erro é crítico para a calculadora. Se ocorrer, os botões não funcionarão.
-        console.error("Visor da calculadora (elemento com ID 'display') NÃO ENCONTRADO!");
+        console.error("Visor da calculadora (elemento com ID 'display') NÃO ENCONTRADO! As funções da calculadora não irão operar.");
         return false;
     }
     return true;
@@ -366,7 +388,7 @@ function appendNumber(number) {
     updateDisplay();
     lastInputIsOperator = false;
 }
-window.appendNumber = appendNumber; // Expor para onclick
+window.appendNumber = appendNumber; 
 
 function appendOperator(operator) {
     if (!checkDisplay()) return;
@@ -387,7 +409,7 @@ function appendOperator(operator) {
     lastInputIsOperator = true;
     resultCalculated = false;
 }
-window.appendOperator = appendOperator; // Expor para onclick
+window.appendOperator = appendOperator; 
 
 function appendDecimal() {
     if (!checkDisplay()) return;
@@ -407,7 +429,7 @@ function appendDecimal() {
     updateDisplay();
     lastInputIsOperator = false;
 }
-window.appendDecimal = appendDecimal; // Expor para onclick
+window.appendDecimal = appendDecimal; 
 
 function clearAll() {
     if (!checkDisplay()) return;
@@ -418,7 +440,7 @@ function clearAll() {
     lastInputIsOperator = false;
     resultCalculated = false;
 }
-window.clearAll = clearAll; // Expor para onclick
+window.clearAll = clearAll; 
 
 function deleteLast() {
     if (!checkDisplay()) return;
@@ -444,7 +466,7 @@ function deleteLast() {
         currentExpression = '';
     }
 }
-window.deleteLast = deleteLast; // Expor para onclick
+window.deleteLast = deleteLast; 
 
 function calculateResult() {
     if (!checkDisplay()) return;
@@ -488,10 +510,10 @@ function calculateResult() {
         lastInputIsOperator = false;
     }
 }
-window.calculateResult = calculateResult; // Expor para onclick
+window.calculateResult = calculateResult; 
 
 function updateDisplay() {
-    if (!checkDisplay()) return;
+    if (!checkDisplay()) return; 
     let displayValue = currentExpression;
     if (displayValue === '') {
         displayValue = '0';
@@ -517,6 +539,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const localShareButton = document.getElementById('shareMessageButton');
     const localDarkModeToggle = document.getElementById('darkModeToggle');
+    // O botão gamesTabButton já tem onclick no HTML, mas se quiser adicionar aqui:
+    // const localGamesTabButton = document.getElementById('gamesTabButton');
+    // if (localGamesTabButton) localGamesTabButton.addEventListener('click', toggleGamesModal);
+
 
     if (localShareButton) {
         localShareButton.addEventListener('click', shareMessage);
@@ -534,10 +560,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyDarkModePreference(); 
 
-    // Listener para teclado
     document.addEventListener('keydown', function(event) {
         const key = event.key;
-        const currentModal = document.getElementById('dailyMessageModal'); 
+        const currentMsgModal = document.getElementById('dailyMessageModal'); 
+        const currentGamesModal = document.getElementById('gamesModal');
 
         if (key >= '0' && key <= '9') appendNumber(key);
         else if (key === '.') appendDecimal();
@@ -548,9 +574,12 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (key === 'Enter' || key === '=') { event.preventDefault(); calculateResult(); }
         else if (key === 'Backspace') deleteLast();
         else if (key === 'Escape') {
-            if (currentModal && currentModal.style.display === 'flex') {
+            if (currentMsgModal && currentMsgModal.style.display === 'flex') {
                 toggleMessageModal(); 
-            } else {
+            } else if (currentGamesModal && currentGamesModal.style.display === 'flex') {
+                toggleGamesModal();
+            }
+            else {
                 clearAll(); 
             }
         }
@@ -562,16 +591,8 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAll();
         console.log("Calculadora inicializada.");
     } else {
-        // Este é um ponto crítico. Se o display não for encontrado aqui, a calculadora não funcionará.
         console.error("CRÍTICO: Elemento de display da calculadora (ID 'display') não encontrado no DOMContentLoaded. Os botões da calculadora não funcionarão.");
     }
-
-    // A chamada inicial para carregar a mensagem (dinâmica ou estática)
-    // deve ser feita pelo script do módulo no HTML, que por sua vez chamará
-    // window.loadDailyMessage() ou window.displayStaticMessage().
-    // Se o módulo HTML falhar em chamar window.displayStaticMessage() como fallback,
-    // e essa função estiver definida aqui, ela poderá ser chamada.
-    // No entanto, é melhor que o módulo controle o fluxo inicial.
     console.log("Script.js: Execução de DOMContentLoaded concluída.");
 });
 
