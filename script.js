@@ -247,11 +247,18 @@ function toggleGamesModal() {
 }
 window.toggleGamesModal = toggleGamesModal; 
 
-function launchSnakeGame() { // Renomeado de launchSnakeGamePlaceholder
+// No seu ficheiro script.js
+
+// ... (outras funções como displayStaticMessage, toggleMessageModal, etc.) ...
+
+function launchSnakeGame() { // Certifique-se que o nome é exatamente este
     console.log("launchSnakeGame: Abrindo Jogo da Cobrinha em nova aba.");
     const gamesModal = document.getElementById('gamesModal');
-    if (gamesModal) gamesModal.style.display = 'none'; 
+    if (gamesModal) {
+        gamesModal.style.display = 'none'; // Fecha o modal da central de jogos
+    }
 
+    // snakeGameHTML contém TODO o código do Jogo da Cobrinha (HTML, CSS, JS do jogo)
     const snakeGameHTML = `
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -282,97 +289,125 @@ function launchSnakeGame() { // Renomeado de launchSnakeGamePlaceholder
         <button id="gameOverRestartButton">Jogar Novamente</button>
     </div>
     <script>
+        // JavaScript completo do Jogo da Cobrinha (como fornecido anteriormente)
+        // ... (Este é o local do script do jogo que lhe dei no Canvas "jogoCobrinhaHTML")
         const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const gameOverMessageDiv = document.getElementById('gameOverMessage');
-        const gameOverRestartButton = document.getElementById('gameOverRestartButton');
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
-        let snake, food, dx, dy, score, gameLoopInterval, gameActive;
-
-        function initializeGame() {
-            snake = [{ x: 10, y: 10 }];
-            food = getRandomFoodPosition();
-            dx = 1; dy = 0; score = 0; gameActive = true;
-            updateScoreDisplay();
-            gameOverMessageDiv.style.display = 'none';
-            if (gameLoopInterval) clearInterval(gameLoopInterval);
-            gameLoopInterval = setInterval(gameLoop, 120);
-        }
-        function getRandomFoodPosition() {
-            let newFoodPosition;
-            while (true) {
-                newFoodPosition = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
-                let collisionWithSnake = snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y);
-                if (!collisionWithSnake) break;
-            }
-            return newFoodPosition;
-        }
-        function drawSnakePart(snakePart) {
-            ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
-            ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-            ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-        }
-        function drawSnake() { snake.forEach(drawSnakePart); }
-        function drawFood() {
-            ctx.fillStyle = '#880e4f'; ctx.strokeStyle = '#5c1a3c';
-            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-            ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-        }
-        function moveSnake() {
-            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-            snake.unshift(head);
-            if (head.x === food.x && head.y === food.y) {
-                score++; updateScoreDisplay(); food = getRandomFoodPosition();
+        if (!canvas) {
+            console.error('Snake Game Error: Canvas not found in new tab!');
+        } else {
+            console.log('Snake Game: Canvas found in new tab', canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Snake Game Error: Context not obtained in new tab!');
             } else {
-                snake.pop();
+                console.log('Snake Game: Context obtained in new tab.');
+                // Teste de desenho simples
+                ctx.fillStyle = 'green'; // Diferente do fundo para ser visível
+                ctx.fillRect(10,10,50,50);
+                // Restante do código do jogo...
+                const scoreElement = document.getElementById('score');
+                const gameOverMessageDiv = document.getElementById('gameOverMessage');
+                const gameOverRestartButton = document.getElementById('gameOverRestartButton');
+                const gridSize = 20;
+                const tileCount = canvas.width / gridSize;
+                let snake, food, dx, dy, score, gameLoopInterval, gameActive;
+
+                function initializeGame() {
+                    console.log("Snake Game: Initializing game logic in new tab...");
+                    snake = [{ x: 10, y: 10 }];
+                    food = getRandomFoodPosition();
+                    dx = 1; dy = 0; score = 0; gameActive = true;
+                    updateScoreDisplay();
+                    gameOverMessageDiv.style.display = 'none';
+                    if (gameLoopInterval) clearInterval(gameLoopInterval);
+                    gameLoopInterval = setInterval(gameLoop, 120); // Ajuste a velocidade aqui
+                    console.log("Snake Game: Initialized. Snake:", snake[0], "Food:", food);
+                }
+                function getRandomFoodPosition() {
+                    let newFoodPosition;
+                    while (true) {
+                        newFoodPosition = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+                        let collisionWithSnake = snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y);
+                        if (!collisionWithSnake) break;
+                    }
+                    return newFoodPosition;
+                }
+                function drawSnakePart(snakePart) {
+                    ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
+                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+                    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+                }
+                function drawSnake() { snake.forEach(drawSnakePart); }
+                function drawFood() {
+                    ctx.fillStyle = '#880e4f'; ctx.strokeStyle = '#5c1a3c';
+                    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+                    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+                }
+                function moveSnake() {
+                    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+                    snake.unshift(head);
+                    if (head.x === food.x && head.y === food.y) {
+                        score++; updateScoreDisplay(); food = getRandomFoodPosition();
+                    } else {
+                        snake.pop();
+                    }
+                }
+                function updateScoreDisplay() { if(scoreElement) scoreElement.textContent = score; }
+                function checkCollision() {
+                    const head = snake[0];
+                    if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
+                    for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
+                    return false;
+                }
+                function gameLoop() {
+                    if (!gameActive) return;
+                    ctx.fillStyle = '#fff0f6'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    moveSnake();
+                    if (checkCollision()) { gameOver(); return; }
+                    drawFood(); drawSnake();
+                }
+                function gameOver() {
+                    gameActive = false; clearInterval(gameLoopInterval);
+                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'block';
+                     console.log("Snake Game: Game Over! Score: " + score);
+                }
+                document.addEventListener('keydown', (event) => {
+                    if (!gameActive && event.keyCode !== 13) return; 
+                    const keyPressed = event.keyCode;
+                    const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+                    if (keyPressed === 37 && !goingRight) { dx = -1; dy = 0; } // Left
+                    if (keyPressed === 38 && !goingDown) { dx = 0; dy = -1; } // Up
+                    if (keyPressed === 39 && !goingLeft) { dx = 1; dy = 0; }  // Right
+                    if (keyPressed === 40 && !goingUp) { dx = 0; dy = 1; }   // Down
+                });
+                if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
+
+                // Garante que o jogo só inicia se o canvas e o contexto forem válidos
+                if (canvas && ctx) {
+                    initializeGame();
+                } else {
+                    console.error("Snake Game: Não foi possível iniciar o jogo pois o canvas ou o contexto não foram encontrados na nova aba.");
+                    document.body.innerHTML = "<h1>Erro ao carregar o jogo da cobrinha. Canvas não encontrado.</h1>";
+                }
             }
         }
-        function updateScoreDisplay() { scoreElement.textContent = score; }
-        function checkCollision() {
-            const head = snake[0];
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
-            for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
-            return false;
-        }
-        function gameLoop() {
-            if (!gameActive) return;
-            ctx.fillStyle = '#fff0f6'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            moveSnake();
-            if (checkCollision()) { gameOver(); return; }
-            drawFood(); drawSnake();
-        }
-        function gameOver() {
-            gameActive = false; clearInterval(gameLoopInterval);
-            gameOverMessageDiv.style.display = 'block';
-        }
-        document.addEventListener('keydown', (event) => {
-            if (!gameActive && event.keyCode !== 13) return; // Allow Enter for restart from message
-            const keyPressed = event.keyCode;
-            const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
-            if (keyPressed === 37 && !goingRight) { dx = -1; dy = 0; } // Left
-            if (keyPressed === 38 && !goingDown) { dx = 0; dy = -1; } // Up
-            if (keyPressed === 39 && !goingLeft) { dx = 1; dy = 0; }  // Right
-            if (keyPressed === 40 && !goingUp) { dx = 0; dy = 1; }   // Down
-        });
-        gameOverRestartButton.addEventListener('click', initializeGame);
-        initializeGame();
     <\/script>
 </body>
 </html>
-    `;
+    `; // Fim da string snakeGameHTML
+
     const gameWindow = window.open('', '_blank');
     if (gameWindow) {
         gameWindow.document.open();
         gameWindow.document.write(snakeGameHTML);
-        gameWindow.document.close();
+        gameWindow.document.close(); // Importante para finalizar o carregamento e permitir que scripts rodem
         console.log("Jogo da Cobrinha aberto em nova aba.");
     } else {
         alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
     }
 }
-window.launchSnakeGame = launchSnakeGame; // Expor para onclick no HTML (renomeado)
+// Certifique-se que esta função está no escopo global para o onclick funcionar
+window.launchSnakeGame = launchSnakeGame;
 
 
 async function shareMessage() {
