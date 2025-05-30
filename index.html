@@ -96,12 +96,14 @@
     </div>
 
     <script type="module">
+        // As importações e a lógica do Firebase permanecem aqui.
+        // Esta parte é crucial para o carregamento dinâmico das mensagens.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
 
         const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator';
+        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator'; // Use um ID de app específico ou fallback
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app, auth, db;
@@ -109,14 +111,16 @@
 
         function callStaticMessageFallback(reason) {
             console.warn(`Fallback para mensagem estática devido a: ${reason}`);
+            // Tenta chamar a função global definida em script.js
             if (typeof window.displayStaticMessage === 'function') {
                 window.displayStaticMessage(); 
             } else {
+                // Fallback extremo se window.displayStaticMessage não estiver pronta
                 const messageTextArea = document.getElementById('messageText');
                 const verseTextArea = document.getElementById('verseText');
-                if (messageTextArea) messageTextArea.textContent = "Erro crítico ao carregar mensagens.";
-                if (verseTextArea) verseTextArea.textContent = "Por favor, recarregue a página.";
-                console.error("window.displayStaticMessage não está definida no momento do fallback. O script.js pode não ter carregado ou definido a função globalmente a tempo.");
+                if (messageTextArea) messageTextArea.textContent = "Erro ao carregar mensagem. Tente mais tarde.";
+                if (verseTextArea) verseTextArea.textContent = "";
+                console.error("window.displayStaticMessage não está definida no momento do fallback. Verifique a ordem de carregamento dos scripts ou erros no script.js.");
             }
         }
         
@@ -125,28 +129,31 @@
             const verseTextArea = document.getElementById('verseText');
             const notificationBadgeEl = document.getElementById('notificationBadge');
 
-            if (messageTextArea) messageTextArea.textContent = msgData.messageText || "Mensagem indisponível."; 
+            if (!messageTextArea || !verseTextArea) {
+                console.error("Elementos do modal de mensagem não encontrados para updateDynamicMessageDOM.");
+                return;
+            }
+
+            messageTextArea.textContent = msgData.messageText || "Mensagem especial para você! ♡"; 
             
-            if (verseTextArea) {
-                verseTextArea.textContent = "A carregar versículo...";
-                try {
-                    if (msgData.bibleVerseRef && typeof msgData.bibleVerseRef === 'string' && msgData.bibleVerseRef.trim() !== "" && typeof window.fetchVerseTextFromAPI === 'function') {
-                        const fetchedVerseText = await window.fetchVerseTextFromAPI(msgData.bibleVerseRef);
-                        verseTextArea.textContent = `${msgData.bibleVerseRef} - "${fetchedVerseText}"`;
-                    } else if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string') { 
-                        console.warn("Referência do versículo para API ausente/inválida ou função fetch não disponível. Usando texto de fallback do Gemini/Firestore.");
-                        verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} - "${msgData.bibleVerseText}"`;
-                    } else {
-                        console.error("Nem referência válida para API nem texto de fallback do versículo disponíveis.");
-                        verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} (Texto indisponível)`;
-                    }
-                } catch (error) {
-                    console.error(`Falha ao buscar versículo da API para mensagem dinâmica (${msgData.bibleVerseRef}). Usando fallback. Erro: ${error.message}`);
-                    if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string' && msgData.bibleVerseText.trim() !== "") {
-                        verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} - "${msgData.bibleVerseText}" (API indisponível)`;
-                    } else {
-                        verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} (Não foi possível carregar o texto do versículo.)`;
-                    }
+            verseTextArea.textContent = "A carregar versículo...";
+            try {
+                if (msgData.bibleVerseRef && typeof msgData.bibleVerseRef === 'string' && msgData.bibleVerseRef.trim() !== "" && typeof window.fetchVerseTextFromAPI === 'function') {
+                    const fetchedVerseText = await window.fetchVerseTextFromAPI(msgData.bibleVerseRef);
+                    verseTextArea.textContent = `${msgData.bibleVerseRef} - "${fetchedVerseText}"`;
+                } else if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string') { 
+                    console.warn("Referência do versículo para API ausente/inválida ou função fetch não disponível. Usando texto de fallback do Gemini/Firestore.");
+                    verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} - "${msgData.bibleVerseText}"`;
+                } else {
+                    console.error("Nem referência válida para API nem texto de fallback do versículo disponíveis.");
+                    verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} (Texto indisponível)`;
+                }
+            } catch (error) {
+                console.error(`Falha ao buscar versículo da API para mensagem dinâmica (${msgData.bibleVerseRef}). Usando fallback. Erro: ${error.message}`);
+                if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string' && msgData.bibleVerseText.trim() !== "") {
+                    verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} - "${msgData.bibleVerseText}" (API indisponível)`;
+                } else {
+                    verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} (Não foi possível carregar o texto do versículo.)`;
                 }
             }
 
@@ -163,8 +170,14 @@
         }
 
         if (!firebaseConfigFromEnv) {
-            console.error("Configuração do Firebase (firebaseConfigFromEnv) não encontrada.");
-            setTimeout(() => callStaticMessageFallback("Configuração do Firebase ausente."), 1000); 
+            console.error("Configuração do Firebase (firebaseConfigFromEnv) não encontrada. As mensagens dinâmicas não funcionarão.");
+            // A chamada para o fallback estático será feita após o DOMContentLoaded em script.js se esta falha persistir.
+            // Ou podemos forçar aqui após um timeout para garantir que displayStaticMessage esteja definida.
+            setTimeout(() => {
+                if (document.getElementById('messageText').textContent === 'A carregar mensagem...') { // Verifica se ainda não foi preenchido
+                     callStaticMessageFallback("Configuração do Firebase ausente no módulo.");
+                }
+            }, 1500); // Aumentado o delay para dar mais tempo ao script.js
         } else {
             try {
                 const firebaseConfig = JSON.parse(firebaseConfigFromEnv);
@@ -172,54 +185,57 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
                 firebaseInitializedSuccessfully = true;
-                console.log("Firebase inicializado com sucesso.");
+                console.log("Firebase inicializado com sucesso no módulo.");
             } catch (e) {
-                console.error("Erro ao inicializar o Firebase:", e);
-                setTimeout(() => callStaticMessageFallback(`Erro de inicialização do Firebase: ${e.message}`), 1000); 
+                console.error("Erro ao inicializar o Firebase no módulo:", e);
+                setTimeout(() => {
+                    if (document.getElementById('messageText').textContent === 'A carregar mensagem...') {
+                        callStaticMessageFallback(`Erro de inicialização do Firebase no módulo: ${e.message}`);
+                    }
+                }, 1500);
             }
         }
 
         if (firebaseInitializedSuccessfully) {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    console.log("Utilizador autenticado:", user.uid);
-                    window.currentUserId = user.uid;
+                    console.log("Utilizador autenticado no módulo:", user.uid);
+                    window.currentUserId = user.uid; // Torna acessível globalmente se necessário
                     await loadDailyMessage();
                 } else {
-                    console.log("Nenhum utilizador autenticado. A tentar login...");
+                    console.log("Nenhum utilizador autenticado no módulo. A tentar login...");
                     if (initialAuthToken) {
                         try {
                             await signInWithCustomToken(auth, initialAuthToken);
-                            console.log("Login com token personalizado bem-sucedido.");
+                            console.log("Login com token personalizado bem-sucedido no módulo.");
                         } catch (error) {
-                            console.error("Erro no login com token personalizado, a tentar anónimo:", error);
+                            console.error("Erro no login com token personalizado no módulo, a tentar anónimo:", error);
                             try {
                                 await signInAnonymously(auth);
-                                console.log("Login anónimo bem-sucedido após falha no token.");
+                                console.log("Login anónimo bem-sucedido após falha no token no módulo.");
                             } catch (anonError) {
-                                console.error("Falha no login anónimo também:", anonError);
-                                callStaticMessageFallback("Falha completa na autenticação.");
+                                console.error("Falha no login anónimo também no módulo:", anonError);
+                                callStaticMessageFallback("Falha completa na autenticação no módulo.");
                             }
                         }
                     } else {
                         try {
                             await signInAnonymously(auth);
-                            console.log("Login anónimo bem-sucedido.");
+                            console.log("Login anónimo bem-sucedido no módulo.");
                         } catch (anonError) {
-                             console.error("Falha no login anónimo:", anonError);
-                             callStaticMessageFallback("Falha na autenticação anónima.");
+                             console.error("Falha no login anónimo no módulo:", anonError);
+                             callStaticMessageFallback("Falha na autenticação anónima no módulo.");
                         }
                     }
                 }
             });
-        } else if (!firebaseConfigFromEnv) {
-             console.log("Firebase não inicializado devido à ausência de configuração inicial. Fallback para estática deve ocorrer.");
         } else {
-            console.log("Firebase não inicializado devido a erro na inicialização. Fallback para estática deve ocorrer.");
+             console.log("Firebase não foi inicializado com sucesso no módulo. A lógica de fallback para mensagens estáticas deve ser acionada.");
         }
 
 
         async function loadDailyMessage() {
+            console.log("loadDailyMessage: Iniciando...");
             if (!db || !auth.currentUser) {
                 callStaticMessageFallback("Firestore não disponível ou utilizador não autenticado para loadDailyMessage.");
                 return;
@@ -227,8 +243,13 @@
 
             const today = new Date();
             const dateString = today.toISOString().split('T')[0];
+            
+            // Limpar sinalizadores de dias anteriores para garantir que a notificação seja apenas para o dia atual
             Object.keys(localStorage).forEach(key => {
                 if (key.startsWith('dynamicMessageLoaded_') && key !== `dynamicMessageLoaded_${dateString}`) {
+                    localStorage.removeItem(key);
+                }
+                 if (key.startsWith('messageSeen_') && key !== `messageSeen_${dateString}`) {
                     localStorage.removeItem(key);
                 }
             });
@@ -310,6 +331,7 @@
                 callStaticMessageFallback(`Falha no Firestore: ${firestoreError.message}`);
             }
         }
+        // Expor a função globalmente para que o script.js possa chamá-la se necessário (ex: ao abrir o modal)
         window.loadDailyMessage = loadDailyMessage; 
     </script>
     <script src="script.js" defer></script>
