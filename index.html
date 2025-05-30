@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora para Leticia ♡ com Mensagem Diária</title>
+    <title>Calculadora para Leticia ♡ com Extras</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <button id="darkModeToggle" class="dark-mode-toggle-button" aria-label="Alternar modo escuro/claro">
-        <i class="fas fa-moon"></i> </button>
-
-    <div id="dailyMessageIconContainer" class="daily-message-icon-container" role="button" tabindex="0" aria-label="Abrir mensagem diária" onclick="toggleMessageModal()">
-        <i class="fas fa-envelope-open-text fa-2x"></i>
-        <span id="notificationBadge" class="notification-badge" style="display:none;" aria-hidden="true">!</span>
+    <div class="top-action-buttons">
+        <button id="darkModeToggle" class="action-button dark-mode-toggle-button" aria-label="Alternar modo escuro/claro">
+            <i class="fas fa-moon"></i> </button>
+        <button id="gamesTabButton" class="action-button games-tab-button" aria-label="Abrir central de jogos" onclick="toggleGamesModal()">
+            <i class="fas fa-gamepad"></i>
+        </button>
+        <div id="dailyMessageIconContainer" class="action-button daily-message-icon-container" role="button" tabindex="0" aria-label="Abrir mensagem diária" onclick="toggleMessageModal()">
+            <i class="fas fa-envelope-open-text"></i> <span id="notificationBadge" class="notification-badge" style="display:none;" aria-hidden="true">!</span>
+        </div>
     </div>
+
 
     <div id="dailyMessageModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
@@ -34,6 +38,21 @@
                 <span id="copiedMessage" class="copied-message-feedback" style="display:none;" aria-live="assertive">Copiado!</span>
             </div>
             <p class="message-source">Com carinho <i class="fas fa-smile-wink"></i></p>
+        </div>
+    </div>
+
+    <div id="gamesModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="gamesModalTitle">
+        <div class="modal-content games-modal-content">
+            <button class="close-button" onclick="toggleGamesModal()" aria-label="Fechar central de jogos">&times;</button>
+            <h2 id="gamesModalTitle">Central de Jogos <i class="fas fa-dice-d6" style="color: #e91e63;"></i></h2>
+            <div class="games-menu">
+                <div class="game-menu-item">
+                    <div class="game-info">
+                        <i class="fas fa-ghost game-icon"></i> <span>Jogo da Cobrinha</span>
+                    </div>
+                    <button class="btn btn-play-game" onclick="launchSnakeGamePlaceholder()">Jogar</button>
+                </div>
+                </div>
         </div>
     </div>
 
@@ -72,7 +91,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Adicionado deleteDoc
 
         const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
         const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id-leticia-calculator';
@@ -84,7 +103,7 @@
         function callStaticMessageFallback(reason) {
             console.warn(`Fallback para mensagem estática devido a: ${reason}`);
             if (typeof window.displayStaticMessage === 'function') {
-                window.displayStaticMessage(); // Esta função agora escolhe aleatoriamente
+                window.displayStaticMessage(); 
             } else {
                 const messageTextArea = document.getElementById('messageText');
                 const verseTextArea = document.getElementById('verseText');
@@ -99,20 +118,18 @@
             const verseTextArea = document.getElementById('verseText');
             const notificationBadgeEl = document.getElementById('notificationBadge');
 
-            if (messageTextArea) messageTextArea.textContent = msgData.messageText || "Mensagem indisponível."; // Fallback
+            if (messageTextArea) messageTextArea.textContent = msgData.messageText || "Mensagem indisponível."; 
             
             if (verseTextArea) {
                 verseTextArea.textContent = "A carregar versículo...";
                 try {
-                    // Garantir que msgData.bibleVerseRef é uma string válida antes de chamar a API
                     if (msgData.bibleVerseRef && typeof msgData.bibleVerseRef === 'string' && msgData.bibleVerseRef.trim() !== "" && typeof window.fetchVerseTextFromAPI === 'function') {
                         const fetchedVerseText = await window.fetchVerseTextFromAPI(msgData.bibleVerseRef);
                         verseTextArea.textContent = `${msgData.bibleVerseRef} - "${fetchedVerseText}"`;
-                    } else if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string') { // Fallback para o texto do Gemini/Firestore
+                    } else if (msgData.bibleVerseText && typeof msgData.bibleVerseText === 'string') { 
                         console.warn("Referência do versículo para API ausente/inválida ou função fetch não disponível. Usando texto de fallback do Gemini/Firestore.");
                         verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} - "${msgData.bibleVerseText}"`;
                     } else {
-                        // Se nem referência válida nem texto de fallback existirem
                         console.error("Nem referência válida para API nem texto de fallback do versículo disponíveis.");
                         verseTextArea.textContent = `${msgData.bibleVerseRef || 'Versículo'} (Texto indisponível)`;
                     }
@@ -126,8 +143,7 @@
                 }
             }
 
-            // Lógica de notificação para mensagem dinâmica
-            localStorage.setItem(`dynamicMessageLoaded_${dateString}`, 'true'); // Sinaliza que a msg dinâmica do dia foi carregada
+            localStorage.setItem(`dynamicMessageLoaded_${dateString}`, 'true'); 
             const messageSeenKey = `messageSeen_${dateString}`;
             if (!localStorage.getItem(messageSeenKey)) {
                 if (notificationBadgeEl) {
@@ -141,7 +157,7 @@
 
         if (!firebaseConfigFromEnv) {
             console.error("Configuração do Firebase (firebaseConfigFromEnv) não encontrada.");
-            setTimeout(() => callStaticMessageFallback("Configuração do Firebase ausente."), 1000); // Aumentado delay
+            setTimeout(() => callStaticMessageFallback("Configuração do Firebase ausente."), 1000); 
         } else {
             try {
                 const firebaseConfig = JSON.parse(firebaseConfigFromEnv);
@@ -152,7 +168,7 @@
                 console.log("Firebase inicializado com sucesso.");
             } catch (e) {
                 console.error("Erro ao inicializar o Firebase:", e);
-                setTimeout(() => callStaticMessageFallback(`Erro de inicialização do Firebase: ${e.message}`), 1000); // Aumentado delay
+                setTimeout(() => callStaticMessageFallback(`Erro de inicialização do Firebase: ${e.message}`), 1000); 
             }
         }
 
@@ -218,12 +234,11 @@
 
                 if (docSnap.exists()) {
                     messageData = docSnap.data();
-                     // Validação dos dados do Firestore
                     if (typeof messageData.messageText === 'undefined' || 
                         typeof messageData.bibleVerseRef === 'undefined' || 
                         typeof messageData.bibleVerseText === 'undefined') {
                         console.warn("Dados do Firestore incompletos ou com campos undefined. Removendo documento inválido e tentando gerar novo.", messageData);
-                        await deleteDoc(messageDocRef); // Opcional: remover documento inválido
+                        await deleteDoc(messageDocRef); 
                         throw new Error("Dados do Firestore inválidos, forçando nova geração.");
                     }
                     console.log("Mensagem carregada do Firestore:", messageData);
@@ -267,9 +282,9 @@
                             }
 
                             messageData = {
-                                messageText: msgText, // Já validado
-                                bibleVerseRef: verseRef, // Já validado
-                                bibleVerseText: verseTxt, // Já validado
+                                messageText: msgText, 
+                                bibleVerseRef: verseRef, 
+                                bibleVerseText: verseTxt, 
                                 generatedAt: serverTimestamp()
                             };
                             await setDoc(messageDocRef, messageData);
