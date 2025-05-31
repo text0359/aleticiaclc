@@ -1,5 +1,5 @@
-// script.js - Lógica da Calculadora, Modais e Temas
-console.log("script.js: Iniciando execução...");
+// script.js - Lógica da Calculadora, Modais, Temas e Jogos
+console.log("script.js: Global execution start...");
 
 // --- Lista de Mensagens Estáticas ---
 const staticDailyMessages = [
@@ -102,9 +102,6 @@ const staticDailyMessages = [
 ];
 
 // --- Lógica do Modal de Mensagens Diárias ---
-// As variáveis de elementos DOM serão obtidas dentro das funções ou no DOMContentLoaded
-
-// Função para buscar o texto do versículo de uma API
 async function fetchVerseTextFromAPI(verseRef) {
     if (!verseRef || typeof verseRef !== 'string' || verseRef.trim() === '') {
         console.warn("fetchVerseTextFromAPI: Referência do versículo inválida:", verseRef);
@@ -256,26 +253,41 @@ function launchSnakeGame() {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Jogo da Cobrinha para Leticia ♡</title>
     <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #fce4ec; font-family: 'Arial', sans-serif; color: #880e4f; }
-        h1 { color: #c2185b; margin-bottom: 10px; }
-        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; }
-        .controls-info, .score-info { margin-top: 15px; font-size: 0.9rem; text-align: center; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #fce4ec; font-family: 'Arial', sans-serif; color: #880e4f; touch-action: manipulation; }
+        h1 { color: #c2185b; margin-bottom: 10px; font-size: 1.5rem; text-align: center;}
+        #gameCanvas { border: 5px solid #f48fb1; background-color: #fff0f6; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; max-width: 90vw; max-height: 60vh; /* Reduzido para dar espaço aos controlos */ }
+        .info-area { margin-top: 10px; text-align: center; }
+        .score-info, .controls-info-text { font-size: 0.9rem; margin-bottom: 5px; }
         .score-info span { font-weight: bold; color: #ec407a; }
-        .game-button { background-color: #ec407a; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 10px; }
+        .game-button { background-color: #ec407a; color: white; padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 8px; }
         .game-button:hover { background-color: #d81b60; }
-        #gameOverMessage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.5rem; display: none; z-index: 100; }
+        #gameOverMessage { position: absolute; top: 45%; /* Ajustado para não sobrepor controlos */ left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.3rem; display: none; z-index: 100; }
         #gameOverMessage .game-button { margin-top: 10px; background-color: #f48fb1; color: #880e4f; }
         #gameOverMessage .game-button:hover { background-color: #f8bbd0; }
+        .on-screen-controls-snake { margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 5px; user-select: none; }
+        .on-screen-controls-snake div { display: flex; gap: 5px; }
+        .on-screen-controls-snake button { width: 50px; height: 50px; font-size: 1.5rem; background-color: #f48fb1; color: #880e4f; border: 2px solid #ec407a; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .on-screen-controls-snake button:active { background-color: #e91e63; color: white; }
     </style>
 </head>
 <body>
     <h1>Jogo da Cobrinha <i style="color: #e91e63;">♡</i></h1>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="score-info">Pontuação: <span id="score">0</span></div>
-    <div class="controls-info">Use as teclas de seta (↑, ↓, ←, →) para mover.</div>
+    <canvas id="gameCanvas"></canvas> 
+    <div class="info-area">
+        <div class="score-info">Pontuação: <span id="score">0</span></div>
+        <div class="controls-info-text">Setas ou botões na tela para mover.</div>
+    </div>
+    <div class="on-screen-controls-snake">
+        <button id="snakeUpBtn" aria-label="Mover para Cima">↑</button>
+        <div>
+            <button id="snakeLeftBtn" aria-label="Mover para Esquerda">←</button>
+            <button id="snakeDownBtn" aria-label="Mover para Baixo">↓</button>
+            <button id="snakeRightBtn" aria-label="Mover para Direita">→</button>
+        </div>
+    </div>
     <button id="backToCalculatorButtonSnake" class="game-button">Voltar à Calculadora</button>
     <div id="gameOverMessage">
         Game Over!
@@ -284,108 +296,189 @@ function launchSnakeGame() {
     <script>
         console.log("Snake Game Script: Iniciando...");
         const canvas = document.getElementById('gameCanvas');
-        if (!canvas) {
-            console.error('Snake Game Error: Canvas not found in new tab!');
-            document.body.innerHTML = "<h1>Erro Crítico: Canvas do jogo não encontrado.</h1>";
-        } else {
-            console.log('Snake Game: Canvas encontrado', canvas.width, canvas.height);
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                console.error('Snake Game Error: Contexto 2D não obtido!');
-                document.body.innerHTML = "<h1>Erro Crítico: Não foi possível iniciar o motor gráfico do jogo.</h1>";
-            } else {
-                console.log('Snake Game: Contexto 2D obtido.');
-                ctx.fillStyle = '#fff0f6'; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height); 
+        const scoreElement = document.getElementById('score');
+        const gameOverMessageDiv = document.getElementById('gameOverMessage');
+        const gameOverRestartButton = document.getElementById('gameOverRestartButton');
+        const backButton = document.getElementById('backToCalculatorButtonSnake');
+        const snakeUpBtn = document.getElementById('snakeUpBtn');
+        const snakeDownBtn = document.getElementById('snakeDownBtn');
+        const snakeLeftBtn = document.getElementById('snakeLeftBtn');
+        const snakeRightBtn = document.getElementById('snakeRightBtn');
 
-                const scoreElement = document.getElementById('score');
-                const gameOverMessageDiv = document.getElementById('gameOverMessage');
-                const gameOverRestartButton = document.getElementById('gameOverRestartButton');
-                const backButton = document.getElementById('backToCalculatorButtonSnake');
+        let ctx, gridSize, tileCount, snake, food, dx, dy, score, gameLoopInterval, gameActive;
 
-                const gridSize = 20;
-                const tileCount = canvas.width / gridSize;
-                let snake, food, dx, dy, score, gameLoopInterval, gameActive;
+        function setupCanvas() {
+            const padding = 20; 
+            let availableWidth = window.innerWidth - padding;
+            let availableHeight = window.innerHeight - (document.querySelector('h1').offsetHeight + 
+                                    document.querySelector('.info-area').offsetHeight + 
+                                    document.querySelector('.on-screen-controls-snake').offsetHeight + 
+                                    document.getElementById('backToCalculatorButtonSnake').offsetHeight + 
+                                    padding + 60); 
 
-                function initializeGame() {
-                    console.log("Snake Game: Initializing game logic in new tab...");
-                    snake = [{ x: 10, y: 10 }];
-                    food = getRandomFoodPosition();
-                    dx = 1; dy = 0; score = 0; gameActive = true;
-                    updateScoreDisplay();
-                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
-                    if (gameLoopInterval) clearInterval(gameLoopInterval);
-                    gameLoopInterval = setInterval(gameLoop, 180); // Velocidade ajustada
-                    console.log("Snake Game: Initialized. Snake:", snake[0], "Food:", food);
-                }
-                function getRandomFoodPosition() {
-                    let newFoodPosition;
-                    while (true) {
-                        newFoodPosition = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
-                        let collisionWithSnake = snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y);
-                        if (!collisionWithSnake) break;
-                    }
-                    return newFoodPosition;
-                }
-                function drawSnakePart(snakePart) {
-                    ctx.fillStyle = '#ec407a'; ctx.strokeStyle = '#c2185b';
-                    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1); 
-                    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize -1, gridSize -1);
-                }
-                function drawSnake() { snake.forEach(drawSnakePart); }
-                function drawFood() {
-                    ctx.fillStyle = '#880e4f'; ctx.strokeStyle = '#5c1a3c';
-                    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize -1, gridSize-1);
-                    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize-1, gridSize-1);
-                }
-                function moveSnake() {
-                    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-                    snake.unshift(head);
-                    if (head.x === food.x && head.y === food.y) {
-                        score++; updateScoreDisplay(); food = getRandomFoodPosition();
-                    } else {
-                        snake.pop();
-                    }
-                }
-                function updateScoreDisplay() { if(scoreElement) scoreElement.textContent = score; }
-                function checkCollision() {
-                    const head = snake[0];
-                    if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
-                    for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
-                    return false;
-                }
-                function gameLoop() {
-                    if (!gameActive) return;
-                    ctx.fillStyle = '#fff0f6'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    moveSnake();
-                    if (checkCollision()) { gameOver(); return; }
-                    drawFood(); drawSnake();
-                }
-                function gameOver() {
-                    gameActive = false; clearInterval(gameLoopInterval);
-                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'block';
-                     console.log("Snake Game: Game Over! Score: " + score);
-                }
-                document.addEventListener('keydown', (event) => {
-                    if (!gameActive && event.key !== "Enter" && event.keyCode !== 13) return; 
-                    const keyPressed = event.key; 
-                    const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+            gridSize = 20; 
+            let size = Math.min(availableWidth, availableHeight, 360); 
+            
+            canvas.width = Math.floor(size / gridSize) * gridSize;
+            canvas.height = canvas.width; 
+            tileCount = canvas.width / gridSize;
 
-                    if ((keyPressed === "ArrowLeft" || keyPressed.toLowerCase() === "a") && !goingRight) { dx = -1; dy = 0; }
-                    else if ((keyPressed === "ArrowUp" || keyPressed.toLowerCase() === "w") && !goingDown) { dx = 0; dy = -1; }
-                    else if ((keyPressed === "ArrowRight" || keyPressed.toLowerCase() === "d") && !goingLeft) { dx = 1; dy = 0; }
-                    else if ((keyPressed === "ArrowDown" || keyPressed.toLowerCase() === "s") && !goingUp) { dx = 0; dy = 1; }
-                });
-                if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
-                if(backButton) backButton.addEventListener('click', () => window.close());
-                
-                if (canvas && ctx) {
-                    initializeGame();
-                } else {
-                    console.error("Snake Game: Não foi possível iniciar o jogo pois o canvas ou o contexto não foram encontrados na nova aba.");
+            console.log('Snake Game: Canvas setup. W:', canvas.width, 'H:', canvas.height, 'TileCount:', tileCount);
+
+            if (!canvas) { return false; }
+            ctx = canvas.getContext('2d');
+            if (!ctx) { return false; }
+            return true;
+        }
+
+        function initializeGame() {
+            if (!setupCanvas()) {
+                 console.error('Snake Game Error: Falha ao configurar o canvas!');
+                 document.body.innerHTML = "<h1>Erro Crítico: Falha ao configurar o canvas do jogo.</h1>";
+                 return;
+            }
+
+            console.log("Snake Game: Initializing game logic in new tab...");
+            snake = [{ x: Math.floor(tileCount / 2), y: Math.floor(tileCount / 2) }]; 
+            food = getRandomFoodPosition();
+            dx = 0; dy = 0; 
+            score = 0; gameActive = true;
+            updateScoreDisplay();
+            if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
+            if (gameLoopInterval) clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(gameLoop, 180); 
+            console.log("Snake Game: Initialized. Snake:", snake[0], "Food:", food);
+        }
+        function getRandomFoodPosition() {
+            let newFoodPosition;
+            while (true) {
+                newFoodPosition = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+                let collisionWithSnake = snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y);
+                if (!collisionWithSnake) break;
+            }
+            return newFoodPosition;
+        }
+        function drawSnakePart(snakePart, isHead = false) {
+            ctx.fillStyle = isHead ? '#d81b60' : '#ec407a'; 
+            ctx.strokeStyle = '#c2185b';
+            const radius = gridSize / 2.2; 
+            const centerX = snakePart.x * gridSize + gridSize / 2;
+            const centerY = snakePart.y * gridSize + gridSize / 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            if(isHead && (dx !== 0 || dy !== 0)){ 
+                ctx.fillStyle = 'white';
+                const eyeRadius = gridSize / 7;
+                let eye1X, eye1Y, eye2X, eye2Y;
+
+                if(dx === 1){ 
+                    eye1X = centerX + radius / 2.5; eye1Y = centerY - radius / 2.5;
+                    eye2X = centerX + radius / 2.5; eye2Y = centerY + radius / 2.5;
+                } else if (dx === -1){ 
+                    eye1X = centerX - radius / 2.5; eye1Y = centerY - radius / 2.5;
+                    eye2X = centerX - radius / 2.5; eye2Y = centerY + radius / 2.5;
+                } else if (dy === -1){ 
+                     eye1X = centerX - radius / 2.5; eye1Y = centerY - radius / 2.5;
+                     eye2X = centerX + radius / 2.5; eye2Y = centerY - radius / 2.5;
+                } else if (dy === 1){ 
+                     eye1X = centerX - radius / 2.5; eye1Y = centerY + radius / 2.5;
+                     eye2X = centerX + radius / 2.5; eye2Y = centerY + radius / 2.5;
                 }
+                ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
             }
         }
+        function drawSnake() { 
+            snake.forEach((part, index) => drawSnakePart(part, index === 0));
+        }
+        function drawFood() { 
+            ctx.fillStyle = '#e53935'; 
+            ctx.strokeStyle = '#c62828'; 
+            const foodX = food.x * gridSize + gridSize / 2;
+            const foodY = food.y * gridSize + gridSize / 2;
+            const foodRadius = gridSize / 2.5;
+            ctx.beginPath();
+            ctx.arc(foodX, foodY, foodRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#795548'; 
+            ctx.fillRect(foodX - gridSize/15, foodY - foodRadius - gridSize/10, gridSize/8, gridSize/5);
+        }
+        function moveSnake() {
+            if (dx === 0 && dy === 0) return; 
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                score++; updateScoreDisplay(); food = getRandomFoodPosition();
+            } else {
+                snake.pop();
+            }
+        }
+        function updateScoreDisplay() { if(scoreElement) scoreElement.textContent = score; }
+        function checkCollision() {
+            const head = snake[0];
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
+            for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
+            return false;
+        }
+        function gameLoop() {
+            if (!gameActive || !ctx) return;
+            ctx.fillStyle = '#fff0f6'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#fce4ec';
+            for(let i=0; i < tileCount; i++) {
+                for(let j=0; j < tileCount; j++){
+                    if((i+j) % 2 === 0) ctx.fillStyle = '#fff0f6';
+                    else ctx.fillStyle = '#fdf5f7';
+                    ctx.fillRect(i * gridSize, j * gridSize, gridSize, gridSize);
+                }
+            }
+
+            moveSnake();
+            if (checkCollision()) { gameOver(); return; }
+            drawFood(); drawSnake();
+        }
+        function gameOver() {
+            gameActive = false; clearInterval(gameLoopInterval);
+            if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'block';
+             console.log("Snake Game: Game Over! Score: " + score);
+        }
+        
+        function changeDirection(newDx, newDy){
+            if (!gameActive && !(newDx === 0 && newDy === 0)) return; 
+            const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+            if (newDx === -1 && !goingRight) { dx = -1; dy = 0; } 
+            else if (newDy === -1 && !goingDown) { dx = 0; dy = -1; } 
+            else if (newDx === 1 && !goingLeft) { dx = 1; dy = 0; }  
+            else if (newDy === 1 && !goingUp) { dx = 0; dy = 1; }  
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "Enter" && !gameActive && gameOverMessageDiv && gameOverMessageDiv.style.display === 'block') {
+                 initializeGame(); return;
+            }
+            if (!gameActive) return; 
+            const keyPressed = event.key; 
+            if (keyPressed === "ArrowLeft") changeDirection(-1,0);
+            else if (keyPressed === "ArrowUp") changeDirection(0,-1);
+            else if (keyPressed === "ArrowRight") changeDirection(1,0);
+            else if (keyPressed === "ArrowDown") changeDirection(0,1);
+        });
+
+        if(snakeUpBtn) snakeUpBtn.addEventListener('click', () => changeDirection(0, -1));
+        if(snakeDownBtn) snakeDownBtn.addEventListener('click', () => changeDirection(0, 1));
+        if(snakeLeftBtn) snakeLeftBtn.addEventListener('click', () => changeDirection(-1, 0));
+        if(snakeRightBtn) snakeRightBtn.addEventListener('click', () => changeDirection(1, 0));
+
+        if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
+        if(backButton) backButton.addEventListener('click', () => window.close());
+        
+        initializeGame(); 
+        window.addEventListener('resize', initializeGame);
+
     <\/script>
 </body>
 </html>
@@ -413,31 +506,53 @@ function launchTankGame() {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Defesa de Tanques para Leticia ♡</title>
     <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #ffe0e0; font-family: 'Arial', sans-serif; color: #7c1c3a; }
-        h1 { color: #c2185b; margin-bottom: 10px; }
-        #gameCanvas { border: 5px solid #f06292; background-color: #fdf0f3; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; }
-        .info-container { display: flex; justify-content: space-around; width: 500px; margin-top: 10px; font-size: 1rem; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #ffe0e0; font-family: 'Arial', sans-serif; color: #7c1c3a; touch-action: manipulation; }
+        h1 { color: #c2185b; margin-bottom: 5px; font-size: 1.4rem; text-align: center; }
+        #gameCanvas { border: 5px solid #f06292; background-color: #fdf0f3; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block; max-width: 95vw; max-height: 55vh;}
+        .info-container { display: flex; justify-content: space-around; width: 100%; max-width: 500px; margin-top: 5px; font-size: 0.9rem; }
         .score-info span, .enemies-info span { font-weight: bold; color: #ec407a; }
-        .controls-info { margin-top: 10px; font-size: 0.85rem; text-align: center; max-width: 500px; }
-        .game-button { background-color: #e91e63; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 15px; margin-left: 5px; margin-right: 5px; }
+        .controls-info-text { margin-top:5px; font-size: 0.75rem; text-align: center; max-width: 500px; }
+        .game-button { background-color: #e91e63; color: white; padding: 8px 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: background-color 0.2s ease; margin-top: 5px; margin-left: 5px; margin-right: 5px; }
         .game-button:hover { background-color: #c2185b; }
-        #gameOverMessage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.75); color: white; padding: 25px; border-radius: 10px; text-align: center; font-size: 1.8rem; display: none; z-index: 100; }
+        #gameOverMessage { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.75); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.5rem; display: none; z-index: 100; }
         #gameOverMessage .game-button { margin-top: 15px; background-color: #f48fb1; color: #880e4f; }
         #gameOverMessage .game-button:hover { background-color: #f8bbd0; }
+        
+        .on-screen-controls-tank { margin-top: 5px; display: flex; flex-direction: column; align-items:center; gap: 5px; user-select: none;}
+        .on-screen-controls-tank .control-row { display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .on-screen-controls-tank .control-row button, .on-screen-controls-tank .shoot-button { width: 45px; height: 45px; font-size: 1.2rem; background-color: #f48fb1; color: #880e4f; border: 2px solid #ec407a; border-radius: 10px; display:flex; align-items:center; justify-content:center; padding:0; }
+        .on-screen-controls-tank .control-row button:active, .on-screen-controls-tank .shoot-button:active { background-color: #e91e63; color: white;}
+        .on-screen-controls-tank .spacer { width: 45px; height: 45px; visibility: hidden; }
+        .on-screen-controls-tank .shoot-button { width: 95px; font-size: 0.7rem; padding: 5px; height: 45px; }
     </style>
 </head>
 <body>
     <h1>Defesa de Tanques <i class="fas fa-shield-heart" style="color: #e91e63;"></i>♡</h1>
-    <canvas id="gameCanvas" width="500" height="450"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <div class="info-container">
         <div class="score-info">Pontuação: <span id="score">0</span></div>
-        <div class="enemies-info">Inimigos Restantes: <span id="enemiesLeft">0</span></div>
+        <div class="enemies-info">Inimigos: <span id="enemiesLeft">0</span></div>
     </div>
-    <div class="controls-info">
-        Setas: Mover Tanque | A/D: Rodar Torre | Espaço: Atirar
+     <div class="on-screen-controls-tank">
+        <div class="control-row">
+            <button id="tankTurretLeftBtn" aria-label="Rodar Torre Esquerda">↺</button>
+            <button id="tankMoveUpBtn" aria-label="Mover Tanque para Cima">↑</button>
+            <button id="tankTurretRightBtn" aria-label="Rodar Torre Direita">↻</button>
+        </div>
+        <div class="control-row">
+            <button id="tankMoveLeftBtn" aria-label="Mover Tanque para Esquerda">←</button>
+            <button id="tankMoveDownBtn" aria-label="Mover Tanque para Baixo">↓</button>
+            <button id="tankMoveRightBtn" aria-label="Mover Tanque para Direita">→</button>
+        </div>
+        <div class="control-row">
+             <button id="tankShootBtn" class="shoot-button" aria-label="Atirar">ATIRAR</button>
+        </div>
+    </div>
+    <div class="controls-info-text">
+        Setas/Botões: Mover | A/D ou Botões ↺↻: Rodar Torre | Espaço/Botão: Atirar
     </div>
     <div>
         <button id="backToCalculatorButtonTank" class="game-button">Voltar à Calculadora</button>
@@ -448,205 +563,282 @@ function launchTankGame() {
         <button id="gameOverRestartButton" class="game-button">Jogar Novamente</button>
     </div>
     <script>
-        // JavaScript completo do Jogo de Tanque (como fornecido anteriormente)
-        // ... (Este é o local do script do jogo que lhe dei no Canvas "jogoTanqueGuerraHTML")
         console.log("Tank Defense Game Script: Iniciando...");
         const canvas = document.getElementById('gameCanvas');
-        if (!canvas) {
-            console.error('Tank Game Error: Canvas not found in new tab!');
-            document.body.innerHTML = "<h1>Erro Crítico: Canvas do jogo não encontrado.</h1>";
-        } else {
-            console.log('Tank Game: Canvas encontrado', canvas.width, canvas.height);
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                console.error('Tank Game Error: Contexto 2D não obtido!');
-                document.body.innerHTML = "<h1>Erro Crítico: Não foi possível iniciar o motor gráfico do jogo.</h1>";
-            } else {
-                console.log('Tank Game: Contexto 2D obtido.');
-                ctx.fillStyle = '#fdf0f3'; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+        let ctx; 
 
-                const scoreElement = document.getElementById('score');
-                const enemiesLeftElement = document.getElementById('enemiesLeft');
-                const gameOverMessageDiv = document.getElementById('gameOverMessage');
-                const finalScoreElement = document.getElementById('finalScore');
-                const gameOverRestartButton = document.getElementById('gameOverRestartButton');
-                const backButton = document.getElementById('backToCalculatorButtonTank'); // ID único para este botão
+        let scoreElement, enemiesLeftElement, gameOverMessageDiv, finalScoreElement, 
+            gameOverRestartButton, backToCalculatorButtonTank,
+            tankMoveUpBtn, tankMoveDownBtn, tankMoveLeftBtn, tankMoveRightBtn,
+            tankTurretLeftBtn, tankTurretRightBtn, tankShootBtn;
 
-                const TANK_SIZE = 30; 
-                const TURRET_WIDTH = 6;
-                const TURRET_LENGTH = 25;
-                const BULLET_RADIUS = 4;
-                const BULLET_SPEED = 5;
-                const BASE_SIZE = 40;
-                const BRICK_SIZE = 20;
+        const TANK_SIZE = 26; 
+        const TURRET_WIDTH = 5;
+        const TURRET_LENGTH = 20;
+        const BULLET_RADIUS = 3;
+        const BULLET_SPEED = 4;
+        const BASE_SIZE = 30;
+        const BRICK_SIZE = 20;
 
-                let player, bullets, enemyBullets, enemies, playerBase, bricks, score, gameActive, gameLoopInterval, enemiesToSpawn, spawnTimer, spawnInterval;
+        let player, bullets, enemyBullets, enemies, playerBase, bricks, score, gameActive, gameLoopInterval, enemiesToSpawn, spawnTimer, spawnInterval;
 
-                const PLAYER_TANK_COLOR = '#ec407a'; 
-                const PLAYER_TURRET_COLOR = '#c2185b'; 
-                const ENEMY_TANK_COLOR = '#ad1457'; 
-                const ENEMY_TURRET_COLOR = '#880e4f'; 
-                const BULLET_COLOR = '#7c1c3a'; 
-                const BASE_COLOR = '#ff80ab'; 
-                const BASE_BORDER_COLOR = '#f50057';
-                const BRICK_COLOR = '#f48fb1'; 
-                const BRICK_BORDER_COLOR = '#e91e63';
+        const PLAYER_TANK_COLOR = '#ec407a'; 
+        const PLAYER_TURRET_COLOR = '#c2185b'; 
+        const ENEMY_TANK_COLOR = '#ad1457'; 
+        const ENEMY_TURRET_COLOR = '#880e4f'; 
+        const BULLET_COLOR = '#7c1c3a'; 
+        const BASE_COLOR = '#ff80ab'; 
+        const BASE_BORDER_COLOR = '#f50057';
+        const BRICK_COLOR = '#f48fb1'; 
+        const BRICK_BORDER_COLOR = '#e91e63';
 
-                function initializeGame() {
-                    console.log("Tank Defense Game: Initializing game logic...");
-                    player = { x: canvas.width / 2 - TANK_SIZE / 2, y: canvas.height - TANK_SIZE - BRICK_SIZE - 5, width: TANK_SIZE, height: TANK_SIZE, turretAngle: -Math.PI / 2, speed: 2.5, rotationSpeed: 0.04, color: PLAYER_TANK_COLOR, shootCooldown: 0, maxCooldown: 20 };
-                    playerBase = { x: canvas.width / 2 - BASE_SIZE / 2, y: canvas.height - BASE_SIZE - 5, width: BASE_SIZE, height: BASE_SIZE, color: BASE_COLOR, borderColor: BASE_BORDER_COLOR, isAlive: true };
-                    bullets = []; enemyBullets = []; enemies = []; bricks = [];
-                    score = 0; enemiesToSpawn = 5; spawnTimer = 0; spawnInterval = 180; gameActive = true;
-                    updateScoreDisplay(); updateEnemiesLeftDisplay(); createBrickWall();
-                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
-                    if (gameLoopInterval) clearInterval(gameLoopInterval);
-                    gameLoopInterval = setInterval(gameLoop, 1000 / 60); 
-                    console.log("Tank Defense Game: Initialized.");
-                }
-                function createBrickWall() {
-                    bricks = []; 
-                    const wallY = playerBase.y - BRICK_SIZE - 2; 
-                    const wallStartX = playerBase.x - BRICK_SIZE;
-                    const wallEndX = playerBase.x + BASE_SIZE + BRICK_SIZE;
-                    for (let x = wallStartX; x < wallEndX; x += BRICK_SIZE) { bricks.push({ x: x, y: wallY, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });}
-                    bricks.push({ x: playerBase.x - BRICK_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
-                    bricks.push({ x: playerBase.x - BRICK_SIZE, y: playerBase.y + BRICK_SIZE/2 , width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 }); 
-                    bricks.push({ x: playerBase.x + BASE_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
-                    bricks.push({ x: playerBase.x + BASE_SIZE, y: playerBase.y + BRICK_SIZE/2, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
-                }
-                function spawnEnemy() {
-                    if (enemiesToSpawn <= 0) return;
-                    const spawnX = Math.random() * (canvas.width - TANK_SIZE);
-                    enemies.push({ x: spawnX, y: -TANK_SIZE, width: TANK_SIZE, height: TANK_SIZE, turretAngle: Math.PI / 2, speed: 1 + Math.random() * 0.5, color: ENEMY_TANK_COLOR, shootCooldown: Math.floor(Math.random() * 100) + 80, maxCooldown: 120 + Math.floor(Math.random() * 60) });
-                    enemiesToSpawn--; updateEnemiesLeftDisplay();
-                }
-                function updateEnemiesLeftDisplay() { if(enemiesLeftElement) enemiesLeftElement.textContent = enemies.length + enemiesToSpawn; }
-                function drawRect(obj, color, borderColor) {
-                    ctx.fillStyle = color; ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
-                    if (borderColor) { ctx.strokeStyle = borderColor; ctx.strokeRect(obj.x, obj.y, obj.width, obj.height); }
-                }
-                function drawTank(tank, turretColor) {
-                    drawRect(tank, tank.color); 
-                    ctx.save(); ctx.translate(tank.x + tank.width / 2, tank.y + tank.height / 2); ctx.rotate(tank.turretAngle);
-                    ctx.fillStyle = turretColor; ctx.fillRect(-TURRET_WIDTH / 2, -TURRET_LENGTH / 2, TURRET_WIDTH, TURRET_LENGTH);
-                    ctx.beginPath(); ctx.arc(0, 0, tank.width / 3.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-                }
-                function drawBullet(bullet) { ctx.beginPath(); ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2); ctx.fillStyle = BULLET_COLOR; ctx.fill(); ctx.closePath(); }
-                function drawBricks() { bricks.forEach(brick => { drawRect(brick, BRICK_COLOR, BRICK_BORDER_COLOR); }); }
-                function updatePlayer() { if (player.shootCooldown > 0) player.shootCooldown--; }
-                function updateEnemies() {
-                    enemies.forEach(enemy => {
-                        enemy.y += enemy.speed;
-                        if (enemy.y > canvas.height) { enemies.splice(enemies.indexOf(enemy), 1); updateEnemiesLeftDisplay(); return; }
-                        enemy.turretAngle = Math.PI / 2; 
-                        if (enemy.shootCooldown <= 0) {
-                            enemyBullets.push({ x: enemy.x + enemy.width / 2 + (TURRET_LENGTH - 5) * Math.cos(enemy.turretAngle), y: enemy.y + enemy.height / 2 + (TURRET_LENGTH - 5) * Math.sin(enemy.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(enemy.turretAngle), dy: BULLET_SPEED * Math.sin(enemy.turretAngle) });
-                            enemy.shootCooldown = enemy.maxCooldown;
-                        } else { enemy.shootCooldown--; }
-                    });
-                }
-                function updateBullets(bulletArray) {
-                    for (let i = bulletArray.length - 1; i >= 0; i--) {
-                        const bullet = bulletArray[i];
-                        bullet.x += bullet.dx; bullet.y += bullet.dy;
-                        if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) { bulletArray.splice(i, 1); }
-                    }
-                }
-                function checkCollisions() {
-                    for (let i = bullets.length - 1; i >= 0; i--) {
-                        for (let j = enemies.length - 1; j >= 0; j--) {
-                            if (rectCollision(bullets[i], enemies[j], BULLET_RADIUS)) {
-                                bullets.splice(i, 1); enemies.splice(j, 1); score += 10;
-                                updateScoreDisplay(); updateEnemiesLeftDisplay(); break; 
-                            }
-                        }
-                    }
-                    for (let i = enemyBullets.length - 1; i >= 0; i--) {
-                        if (rectCollision(enemyBullets[i], player, BULLET_RADIUS)) {
-                            enemyBullets.splice(i, 1); gameOver("Seu tanque foi atingido!"); return;
-                        }
-                    }
-                    const allBullets = [...bullets, ...enemyBullets];
-                    for (let i = allBullets.length - 1; i >= 0; i--) {
-                        for (let j = bricks.length - 1; j >= 0; j--) {
-                             if (rectCollision(allBullets[i], bricks[j], BULLET_RADIUS)) {
-                                allBullets.splice(i,1); bricks.splice(j, 1); break; 
-                            }
-                        }
-                    }
-                    if (playerBase.isAlive) {
-                        for (let i = enemyBullets.length - 1; i >= 0; i--) {
-                            if (rectCollision(enemyBullets[i], playerBase, BULLET_RADIUS)) {
-                                enemyBullets.splice(i, 1); playerBase.isAlive = false; playerBase.color = "#555"; 
-                                gameOver("Sua base foi destruída!"); return;
-                            }
-                        }
-                        enemies.forEach(enemy => {
-                            if (rectsOverlap(enemy, playerBase)) {
-                                playerBase.isAlive = false; playerBase.color = "#555";
-                                gameOver("Um inimigo alcançou sua base!");
-                            }
-                        });
-                    }
-                }
-                function rectCollision(circle, rect, circleRadius) { 
-                    let testX = circle.x; let testY = circle.y;
-                    if (circle.x < rect.x) testX = rect.x; else if (circle.x > rect.x + rect.width) testX = rect.x + rect.width;
-                    if (circle.y < rect.y) testY = rect.y; else if (circle.y > rect.y + rect.height) testY = rect.y + rect.height;
-                    const distX = circle.x - testX; const distY = circle.y - testY;
-                    return Math.sqrt((distX * distX) + (distY * distY)) <= circleRadius;
-                }
-                function rectsOverlap(rect1, rect2) { return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y; }
-                function updateScoreDisplay() { if(scoreElement) scoreElement.textContent = score; }
-                function gameLoop() {
-                    if (!gameActive) return;
-                    spawnTimer++;
-                    if (spawnTimer >= spawnInterval && enemiesToSpawn > 0) { spawnEnemy(); spawnTimer = 0; }
-                    handleInput(); updatePlayer(); updateEnemies(); updateBullets(bullets); updateBullets(enemyBullets); checkCollisions();
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#fdf0f3'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    drawBricks(); 
-                    if (playerBase.isAlive) drawRect(playerBase, playerBase.color, playerBase.borderColor); else drawRect(playerBase, "#777", "#555"); 
-                    drawTank(player, PLAYER_TURRET_COLOR); enemies.forEach(enemy => drawTank(enemy, ENEMY_TURRET_COLOR));
-                    bullets.forEach(drawBullet); enemyBullets.forEach(drawBullet);
-                    if (enemiesToSpawn === 0 && enemies.length === 0 && playerBase.isAlive) { gameOver("Vitória! Todos os inimigos destruídos!"); }
-                }
-                function gameOver(message = "Fim de Jogo!") {
-                    console.log("Tank Defense Game: Game Over. Score:", score, "Message:", message);
-                    gameActive = false; clearInterval(gameLoopInterval);
-                    if(finalScoreElement) finalScoreElement.textContent = score;
-                    const gameOverTextElement = gameOverMessageDiv.firstChild; 
-                    if (gameOverTextElement && gameOverTextElement.nodeType === Node.TEXT_NODE) { gameOverTextElement.nodeValue = message; } 
-                    else if (gameOverMessageDiv) { gameOverMessageDiv.childNodes[0].nodeValue = message; } // Tenta o primeiro filho de qualquer forma
-                    if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'block';
-                }
-                const keys = {};
-                document.addEventListener('keydown', (event) => {
-                    keys[event.key.toLowerCase()] = true;
-                    if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "a", "d"].includes(event.key.toLowerCase())) { event.preventDefault(); }
-                    if (event.key === ' ' && gameActive && player.shootCooldown <= 0) { 
-                        bullets.push({ x: player.x + player.width / 2 + (TURRET_LENGTH - 5) * Math.cos(player.turretAngle), y: player.y + player.height / 2 + (TURRET_LENGTH - 5) * Math.sin(player.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(player.turretAngle), dy: BULLET_SPEED * Math.sin(player.turretAngle) });
-                        player.shootCooldown = player.maxCooldown;
-                    }
-                });
-                document.addEventListener('keyup', (event) => { keys[event.key.toLowerCase()] = false; });
-                function handleInput() {
-                    if (!gameActive) return;
-                    if (keys['arrowleft']) player.x -= player.speed; if (keys['arrowright']) player.x += player.speed;
-                    if (keys['arrowup']) player.y -= player.speed; if (keys['arrowdown']) player.y += player.speed;
-                    if (keys['a']) player.turretAngle -= player.rotationSpeed; if (keys['d']) player.turretAngle += player.rotationSpeed;
-                    player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
-                    player.y = Math.max(0, Math.min(player.y, canvas.height - player.height));
-                }
-                if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
-                if(backButton) backButton.addEventListener('click', () => window.close());
-                
-                if (canvas && ctx && scoreElement && enemiesLeftElement) { initializeGame(); } 
-                else { console.error("Tank Defense Game: Elementos essenciais do DOM não encontrados ao tentar inicializar o jogo."); document.body.innerHTML = "<h1>Erro ao carregar o jogo. Elementos em falta.</h1>"; }
-                console.log("Tank Defense Game Script: Fim da execução.");
+        const keys = {}; 
+        let touchControls = { up: false, down: false, left: false, right: false, turretLeft: false, turretRight: false, shootRequest: false };
+
+
+        function setupCanvasAndElements() {
+            if (!canvas) { console.error('Tank Game Error: Canvas não encontrado!'); return false; }
+            const padding = 10;
+            let availableWidth = window.innerWidth - padding;
+            let controlsHeightEstimate = 230; 
+            if(document.querySelector('.on-screen-controls-tank')) controlsHeightEstimate = document.querySelector('.on-screen-controls-tank').offsetHeight + 100;
+            
+            let availableHeight = window.innerHeight - controlsHeightEstimate;
+            
+            let canvasSize = Math.min(availableWidth, availableHeight, 400); 
+            canvas.width = Math.floor(canvasSize / BRICK_SIZE) * BRICK_SIZE; 
+            canvas.height = Math.floor(Math.min(canvasSize * 0.85, 360) / BRICK_SIZE) * BRICK_SIZE; 
+
+
+            console.log('Tank Game: Canvas setup. W:', canvas.width, 'H:', canvas.height);
+            ctx = canvas.getContext('2d');
+            if (!ctx) { console.error('Tank Game Error: Contexto 2D não obtido!'); return false; }
+
+            scoreElement = document.getElementById('score');
+            enemiesLeftElement = document.getElementById('enemiesLeft');
+            gameOverMessageDiv = document.getElementById('gameOverMessage');
+            finalScoreElement = document.getElementById('finalScore');
+            gameOverRestartButton = document.getElementById('gameOverRestartButton');
+            backToCalculatorButtonTank = document.getElementById('backToCalculatorButtonTank');
+            
+            tankMoveUpBtn = document.getElementById('tankMoveUpBtn');
+            tankMoveDownBtn = document.getElementById('tankMoveDownBtn');
+            tankMoveLeftBtn = document.getElementById('tankMoveLeftBtn');
+            tankMoveRightBtn = document.getElementById('tankMoveRightBtn');
+            tankTurretLeftBtn = document.getElementById('tankTurretLeftBtn');
+            tankTurretRightBtn = document.getElementById('tankTurretRightBtn');
+            tankShootBtn = document.getElementById('tankShootBtn');
+            return true;
+        }
+
+        function initializeGame() {
+            if (!setupCanvasAndElements()) {
+                document.body.innerHTML = "<h1>Erro Crítico: Falha ao configurar o jogo. Verifique o console.</h1>";
+                return;
+            }
+            console.log("Tank Defense Game: Initializing game logic...");
+            player = { x: canvas.width / 2 - TANK_SIZE / 2, y: canvas.height - TANK_SIZE - BRICK_SIZE - 5, width: TANK_SIZE, height: TANK_SIZE, turretAngle: -Math.PI / 2, speed: 2, rotationSpeed: 0.05, color: PLAYER_TANK_COLOR, shootCooldown: 0, maxCooldown: 25 };
+            playerBase = { x: canvas.width / 2 - BASE_SIZE / 2, y: canvas.height - BASE_SIZE - 5, width: BASE_SIZE, height: BASE_SIZE, color: BASE_COLOR, borderColor: BASE_BORDER_COLOR, isAlive: true };
+            bullets = []; enemyBullets = []; enemies = []; bricks = [];
+            score = 0; enemiesToSpawn = 3; spawnTimer = 0; spawnInterval = 200; gameActive = true;
+            updateScoreDisplay(); updateEnemiesLeftDisplay(); createBrickWall();
+            if(gameOverMessageDiv) gameOverMessageDiv.style.display = 'none';
+            if (gameLoopInterval) clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(gameLoop, 1000 / 50); 
+        }
+        
+        function createBrickWall() {
+            bricks = []; 
+            const wallY = playerBase.y - BRICK_SIZE - 2; 
+            const wallStartX = playerBase.x - BRICK_SIZE;
+            const wallEndX = playerBase.x + BASE_SIZE; 
+            for (let x = wallStartX; x < wallEndX; x += BRICK_SIZE) { bricks.push({ x: x, y: wallY, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });}
+            bricks.push({ x: playerBase.x - BRICK_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
+            bricks.push({ x: playerBase.x + BASE_SIZE, y: playerBase.y, width: BRICK_SIZE, height: BRICK_SIZE, hp: 1 });
+        }
+        function spawnEnemy() {
+            if (enemiesToSpawn <= 0 && enemies.length >= 2) return; 
+            if (enemiesToSpawn <=0) return;
+
+            const spawnX = Math.random() * (canvas.width - TANK_SIZE);
+            enemies.push({ x: spawnX, y: -TANK_SIZE, width: TANK_SIZE, height: TANK_SIZE, turretAngle: Math.PI / 2, speed: 0.7 + Math.random() * 0.3, color: ENEMY_TANK_COLOR, shootCooldown: Math.floor(Math.random() * 100) + 100, maxCooldown: 150 + Math.floor(Math.random() * 60) });
+            enemiesToSpawn--; updateEnemiesLeftDisplay();
+        }
+        function updateEnemiesLeftDisplay() { if(enemiesLeftElement) enemiesLeftElement.textContent = enemies.length + enemiesToSpawn; }
+        function drawRect(obj, color, borderColor) {
+            ctx.fillStyle = color; ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+            if (borderColor) { ctx.strokeStyle = borderColor; ctx.strokeRect(obj.x, obj.y, obj.width, obj.height); }
+        }
+        function drawTank(tank, turretColor) {
+            drawRect(tank, tank.color); 
+            ctx.save(); ctx.translate(tank.x + tank.width / 2, tank.y + tank.height / 2); ctx.rotate(tank.turretAngle);
+            ctx.fillStyle = turretColor; ctx.fillRect(-TURRET_WIDTH / 2, -TURRET_LENGTH / 2 + 3, TURRET_WIDTH, TURRET_LENGTH);
+            ctx.beginPath(); ctx.arc(0, 0, tank.width / 3.2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+        function drawBullet(bullet) { ctx.beginPath(); ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2); ctx.fillStyle = BULLET_COLOR; ctx.fill(); ctx.closePath(); }
+        function drawBricks() { bricks.forEach(brick => { drawRect(brick, BRICK_COLOR, BRICK_BORDER_COLOR); }); }
+        function updatePlayer() { if (player.shootCooldown > 0) player.shootCooldown--; }
+        function updateEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.y += enemy.speed;
+                if (enemy.y > canvas.height + TANK_SIZE) { enemies.splice(index, 1); updateEnemiesLeftDisplay(); return; }
+                enemy.turretAngle = Math.PI / 2; 
+                if (enemy.shootCooldown <= 0) {
+                    enemyBullets.push({ x: enemy.x + enemy.width / 2 + (TURRET_LENGTH) * Math.cos(enemy.turretAngle), y: enemy.y + enemy.height / 2 + (TURRET_LENGTH) * Math.sin(enemy.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(enemy.turretAngle), dy: BULLET_SPEED * Math.sin(enemy.turretAngle) });
+                    enemy.shootCooldown = enemy.maxCooldown;
+                } else { enemy.shootCooldown--; }
+            });
+        }
+        function updateInternalBullets(bulletArray) { 
+            for (let i = bulletArray.length - 1; i >= 0; i--) {
+                const bullet = bulletArray[i];
+                bullet.x += bullet.dx; bullet.y += bullet.dy;
+                if (bullet.x < -bullet.radius || bullet.x > canvas.width + bullet.radius || bullet.y < -bullet.radius || bullet.y > canvas.height + bullet.radius) { bulletArray.splice(i, 1); }
             }
         }
+        function checkCollisions() {
+            if(!gameActive) return;
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    if (bullets[i] && enemies[j] && rectCollision(bullets[i], enemies[j], BULLET_RADIUS)) {
+                        bullets.splice(i, 1); enemies.splice(j, 1); score += 10;
+                        updateScoreDisplay(); updateEnemiesLeftDisplay(); break; 
+                    }
+                }
+            }
+            for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                if (enemyBullets[i] && player && rectCollision(enemyBullets[i], player, BULLET_RADIUS)) {
+                    enemyBullets.splice(i, 1); gameOver("Seu tanque foi atingido!"); return;
+                }
+            }
+            
+            let allBullets = [...bullets, ...enemyBullets];
+            for (let i = allBullets.length - 1; i >= 0; i--) {
+                let bulletRemoved = false;
+                for (let j = bricks.length - 1; j >= 0; j--) {
+                     if (allBullets[i] && bricks[j] && rectCollision(allBullets[i], bricks[j], BULLET_RADIUS)) {
+                        if (bullets.includes(allBullets[i])) bullets.splice(bullets.indexOf(allBullets[i]), 1);
+                        else if (enemyBullets.includes(allBullets[i])) enemyBullets.splice(enemyBullets.indexOf(allBullets[i]),1);
+                        
+                        bricks.splice(j, 1); 
+                        bulletRemoved = true;
+                        break; 
+                    }
+                }
+                if(bulletRemoved && i >= allBullets.length) i = allBullets.length -1; 
+            }
+
+            if (playerBase.isAlive) {
+                for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                    if (enemyBullets[i] && rectCollision(enemyBullets[i], playerBase, BULLET_RADIUS)) {
+                        enemyBullets.splice(i, 1); playerBase.isAlive = false; 
+                        gameOver("Sua base foi destruída!"); return;
+                    }
+                }
+                enemies.forEach(enemy => {
+                    if (rectsOverlap(enemy, playerBase)) {
+                        playerBase.isAlive = false;
+                        gameOver("Um inimigo alcançou sua base!");
+                    }
+                });
+            }
+        }
+        function rectCollision(circle, rect, circleRadius) { 
+            let testX = circle.x; let testY = circle.y;
+            if (circle.x < rect.x) testX = rect.x; else if (circle.x > rect.x + rect.width) testX = rect.x + rect.width;
+            if (circle.y < rect.y) testY = rect.y; else if (circle.y > rect.y + rect.height) testY = rect.y + rect.height;
+            const distX = circle.x - testX; const distY = circle.y - testY;
+            return Math.sqrt((distX * distX) + (distY * distY)) <= circleRadius;
+        }
+        function rectsOverlap(rect1, rect2) { return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y; }
+                
+        function playerShoot() {
+            if (gameActive && player && player.shootCooldown <= 0) {
+                bullets.push({ x: player.x + player.width / 2 + (TURRET_LENGTH) * Math.cos(player.turretAngle), y: player.y + player.height / 2 + (TURRET_LENGTH) * Math.sin(player.turretAngle), radius: BULLET_RADIUS, dx: BULLET_SPEED * Math.cos(player.turretAngle), dy: BULLET_SPEED * Math.sin(player.turretAngle) });
+                player.shootCooldown = player.maxCooldown;
+            }
+        }
+
+        function handleInput() {
+            if (!gameActive || !player) return;
+            if (keys['arrowleft'] || touchControls.left) player.x -= player.speed; 
+            if (keys['arrowright'] || touchControls.right) player.x += player.speed;
+            if (keys['arrowup'] || touchControls.up) player.y -= player.speed; 
+            if (keys['arrowdown'] || touchControls.down) player.y += player.speed;
+            if (keys['a'] || touchControls.turretLeft) player.turretAngle -= player.rotationSpeed; 
+            if (keys['d'] || touchControls.turretRight) player.turretAngle += player.rotationSpeed;
+            if (touchControls.shootRequest) { playerShoot(); touchControls.shootRequest = false; }
+
+            player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
+            player.y = Math.max(0, Math.min(player.y, canvas.height - player.height));
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+            spawnTimer++;
+            if (spawnTimer >= spawnInterval && enemiesToSpawn > 0) { spawnEnemy(); spawnTimer = 0; }
+            handleInput(); updatePlayer(); updateEnemies(); updateInternalBullets(bullets); updateInternalBullets(enemyBullets); 
+            if(gameActive) checkCollisions(); 
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#fdf0f3'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            drawBricks(); 
+            drawRect(playerBase, playerBase.isAlive ? playerBase.color : "#777", playerBase.isAlive ? playerBase.borderColor : "#555"); 
+            if(player) drawTank(player, PLAYER_TURRET_COLOR); 
+            enemies.forEach(enemy => drawTank(enemy, ENEMY_TURRET_COLOR));
+            bullets.forEach(drawBullet); enemyBullets.forEach(drawBullet);
+            if (enemiesToSpawn === 0 && enemies.length === 0 && playerBase.isAlive && gameActive) { gameOver("Vitória! Todos os inimigos destruídos!"); }
+        }
+        function gameOver(message = "Fim de Jogo!") {
+            if(!gameActive) return; 
+            console.log("Tank Defense Game: Game Over. Score:", score, "Message:", message);
+            gameActive = false; clearInterval(gameLoopInterval);
+            if(finalScoreElement) finalScoreElement.textContent = score;
+            if (gameOverMessageDiv) {
+                const textNode = Array.from(gameOverMessageDiv.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                if (textNode) textNode.nodeValue = message;
+                else gameOverMessageDiv.insertBefore(document.createTextNode(message), gameOverMessageDiv.firstChild);
+                gameOverMessageDiv.style.display = 'block';
+            }
+        }
+        
+        document.addEventListener('keydown', (event) => {
+            keys[event.key.toLowerCase()] = true;
+            if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "a", "d"].includes(event.key.toLowerCase())) { event.preventDefault(); }
+            if (event.key === ' ' && gameActive && player) { playerShoot(); }
+        });
+        document.addEventListener('keyup', (event) => { keys[event.key.toLowerCase()] = false; });
+
+        const addTouchListeners = (button, flagOrAction, isShootButton = false) => {
+            if (button) {
+                button.addEventListener('touchstart', (e) => { 
+                    e.preventDefault(); 
+                    if(typeof flagOrAction === 'string') touchControls[flagOrAction] = true; 
+                    else if (isShootButton) touchControls.shootRequest = true; 
+                    else flagOrAction(); 
+                });
+                button.addEventListener('touchend', (e) => { 
+                    e.preventDefault(); 
+                    if(typeof flagOrAction === 'string') touchControls[flagOrAction] = false; 
+                });
+            }
+        };
+        addTouchListeners(tankMoveUpBtn, 'up'); addTouchListeners(tankMoveDownBtn, 'down');
+        addTouchListeners(tankMoveLeftBtn, 'left'); addTouchListeners(tankMoveRightBtn, 'right');
+        addTouchListeners(tankTurretLeftBtn, 'turretLeft'); addTouchListeners(tankTurretRightBtn, 'turretRight');
+        if(tankShootBtn) tankShootBtn.addEventListener('click', (e) => { // Manter click para desktop e como fallback
+            e.preventDefault(); 
+            touchControls.shootRequest = true; 
+        });
+
+
+        if(gameOverRestartButton) gameOverRestartButton.addEventListener('click', initializeGame);
+        if(backToCalculatorButtonTank) backToCalculatorButtonTank.addEventListener('click', () => window.close());
+                
+        initializeGame(); 
+        window.addEventListener('resize', initializeGame);
+        
+        console.log("Tank Defense Game Script: Fim da execução.");
+    
     <\/script>
 </body>
 </html>
@@ -662,7 +854,191 @@ function launchTankGame() {
         alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
     }
 }
-window.launchTankGame = launchTankGame; // Expor para onclick no HTML
+window.launchTankGame = launchTankGame; 
+
+
+function launchMemoryGame() { 
+    console.log("launchMemoryGame: Abrindo Jogo da Memória em nova aba.");
+    const gamesModal = document.getElementById('gamesModal');
+    if (gamesModal) gamesModal.style.display = 'none'; 
+
+    const memoryGameHTML = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jogo da Memória Emoji para Leticia ♡</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding-top: 20px; background-color: #fdf0f3; font-family: 'Arial', sans-serif; color: #7c1c3a; box-sizing: border-box; touch-action: manipulation; }
+        h1 { color: #c2185b; margin-bottom: 15px; font-size: 1.5rem; text-align: center; }
+        .game-container { display: flex; flex-direction: column; align-items: center; width: 95%; max-width: 400px; /* Limita largura máxima */ }
+        #themeSelectionScreen, #gameScreen { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        #themeSelectionScreen h2 { color: #880e4f; margin-bottom: 15px; font-size: 1.2rem; }
+        .theme-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 15px; width:100%; }
+        .theme-button, .game-button { background-color: #ec407a; color: white; padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: background-color 0.2s ease, transform 0.1s ease; text-align: center; }
+        .theme-button:hover, .game-button:hover { background-color: #d81b60; transform: translateY(-2px); }
+        #gameBoard { display: grid; gap: 8px; margin-bottom: 15px; width: 100%; }
+        .card { width: 100%; aspect-ratio: 1 / 1; background-color: #f8bbd0; border: 2px solid #f48fb1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: transform 0.3s ease, background-color 0.3s; transform-style: preserve-3d; }
+        .card .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+        .card .card-front { background-color: #f8bbd0; }
+        .card .card-back { background-color: #fff0f6; transform: rotateY(180deg); }
+        .card.is-flipped { transform: rotateY(180deg); }
+        .card.is-matched { background-color: #e1f5fe; border-color: #4fc3f7; cursor: default; opacity: 0.7; }
+        .card.is-matched .card-face { opacity: 1; }
+        .info-panel { margin-bottom: 10px; font-size: 1rem; font-weight: bold; }
+        .info-panel span { color: #ec407a; }
+        .action-buttons-bottom { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+        #winMessage { color: #4caf50; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Jogo da Memória Emoji <i class="fas fa-brain" style="color: #e91e63;"></i>♡</h1>
+    <div class="game-container">
+        <div id="themeSelectionScreen">
+            <h2>Escolha um Tema, Leticia!</h2>
+            <div class="theme-buttons">
+                <button class="theme-button" data-theme="food" data-pairs="6">🍔 Comidas</button>
+                <button class="theme-button" data-theme="animals" data-pairs="8">🐼 Animais</button>
+                <button class="theme-button" data-theme="colors" data-pairs="6">🎨 Cores</button>
+                <button class="theme-button" data-theme="people" data-pairs="8">😊 Pessoas</button>
+                <button class="theme-button" data-theme="objects" data-pairs="6">💡 Objetos</button>
+            </div>
+            <button id="backToCalculatorFromMenuButton" class="game-button">Voltar à Calculadora</button>
+        </div>
+        <div id="gameScreen" style="display:none;">
+            <div class="info-panel">Tentativas: <span id="attempts">0</span></div>
+            <div id="gameBoard"></div>
+            <div id="winMessage">Parabéns, você encontrou todos os pares!</div>
+            <div class="action-buttons-bottom">
+                <button id="backToThemeMenuButton" class="game-button">Menu de Temas</button>
+                <button id="playAgainCurrentThemeButton" class="game-button" style="display:none;">Jogar Novamente</button>
+                <button id="backToCalculatorFromGameButton" class="game-button">Voltar à Calculadora</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        console.log("Memory Game Script: Iniciando...");
+        const themeSelectionScreen = document.getElementById('themeSelectionScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const gameBoard = document.getElementById('gameBoard');
+        const attemptsElement = document.getElementById('attempts');
+        const playAgainCurrentThemeButton = document.getElementById('playAgainCurrentThemeButton');
+        const backToCalculatorFromGameButton = document.getElementById('backToCalculatorFromGameButton');
+        const backToCalculatorFromMenuButton = document.getElementById('backToCalculatorFromMenuButton');
+        const backToThemeMenuButton = document.getElementById('backToThemeMenuButton');
+        const winMessageElement = document.getElementById('winMessage');
+        const themeButtons = document.querySelectorAll('.theme-button');
+
+        const emojisSets = { 
+            food:    ['🍔', '🍕', '🍩', '🍦', '🍓', '🍉', '🍟', '🍰', '🍪', '🍭'], 
+            animals: ['🐼', '🐨', '🦊', '🦁', '🐯', '🦄', '🦋', '🐙', '🐵', '🐸'], 
+            colors:  ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '🩷'],
+            people:  ['😊', '😂', '😍', '🥳', '😢', '🤔', '😇', '😎', '🧑‍🚀', '🧑‍🎨'], 
+            objects: ['💡', '💻', '📱', '⏰', '🔑', '🎁', '🎈', '📚', '☂️', '⚽']  
+        };
+        let currentThemeEmojis = []; let flippedCards = []; let matchedPairs = 0;
+        let attempts = 0; let canFlip = true; let totalPairs = 0; let currentSelectedTheme = ''; let currentPairsCount = 0;
+
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentSelectedTheme = button.dataset.theme;
+                currentPairsCount = parseInt(button.dataset.pairs) || 6; 
+                startGame(currentSelectedTheme, currentPairsCount);
+            });
+        });
+        function startGame(theme, numPairs) {
+            console.log(\`Starting game with theme: \${theme}, Pairs: \${numPairs}\`);
+            const fullEmojiSet = emojisSets[theme];
+            if (!fullEmojiSet || fullEmojiSet.length < numPairs) { console.error("Tema ou n° de emojis inválido:", theme, numPairs); return; }
+            
+            currentThemeEmojis = shuffle(fullEmojiSet).slice(0, numPairs); 
+            totalPairs = currentThemeEmojis.length; 
+            let cardsArray = [...currentThemeEmojis, ...currentThemeEmojis]; 
+            cardsArray = shuffle(cardsArray);
+            gameBoard.innerHTML = ''; 
+            
+            let columns = 4; 
+            if (totalPairs <= 6) columns = 4;      
+            else if (totalPairs <= 8) columns = 4; 
+            else if (totalPairs <= 10) columns = 5;
+            
+            gameBoard.style.gridTemplateColumns = \`repeat(\${columns}, 1fr)\`;
+            let emojiFontSize = "2rem";
+            if (columns === 5) emojiFontSize = "1.8rem";
+            if (columns > 5) emojiFontSize = "1.5rem";
+
+
+            cardsArray.forEach(emoji => { 
+                const card = createCard(emoji); 
+                card.style.fontSize = emojiFontSize; 
+                gameBoard.appendChild(card); 
+            });
+            themeSelectionScreen.style.display = 'none'; gameScreen.style.display = 'flex';
+            playAgainCurrentThemeButton.style.display = 'none'; winMessageElement.style.display = 'none';
+            attempts = 0; matchedPairs = 0; canFlip = true; 
+            updateAttemptsDisplay();
+        }
+        function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+        function createCard(emoji) {
+            const card = document.createElement('div'); card.classList.add('card'); card.dataset.emoji = emoji;
+            const cardFaceFront = document.createElement('div'); cardFaceFront.classList.add('card-face', 'card-front');
+            const cardFaceBack = document.createElement('div'); cardFaceBack.classList.add('card-face', 'card-back'); cardFaceBack.textContent = emoji;
+            card.appendChild(cardFaceFront); card.appendChild(cardFaceBack);
+            card.addEventListener('click', handleCardClick); return card;
+        }
+        function handleCardClick(event) {
+            if (!canFlip) return; const clickedCard = event.currentTarget;
+            if (clickedCard.classList.contains('is-flipped') || clickedCard.classList.contains('is-matched')) { return; }
+            flipCard(clickedCard); flippedCards.push(clickedCard);
+            if (flippedCards.length === 2) { canFlip = false; attempts++; updateAttemptsDisplay(); checkForMatch(); }
+        }
+        function flipCard(card) { card.classList.add('is-flipped'); }
+        function unflipCards() { flippedCards.forEach(card => card.classList.remove('is-flipped')); flippedCards = []; canFlip = true; }
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                console.log("Match found!"); card1.classList.add('is-matched'); card2.classList.add('is-matched');
+                matchedPairs++; flippedCards = []; canFlip = true;
+                if (matchedPairs === totalPairs) { endGame(); }
+            } else { setTimeout(unflipCards, 800); } 
+        }
+        function updateAttemptsDisplay() { if(attemptsElement) attemptsElement.textContent = attempts; }
+        function endGame() {
+            console.log("Game ended! Attempts:", attempts);
+            if(winMessageElement) winMessageElement.style.display = 'block';
+            if(playAgainCurrentThemeButton) playAgainCurrentThemeButton.style.display = 'inline-block'; 
+            canFlip = false; 
+        }
+        function goToThemeSelection() { gameScreen.style.display = 'none'; themeSelectionScreen.style.display = 'flex'; console.log("Voltando para a seleção de temas."); }
+        if(playAgainCurrentThemeButton) { playAgainCurrentThemeButton.addEventListener('click', () => { if(currentSelectedTheme && currentPairsCount > 0) { startGame(currentSelectedTheme, currentPairsCount); } else { goToThemeSelection(); } }); }
+        if(backToThemeMenuButton) { backToThemeMenuButton.addEventListener('click', goToThemeSelection); }
+        if(backToCalculatorFromGameButton) { backToCalculatorFromGameButton.addEventListener('click', () => window.close()); }
+        if(backToCalculatorFromMenuButton) { backToCalculatorFromMenuButton.addEventListener('click', () => window.close()); }
+        console.log("Memory Game Script: Fim da execução inicial.");
+        window.addEventListener('resize', () => { 
+            if (gameScreen.style.display === 'flex' && currentSelectedTheme && currentPairsCount > 0) {
+                console.log("Memory game: Window resized, restarting current theme for layout adjustment.");
+                startGame(currentSelectedTheme, currentPairsCount);
+            }
+        });
+    <\/script>
+</body>
+</html>
+    `;
+    const gameWindow = window.open('', '_blank');
+    if (gameWindow) {
+        gameWindow.document.open();
+        gameWindow.document.write(memoryGameHTML);
+        gameWindow.document.close(); 
+        console.log("Jogo da Memória aberto em nova aba.");
+        gameWindow.focus();
+    } else {
+        alert("Não foi possível abrir a aba do jogo. Verifique se o seu navegador está a bloquear pop-ups.");
+    }
+}
+window.launchMemoryGame = launchMemoryGame; 
+
 
 
 async function shareMessage() {
