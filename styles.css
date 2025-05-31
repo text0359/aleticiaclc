@@ -572,12 +572,12 @@ body.dark-mode .btn-clear:active, body.dark-mode .btn-del:active { background-co
         font-size: 0.95rem; 
         padding: 10px;
     }
-    .btn-share { /* .btn-play-game removido do HTML, mas mantido caso queira reutilizar */
+    .btn-share { 
         padding: 8px 15px;
         font-size: 0.9rem;
     }
     .game-menu-item {
-        padding: 12px 15px; /* Ajuste para telas menores */
+        padding: 12px 15px; 
     }
     .game-info {
         font-size: 1rem;
