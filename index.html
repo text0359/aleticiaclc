@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Calculadora para Leticia ♡ com Extras</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -56,14 +56,22 @@
                 </div>
                 <div class="game-menu-item" onclick="launchTankGame()" role="button" tabindex="0" aria-label="Jogar Defesa de Tanques">
                     <div class="game-info">
-                        <i class="fas fa-shield-heart game-icon"></i> <span>Defesa de Tanques</span>
+                        <i class="fas fa-shield-heart game-icon"></i> 
+                        <span>Defesa de Tanques</span>
                     </div>
                     <i class="fas fa-play-circle play-indicator-icon"></i>
                 </div>
-                <div class="game-menu-item-disabled" aria-disabled="true">
+                <div class="game-menu-item" onclick="launchMemoryGame()" role="button" tabindex="0" aria-label="Jogar Jogo da Memória">
+                    <div class="game-info">
+                        <i class="fas fa-brain game-icon"></i> 
+                        <span>Jogo da Memória</span>
+                    </div>
+                    <i class="fas fa-play-circle play-indicator-icon"></i>
+                </div>
+                 <div class="game-menu-item-disabled" aria-disabled="true">
                     <div class="game-info">
                         <i class="fas fa-puzzle-piece game-icon"></i>
-                        <span>Jogo da Memória (Em breve!)</span>
+                        <span>Mais Jogos (Em breve!)</span>
                     </div>
                      <i class="fas fa-hourglass-half play-indicator-icon"></i>
                 </div>
