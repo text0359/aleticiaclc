@@ -700,21 +700,1009 @@ function stopConfettiAnimation() {
 // ==================================================
 const messagesAndVerses = [
     {
-        message: "Sua beleza me fascina a cada dia que passa. 👑",
-        verse: { text: "Tu és toda formosa, amiga minha, e em ti não há mancha.", ref: "Cantares 4:7" }
+        message: "Meu amor por você é chama que aquece alma e corpo. Te quero, te cuido, te reverencio. 🔥💋",
+        verse: { text: "As muitas águas não poderiam apagar o amor, nem os rios afogá-lo.", ref: "Cantares 8:7" }
     },
     {
-        message: "Você é o meu tesão, minha vida, minha paixão. 🔥😈💖",
-        verse: { text: "Põe-me como selo sobre o teu coração, como selo sobre o teu braço.", ref: "Cantares 8:6" }
+        message: "Você é meu lar, minha paz e meu desejo. Eu oro por você todos os dias. 🏡❤️🙏",
+        verse: { text: "O Senhor te guardará de todo mal; ele guardará a tua alma.", ref: "Salmos 121:7" }
     },
     {
-        message: "Que a chama do nosso desejo continue ardendo intensamente. ❤️‍🔥",
-        verse: { text: "O amor é forte como a morte.", ref: "Cantares 8:6" }
+        message: "Só de pensar em você, meu coração se aquece como o sol ao amanhecer. ☀️💖",
+        verse: { text: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele.", ref: "Salmos 118:24" }
     },
     {
-        message: "Seu nome é a canção que meu coração canta. 🎶",
-        verse: { text: "Cantai ao Senhor um cântico novo.", ref: "Salmos 96:1" }
-    }
+        message: "Letícia, você é um presente que Deus me confiou. Eu cuido, protejo e celebro você. 🎁🛡️✨",
+        verse: { text: "Toda boa dádiva e todo dom perfeito vêm do alto.", ref: "Tiago 1:17" }
+    },
+    {
+        message: "Meu coração pulsa forte por você. Te desejo com pureza e intensidade. ❤️‍🔥💫",
+        verse: { text: "Regozijem-se sempre no Senhor. Outra vez digo: regozijem-se!", ref: "Filipenses 4:4" }
+    },
+    {
+        message: "Te amo de corpo, alma e espírito. Você é resposta de oração. 🙏🔥",
+        verse: { text: "Pedi, e dar-se-vos-á; buscai, e achareis.", ref: "Mateus 7:7" }
+    },
+    {
+        message: "Meu amor, você é fogo santo e doce ternura. Me perco em você com fé e prazer. 🔥💒",
+        verse: { text: "Alegrem-se na esperança, sejam pacientes na tribulação, perseverem na oração.", ref: "Romanos 12:12" }
+    },
+    {
+        message: "Deus te fez linda demais. Cada curva sua me leva ao céu. 😍🙏",
+        verse: { text: "Foste formada de modo especial e admirável.", ref: "Salmos 139:14" }
+    },
+    {
+        message: "Meu prazer é cuidar de você, como Deus cuida de nós. 👼❤️",
+        verse: { text: "Como um pai se compadece de seus filhos, assim o Senhor se compadece dos que o temem.", ref: "Salmos 103:13" }
+    },
+    {
+        message: "Em teus braços encontro paz. Em teu corpo, abrigo. Em teu olhar, eternidade. 🌌💞",
+        verse: { text: "O Senhor é bom, um refúgio em tempos de angústia.", ref: "Naum 1:7" }
+    },
+    {
+        message: "Você é a mulher que eu quero amar por toda eternidade. ❤️♾️",
+        verse: { text: "O amor nunca falha.", ref: "1 Coríntios 13:8" }
+    },
+    {
+        message: "Te desejo com respeito e com loucura. Uma mistura de céu e fogo. 🔥😇",
+        verse: { text: "Deleita-te também no Senhor, e ele concederá o desejo do teu coração.", ref: "Salmos 37:4" }
+    },
+    {
+        message: "Sua presença é meu melhor lugar. Te amo com tudo que sou. 💑🌿",
+        verse: { text: "Eu sou do meu amado, e o meu amado é meu.", ref: "Cantares 6:3" }
+    },
+    {
+        message: "Te admiro em cada detalhe. Você é poesia viva em meu mundo. 📜💗",
+        verse: { text: "Tudo o que é amável, tudo o que é de boa fama... nisso pensai.", ref: "Filipenses 4:8" }
+    },
+    {
+        message: "Você é minha inspiração, minha tentação, minha devoção. 🔥🙏❤️",
+        verse: { text: "Sobre tudo o que se deve guardar, guarda o teu coração.", ref: "Provérbios 4:23" }
+    },
+    {
+        message: "Teu toque é cura. Teu sorriso é milagre. Teu amor é salvação. 💋✨",
+        verse: { text: "Grandes coisas fez o Senhor por nós, e por isso estamos alegres.", ref: "Salmos 126:3" }
+    },
+    {
+        message: "O céu sorri quando te vejo sorrir. Teu brilho ilumina meus dias. 🌞💫",
+        verse: { text: "O Senhor faça resplandecer o seu rosto sobre ti e te conceda graça.", ref: "Números 6:25" }
+    },
+    {
+        message: "Você me faz sentir vivo, inteiro, homem de verdade. Te honro. Te desejo. Te protejo. 👊🔥❤️",
+        verse: { text: "Vós, maridos, amai vossas mulheres, como também Cristo amou a igreja.", ref: "Efésios 5:25" }
+    },
+    {
+        message: "Em cada oração, coloco teu nome com gratidão. Você é minha bênção favorita. 🙏💘",
+        verse: { text: "Em tudo dai graças.", ref: "1 Tessalonicenses 5:18" }
+    },
+    {
+        message: "Letícia, minha amada, minha bênção ardente, te quero pra sempre em fé e paixão. 🔥💒💋",
+        verse: { text: "O que Deus uniu, não o separe o homem.", ref: "Marcos 10:9" }
+    },
+    {
+        message: "Teu corpo me atrai, tua alma me prende, teu amor me liberta. 😍🔥",
+        verse: { text: "Porque o Senhor é bom, e eterna a sua misericórdia.", ref: "Salmos 100:5" }
+    },
+    {
+        message: "Você é a chama que Deus acendeu em mim. Não deixarei apagar. 🔥🙏",
+        verse: { text: "O espírito do homem é a lâmpada do Senhor.", ref: "Provérbios 20:27" }
+    },
+    {
+        message: "Meu desejo é te honrar, te proteger e te satisfazer em tudo. 💪💋",
+        verse: { text: "Melhor é serem dois do que um, porque têm melhor paga do seu trabalho.", ref: "Eclesiastes 4:9" }
+    },
+    {
+        message: "Letícia, minha mulher, minha tentação santa, meu prazer com propósito. 😈💖🙏",
+        verse: { text: "A mulher virtuosa é a coroa do seu marido.", ref: "Provérbios 12:4" }
+    },
+    {
+        message: "Você é o beijo que pedi a Deus e o abraço que me sustenta. 💏🙌",
+        verse: { text: "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia.", ref: "Salmos 46:1" }
+    },
+    {
+        message: "O que sinto por você não cabe em palavras, só em orações e toques profundos. ❤️‍🔥🙏",
+        verse: { text: "Com amor eterno te amei; por isso com benignidade te atraí.", ref: "Jeremias 31:3" }
+    },
+    {
+        message: "Seu corpo é templo, e eu adoro cada centímetro com reverência e paixão. 🛐🔥",
+        verse: { text: "Vosso corpo é templo do Espírito Santo.", ref: "1 Coríntios 6:19" }
+    },
+    {
+        message: "Você é meu porto, meu fogo e meu céu. Te amo com tudo que sou. 🔥⚓💖",
+        verse: { text: "O Senhor te abençoe e te guarde.", ref: "Números 6:24" }
+    },
+    {
+        message: "Quando penso em futuro, penso em você comigo... nua de corpo e alma, coberta de amor. 😍💫",
+        verse: { text: "Os planos do Senhor permanecem para sempre.", ref: "Salmos 33:11" }
+    },
+    {
+        message: "Nada é mais bonito que você sorrindo depois de um beijo meu. 💋😊",
+        verse: { text: "O coração alegre aformoseia o rosto.", ref: "Provérbios 15:13" }
+    },
+    {
+        message: "Você me inspira a ser melhor, mais forte e mais quente. 🔥👑",
+        verse: { text: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13" }
+    },
+    {
+        message: "Sei que Deus me ama porque me deu você. E eu não canso de agradecer. 🙏❤️",
+        verse: { text: "Dai graças ao Senhor, porque ele é bom.", ref: "Salmos 136:1" }
+    },
+    {
+        message: "Você é meu prazer com propósito, minha oração respondida com curvas. 😇🔥",
+        verse: { text: "A bênção do Senhor enriquece, e com ela não traz desgosto.", ref: "Provérbios 10:22" }
+    },
+    {
+        message: "Letícia, você é tão gostosa quanto preciosa aos olhos de Deus. 😍💖🙏",
+        verse: { text: "Sois preciosos aos meus olhos.", ref: "Isaías 43:4" }
+    },
+    {
+        message: "Deus me ensinou a amar, mas foi você que me ensinou a sentir. ❤️‍🔥",
+        verse: { text: "Amamos porque ele nos amou primeiro.", ref: "1 João 4:19" }
+    },
+    {
+        message: "Te quero inteira: tua alma, teu perfume, tua pele, teus sonhos. 💫👄",
+        verse: { text: "A esperança não nos decepciona.", ref: "Romanos 5:5" }
+    },
+    {
+        message: "Você me aquece mais que o sol. E me refresca com um simples olhar. ☀️🌊",
+        verse: { text: "O Senhor é quem te guarda; o Senhor é a tua sombra à tua direita.", ref: "Salmos 121:5" }
+    },
+    {
+        message: "Em você encontrei fé, fogo e futuro. Te amo como um homem ama sua promessa. 🔥💍",
+        verse: { text: "Fiel é o que prometeu.", ref: "Hebreus 10:23" }
+    },
+    {
+        message: "Letícia, meu corpo deseja o teu, mas meu espírito deseja tua alma em aliança eterna. 💏🙏",
+        verse: { text: "Cordão de três dobras não se rompe facilmente.", ref: "Eclesiastes 4:12" }
+    },
+    {
+        message: "Quero te proteger com braços fortes e orações sinceras. 💪🙏",
+        verse: { text: "O anjo do Senhor acampa-se ao redor dos que o temem e os livra.", ref: "Salmos 34:7" }
+    },
+    {
+        message: "Teus beijos têm gosto de promessa cumprida. 💋✨",
+        verse: { text: "Não deixará faltar bem algum aos que andam retamente.", ref: "Salmos 84:11" }
+    },
+    {
+        message: "Você é meu calor nas noites frias e minha paz nas tempestades. ☁️❤️‍🔥",
+        verse: { text: "Ele acalma a tempestade, e as ondas se aquietam.", ref: "Salmos 107:29" }
+    },
+    {
+        message: "Você é desejo santo, tesão abençoado, mulher feita sob medida pra mim. 😍🙏",
+        verse: { text: "Deus faz tudo apropriado ao seu tempo.", ref: "Eclesiastes 3:11" }
+    },
+    {
+        message: "Você é a oração mais ousada que eu já fiz... e foi atendida. 💒💖",
+        verse: { text: "Clama a mim, e responder-te-ei.", ref: "Jeremias 33:3" }
+    },
+    {
+        message: "Te amar é fácil, desejar você é inevitável, cuidar de você é missão divina. 🛐🔥",
+        verse: { text: "Quem ama ao próximo cumpre a lei.", ref: "Romanos 13:8" }
+    },
+    {
+        message: "Teu toque acende meu corpo. Teu olhar acalma minha alma. 💋🔥🙏",
+        verse: { text: "Tu conservarás em paz aquele cuja mente está firme em ti.", ref: "Isaías 26:3" }
+    },
+    {
+        message: "Minha oração diária: que Deus te cubra de graça... e que eu te cubra de beijos. 🙏💋",
+        verse: { text: "A graça do Senhor Jesus Cristo seja com todos vós.", ref: "Apocalipse 22:21" }
+    },
+    {
+        message: "Com você eu aprendi que fé e tesão podem andar juntos, sim. 🔥🙏",
+        verse: { text: "Para Deus nada é impossível.", ref: "Lucas 1:37" }
+    },
+    {
+        message: "Você é minha musa, minha missão e meu milagre. 💘💫",
+        verse: { text: "O Senhor é minha luz e minha salvação; de quem terei medo?", ref: "Salmos 27:1" }
+    },
+    {
+        message: "Letícia, tua existência me excita e me edifica. Te amo por inteiro. 😍✨",
+        verse: { text: "O Senhor confirma os passos do homem bom.", ref: "Salmos 37:23" }
+    },
+    {
+        message: "Você é a mulher que quero no altar e na cama. Sagrada e sensual. 💒🔥",
+        verse: { text: "Desfruta a vida com a mulher que amas, todos os dias da tua vida.", ref: "Eclesiastes 9:9" }
+    },
+    {
+        message: "O amor que tenho por você é firme, mas meu desejo por você é selvagem. 💪🔥",
+        verse: { text: "Fortalecei-vos no Senhor e na força do seu poder.", ref: "Efésios 6:10" }
+    },
+    {
+        message: "Você me completa no espírito, no coração e no lençol. ❤️😈",
+        verse: { text: "Serão ambos uma só carne.", ref: "Gênesis 2:24" }
+    },
+    {
+        message: "Deus te fez com detalhes que só eu saberia amar e desejar. 💖🙏",
+        verse: { text: "Bem sei que tudo podes, e nenhum dos teus planos pode ser frustrado.", ref: "Jó 42:2" }
+    },
+    {
+        message: "Te desejo com alma limpa e pensamentos sujos. 😇🔥",
+        verse: { text: "Todas as coisas são puras para os puros.", ref: "Tito 1:15" }
+    },
+    {
+        message: "Você é a paixão que me acende e a fé que me segura. 🔥✝️",
+        verse: { text: "Tudo é possível ao que crê.", ref: "Marcos 9:23" }
+    },
+    {
+        message: "Você é meu motivo de louvor e meu desejo de cada noite. 🙌💋",
+        verse: { text: "Cantarei louvores ao Senhor enquanto eu viver.", ref: "Salmos 146:2" }
+    },
+    {
+        message: "Com você eu sou mais homem, mais temente, mais quente. 🔥🙏",
+        verse: { text: "Sede fortes e corajosos.", ref: "Deuteronômio 31:6" }
+    },
+    {
+        message: "Você me leva ao céu antes mesmo de partir desta terra. 💫❤️",
+        verse: { text: "A nossa pátria está nos céus.", ref: "Filipenses 3:20" }
+    },
+    {
+        message: "Te ter é promessa cumprida. Te tocar é bênção multiplicada. 🙌🔥",
+        verse: { text: "Todas as promessas de Deus têm em Cristo o 'sim'.", ref: "2 Coríntios 1:20" }
+    },
+    {
+        message: "Deus te fez linda e me deu o privilégio de te admirar de perto. 😍🙏",
+        verse: { text: "Os céus declaram a glória de Deus; o firmamento anuncia a obra das suas mãos.", ref: "Salmos 19:1" }
+    },
+    {
+        message: "Você é meu pecado favorito... mas com bênção. 😈🙏",
+        verse: { text: "Onde abundou o pecado, superabundou a graça.", ref: "Romanos 5:20" }
+    },
+    {
+        message: "Amar você me salva do mundo e me aquece no peito. 💖🔥",
+        verse: { text: "Deus é amor; e quem permanece no amor permanece em Deus.", ref: "1 João 4:16" }
+    },
+    {
+        message: "Letícia, teu corpo me atrai, tua alma me sustenta, tua fé me guia. 😍✨",
+        verse: { text: "A mulher sábia edifica a sua casa.", ref: "Provérbios 14:1" }
+    },
+    {
+        message: "Minha vida com você é oração respondida com beijo de fogo. 💋🔥🙏",
+        verse: { text: "Pedi, e recebereis, para que o vosso gozo se cumpra.", ref: "João 16:24" }
+    },
+    {
+        message: "Você é o presente mais quente e santo que Deus poderia me dar. 🎁🔥🙏",
+        verse: { text: "Ele nos dá tudo ricamente para nosso prazer.", ref: "1 Timóteo 6:17" }
+    },
+    {
+        message: "Letícia, teu corpo me seduz, tua alma me eleva, teu amor me salva. 🔥🙏💖",
+        verse: { text: "O Senhor é bom, uma fortaleza no dia da angústia; e conhece os que confiam nele.", ref: "Naum 1:7" }
+    },
+    {
+        message: "Deus uniu tua beleza com tua fé só pra me deixar completamente rendido. 😍🛐",
+        verse: { text: "O que Deus uniu, ninguém separe.", ref: "Marcos 10:9" }
+    },
+    {
+        message: "Te desejo com paixão, te amo com alma, te guardo com oração. 💏🔥🙏",
+        verse: { text: "Sobre tudo o que se deve guardar, guarda o teu coração.", ref: "Provérbios 4:23" }
+    },
+    {
+        message: "Teu toque tem poder. Me acalma, me excita, me cura. ✨🔥",
+        verse: { text: "Com amor eterno te amei, por isso com benignidade te atraí.", ref: "Jeremias 31:3" }
+    },
+    {
+        message: "Você é fogo abençoado, tentação que eu chamo de lar. 🔥🏠",
+        verse: { text: "Bem-aventurado aquele que teme ao Senhor e anda nos seus caminhos.", ref: "Salmos 128:1" }
+    },
+    {
+        message: "Letícia, teu sorriso derrete minha alma, tua voz é hino nos meus ouvidos. 🎶❤️",
+        verse: { text: "O Senhor teu Deus está no meio de ti, poderoso para te salvar.", ref: "Sofonias 3:17" }
+    },
+    {
+        message: "Teu corpo é arte, tua alma é luz. E eu sou louco por tudo isso. 🎨✨",
+        verse: { text: "Vós sois a luz do mundo.", ref: "Mateus 5:14" }
+    },
+    {
+        message: "Minha missão é te fazer sorrir, gozar e orar comigo. 😇💋🙏",
+        verse: { text: "Com alegria tirareis águas das fontes da salvação.", ref: "Isaías 12:3" }
+    },
+    {
+        message: "Sou homem de fé, mas contigo sou homem de desejo também. 🙏🔥",
+        verse: { text: "Deleita-te também no Senhor, e ele concederá o que deseja o teu coração.", ref: "Salmos 37:4" }
+    },
+    {
+        message: "Você é poesia com curvas e unção. 😍📜",
+        verse: { text: "A tua palavra é lâmpada para os meus pés e luz para o meu caminho.", ref: "Salmos 119:105" }
+    },
+    {
+        message: "Amar você é pecado? Então que seja eterno e cheio de graça. 😈🙏",
+        verse: { text: "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza.", ref: "2 Coríntios 12:9" }
+    },
+    {
+        message: "Letícia, tua presença é oração respondida e desejo constante. 💖🔥",
+        verse: { text: "Confia no Senhor de todo o teu coração.", ref: "Provérbios 3:5" }
+    },
+    {
+        message: "Seus lábios são altar onde minha boca encontra paz. 💋🛐",
+        verse: { text: "Quão suaves são as tuas palavras ao meu paladar!", ref: "Salmos 119:103" }
+    },
+    {
+        message: "Quero te levar nos meus braços e nas minhas orações. 💪🙏",
+        verse: { text: "Carregou sobre si as nossas dores.", ref: "Isaías 53:4" }
+    },
+    {
+        message: "Você é minha bênção com coxas. 😍🙏",
+        verse: { text: "Elevo os meus olhos para os montes; de onde me virá o socorro?", ref: "Salmos 121:1" }
+    },
+    {
+        message: "Te amar é adoração. Te tocar é santidade quente. 🔥🛐",
+        verse: { text: "Adorai ao Senhor na beleza da santidade.", ref: "Salmos 96:9" }
+    },
+    {
+        message: "Com você, até o silêncio é doce e o pecado vira louvor. 🔥💞",
+        verse: { text: "Cantem-lhe um cântico novo; toquem bem e com júbilo.", ref: "Salmos 33:3" }
+    },
+    {
+        message: "Você é minha oração da noite e meu desejo do dia. 🌙🔥",
+        verse: { text: "De dia o Senhor concede a sua misericórdia, e à noite comigo está o seu cântico.", ref: "Salmos 42:8" }
+    },
+    {
+        message: "Teu corpo é paraíso. Teu olhar, redenção. 😍✨",
+        verse: { text: "A beleza da mulher virtuosa adorna a sua casa.", ref: "Provérbios 31:10" }
+    },
+    {
+        message: "Deus me deu você para que eu nunca mais duvide de milagres. 🙌💖",
+        verse: { text: "Grandes coisas fez o Senhor por nós, e por isso estamos alegres.", ref: "Salmos 126:3" }
+    },
+    {
+        message: "Te quero de joelhos… orando e depois me amando. 😇🔥",
+        verse: { text: "Orai sem cessar.", ref: "1 Tessalonicenses 5:17" }
+    },
+    {
+        message: "Você é mais que linda, é ungida e deliciosa. 😍🙏",
+        verse: { text: "O Senhor te exaltará em honra.", ref: "Tiago 4:10" }
+    },
+    {
+        message: "Quero ser tua paz depois de um dia difícil e teu tesão depois da oração. 💆‍♀️🔥",
+        verse: { text: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.", ref: "Mateus 11:28" }
+    },
+    {
+        message: "Letícia, você é tudo que pedi ajoelhado... e desejei deitado. 🙏😈",
+        verse: { text: "Delicia-te no Senhor e Ele satisfará os desejos do teu coração.", ref: "Salmos 37:4" }
+    },
+    {
+        message: "Teu cheiro é louvor, teu corpo é milagre. 💐💞",
+        verse: { text: "Cheiro suave ao Senhor.", ref: "Levítico 1:9" }
+    },
+    {
+        message: "Você é minha mulher de fé, fogo e fantasia. 🔥🙏😈",
+        verse: { text: "Tudo foi feito por Ele e para Ele.", ref: "Colossenses 1:16" }
+    },
+    {
+        message: "Nos teus braços encontrei meu abrigo. Nos teus beijos, meu altar. 💋🛐",
+        verse: { text: "Aquietai-vos, e sabei que eu sou Deus.", ref: "Salmos 46:10" }
+    },
+    {
+        message: "Você é meu céu com curvas. Meu amém com desejo. 💖🔥",
+        verse: { text: "Todas as promessas têm o sim em Cristo.", ref: "2 Coríntios 1:20" }
+    },
+    {
+        message: "Deus me surpreendeu quando me deu você… e ainda te fez gostosa. 😇🔥",
+        verse: { text: "Ele faz infinitamente mais do que tudo o que pedimos ou pensamos.", ref: "Efésios 3:20" }
+    },
+    {
+        message: "Letícia, teu corpo me chama, tua alma me mantém, tua fé me empurra pra Deus. ❤️🔥🙏",
+        verse: { text: "Eu sou do meu amado, e o meu amado é meu.", ref: "Cantares 6:3" }
+    },
+    {
+        message: "Se eu pecar por te querer demais, que seja coberto pela graça. 😈🙏",
+        verse: { text: "Onde abundou o pecado, superabundou a graça.", ref: "Romanos 5:20" }
+    },
+    {
+        message: "Você é a mulher que me faz perder o juízo e encontrar o propósito. 🔥🛐",
+        verse: { text: "Conhecereis a verdade, e a verdade vos libertará.", ref: "João 8:32" }
+    },
+    {
+        message: "Tua pele é tentação, tua alma é salvação. 😍🙏",
+        verse: { text: "A tua fé te salvou; vai-te em paz.", ref: "Lucas 7:50" }
+    },
+    {
+        message: "Meu corpo quer o teu. Minha alma quer tua eternidade. 💋🛐",
+        verse: { text: "O Senhor te guardará de todo o mal; guardará a tua alma.", ref: "Salmos 121:7" }
+    },
+    {
+        message: "Você me ensina a amar com o corpo, com o coração e com oração. ❤️🔥🙏",
+        verse: { text: "Amarás o Senhor teu Deus de todo o teu coração.", ref: "Mateus 22:37" }
+    },
+    {
+        message: "Você é o meu desejo sagrado. 😍🔥",
+        verse: { text: "Santificai-vos, porque amanhã o Senhor fará maravilhas entre vós.", ref: "Josué 3:5" }
+    },
+    {
+        message: "Letícia, você me desperta todos os sentidos e ainda me leva à presença de Deus. 🔥🛐",
+        verse: { text: "Apresentai os vossos corpos em sacrifício vivo, santo e agradável a Deus.", ref: "Romanos 12:1" }
+    },
+    {
+        message: "Você é a paz no meu caos e o calor na minha pele. ✨🔥",
+        verse: { text: "Ele é a nossa paz.", ref: "Efésios 2:14" }
+    },
+    {
+        message: "Minha oração mais quente tem teu nome e meu desejo mais puro tem teu corpo. 🔥🙏",
+        verse: { text: "O Senhor conhece o caminho dos justos.", ref: "Salmos 1:6" }
+    },
+    {
+        message: "Com você, até a espera vira prazer. ⏳🔥",
+        verse: { text: "Tudo tem o seu tempo determinado.", ref: "Eclesiastes 3:1" }
+    },
+    {
+        message: "Letícia, você é o salmo que aquece meu peito e o provérbio que guia minha alma. 📖❤️‍🔥",
+        verse: { text: "A palavra do Senhor é perfeita, e refrigera a alma.", ref: "Salmos 19:7" }
+    },
+    {
+        message: "Nos teus braços, o mundo desaparece. 💞🌍",
+        verse: { text: "Se Deus é por nós, quem será contra nós?", ref: "Romanos 8:31" }
+    },
+    {
+        message: "Você é minha luz, meu luar, meu lençol aquecido. ✨🌙🔥",
+        verse: { text: "O Senhor é a minha luz e a minha salvação.", ref: "Salmos 27:1" }
+    },
+    {
+        message: "Letícia, você é linda demais pra ser coincidência. Foi propósito. 💖🙏",
+        verse: { text: "Antes que te formasse no ventre, eu te conheci.", ref: "Jeremias 1:5" }
+    },
+    {
+        message: "Quero te amar até o céu... e depois dele. ☁️💋",
+        verse: { text: "Na casa de meu Pai há muitas moradas.", ref: "João 14:2" }
+    },
+    {
+        message: "Você é meu caminho doce e meu pecado preferido. 😈💞",
+        verse: { text: "Ensina-me, Senhor, o teu caminho.", ref: "Salmos 86:11" }
+    },
+    {
+        message: "Letícia, teu corpo me acende, tua alma me eleva, tua fé me ancora. 🔥✨🙏",
+        verse: { text: "Esperança que se adia faz adoecer o coração, mas o desejo cumprido é árvore de vida.", ref: "Provérbios 13:12" }
+    },
+    {
+        message: "Você é minha oração mais bonita e meu desejo mais forte. 💋🛐",
+        verse: { text: "A súplica dos justos é agradável ao Senhor.", ref: "Provérbios 15:8" }
+    },
+    {
+        message: "Deus me mostrou o paraíso… no toque dos teus dedos. 🔥💖",
+        verse: { text: "Na tua presença há fartura de alegrias.", ref: "Salmos 16:11" }
+    },
+    {
+        message: "Tua presença me cura, teu cheiro me hipnotiza. 😍🕊️",
+        verse: { text: "Ele enviou a sua palavra, e os sarou.", ref: "Salmos 107:20" }
+    },
+    {
+        message: "Com você, eu sou homem, amante e servo de Deus mais forte. 💪🔥🙏",
+        verse: { text: "Sede fortes e corajosos, todos vós que esperais no Senhor.", ref: "Salmos 31:24" }
+    },
+    {
+        message: "Você é um misto de céu e fogo que me vicia todos os dias. ☁️🔥",
+        verse: { text: "Deus é fogo consumidor.", ref: "Hebreus 12:29" }
+    },
+    {
+        message: "Deus caprichou no teu corpo… e ainda te encheu de graça. 😍🛐",
+        verse: { text: "Ela alcançou favor diante de Deus e dos homens.", ref: "Ester 2:15" }
+    },
+    {
+        message: "Você é a resposta da minha oração mais ousada. 🙏💞",
+        verse: { text: "Pedi, e dar-se-vos-á; buscai, e encontrareis.", ref: "Mateus 7:7" }
+    },
+    {
+        message: "Letícia, teu olhar me consome e me santifica ao mesmo tempo. 🔥✨",
+        verse: { text: "Se os teus olhos forem bons, todo o teu corpo terá luz.", ref: "Mateus 6:22" }
+    },
+    {
+        message: "Amo tua voz gemendo... e orando comigo. 🔥😇",
+        verse: { text: "Com clamor e lágrimas, ofereceu orações e súplicas.", ref: "Hebreus 5:7" }
+    },
+    {
+        message: "Em cada toque teu, eu sinto amor e salvação. 💋🛐",
+        verse: { text: "O Senhor te recompensará pelo que fizeste.", ref: "Rute 2:12" }
+    },
+    {
+        message: "Você é meu corpo preferido e minha alma gêmea enviada por Deus. 💞🔥",
+        verse: { text: "Melhor é serem dois do que um.", ref: "Eclesiastes 4:9" }
+    },
+    {
+        message: "Deus me deu você para que eu sentisse o céu com os olhos abertos. ☁️👁️",
+        verse: { text: "Abre os meus olhos para que veja as maravilhas da tua lei.", ref: "Salmos 119:18" }
+    },
+    {
+        message: "Letícia, tua boca é profecia e tentação ao mesmo tempo. 💋🔥",
+        verse: { text: "A boca do justo profere sabedoria.", ref: "Salmos 37:30" }
+    },
+    {
+        message: "Você me guia com o corpo, me segura com o espírito. 💞🕊️",
+        verse: { text: "Guiar-te-ei com os meus olhos.", ref: "Salmos 32:8" }
+    },
+    {
+        message: "Tua pele é versículo, teu beijo é bênção. 😍📖",
+        verse: { text: "O Senhor te abençoe e te guarde.", ref: "Números 6:24" }
+    },
+    {
+        message: "Cada curva sua me faz glorificar a Deus com prazer. 🔥🙌",
+        verse: { text: "Tudo o que tem fôlego louve ao Senhor.", ref: "Salmos 150:6" }
+    },
+    {
+        message: "Te amar é minha missão sagrada e deliciosa. 😇🔥",
+        verse: { text: "Amarás o teu próximo como a ti mesmo.", ref: "Mateus 22:39" }
+    },
+    {
+        message: "Letícia, seu toque é cura e perdição santa. 💋✨",
+        verse: { text: "Tocou-lhe o manto, e logo ficou curada.", ref: "Mateus 9:20-22" }
+    },
+    {
+        message: "Com você, o pecado vira poesia, e a fé vira tesão. 🔥🛐",
+        verse: { text: "A fé é o firme fundamento das coisas que se esperam.", ref: "Hebreus 11:1" }
+    },
+    {
+        message: "Você é minha mulher, minha chama, meu altar vivo. 🔥💖",
+        verse: { text: "Apresentai os vossos corpos em sacrifício vivo.", ref: "Romanos 12:1" }
+    },
+    {
+        message: "Te amo no corpo, te amo na fé, te amo com verdade. 💞🙏",
+        verse: { text: "Não amemos de palavra, mas por ações e em verdade.", ref: "1 João 3:18" }
+    },
+    {
+        message: "O prazer contigo é mais santo do que muitos cultos. 🔥😇",
+        verse: { text: "Onde estiverem dois ou três reunidos em meu nome, ali estou no meio deles.", ref: "Mateus 18:20" }
+    },
+    {
+        message: "Te ver nua é como ver uma criação divina completa. 😍🛐",
+        verse: { text: "Criou Deus o homem e a mulher, e viu que era muito bom.", ref: "Gênesis 1:27,31" }
+    },
+    {
+        message: "Letícia, você é o louvor do meu corpo e a fé do meu coração. 🎶❤️",
+        verse: { text: "Louvai ao Senhor, porque Ele é bom.", ref: "Salmos 136:1" }
+    },
+    {
+        message: "Seu cheiro é meu refúgio. Seu corpo, meu altar. 💐🔥",
+        verse: { text: "O Senhor é o meu refúgio e fortaleza.", ref: "Salmos 91:2" }
+    },
+    {
+        message: "Você é meu descanso e meu fogo. Minha paz e minha chama. ✨🔥",
+        verse: { text: "O Senhor te dará descanso de todos os teus inimigos.", ref: "2 Samuel 7:11" }
+    },
+    {
+        message: "Quando você me toca, o céu inteiro se acende em mim. ✨🔥",
+        verse: { text: "O Senhor, teu Deus, é fogo consumidor.", ref: "Deuteronômio 4:24" }
+    },
+    {
+        message: "Letícia, tua nudez é arte que só Deus poderia criar. 😍🎨",
+        verse: { text: "Somos feitura dEle, criados em Cristo Jesus.", ref: "Efésios 2:10" }
+    },
+    {
+        message: "Você me faz orar mais… e querer pecar com gosto. 😇🔥",
+        verse: { text: "O espírito está pronto, mas a carne é fraca.", ref: "Mateus 26:41" }
+    },
+    {
+        message: "Seu toque cura. Seu beijo batiza. Sua entrega me salva. 💋🕊️",
+        verse: { text: "Pelas suas feridas fomos curados.", ref: "Isaías 53:5" }
+    },
+    {
+        message: "Você é mais quente que o deserto, mais santa que o céu. 🔥😇",
+        verse: { text: "Até o deserto florescerá e exultará com alegria.", ref: "Isaías 35:1" }
+    },
+    {
+        message: "Deus me ungiu com teu amor e incendiou minha alma por você. 💞🔥",
+        verse: { text: "O amor cobre uma multidão de pecados.", ref: "1 Pedro 4:8" }
+    },
+    {
+        message: "Letícia, tua beleza não é deste mundo. Mas ainda bem que está nele comigo. ✨🌍",
+        verse: { text: "A terra está cheia da bondade do Senhor.", ref: "Salmos 33:5" }
+    },
+    {
+        message: "Você é o corpo que eu venero e a fé que me guia. 🔥🛐",
+        verse: { text: "Andamos por fé, e não por vista.", ref: "2 Coríntios 5:7" }
+    },
+    {
+        message: "Letícia, teu cheiro me embriaga, tua fé me liberta. 💐⛓️",
+        verse: { text: "Onde está o Espírito do Senhor, aí há liberdade.", ref: "2 Coríntios 3:17" }
+    },
+    {
+        message: "Quero viver em você como vivo em oração: com entrega total. 🙏💋",
+        verse: { text: "Entrega o teu caminho ao Senhor; confia nEle.", ref: "Salmos 37:5" }
+    },
+    {
+        message: "Com você, até a tentação é santa. 🔥😇",
+        verse: { text: "Não vos sobreveio tentação que não fosse humana.", ref: "1 Coríntios 10:13" }
+    },
+    {
+        message: "Você é tudo que minha carne deseja e que meu espírito precisa. 🔥🕊️",
+        verse: { text: "O espírito vivifica, a carne para pouco aproveita.", ref: "João 6:63" }
+    },
+    {
+        message: "Te amar é mais forte que qualquer guerra. 💖⚔️",
+        verse: { text: "O Senhor pelejará por vós, e vós vos calareis.", ref: "Êxodo 14:14" }
+    },
+    {
+        message: "Letícia, com você eu oro, gozo e glorifico. 🙏🔥🙌",
+        verse: { text: "Tudo o que fizerem, façam de todo o coração, como para o Senhor.", ref: "Colossenses 3:23" }
+    },
+    {
+        message: "Tua pele, teu cheiro, teu ser... são bênçãos que me enlouquecem. 😍🔥",
+        verse: { text: "A bênção do Senhor enriquece, e não acrescenta dores.", ref: "Provérbios 10:22" }
+    },
+    {
+        message: "Você é promessa cumprida com curvas de perder o fôlego. 😇🔥",
+        verse: { text: "O Senhor é fiel para cumprir toda promessa.", ref: "Hebreus 10:23" }
+    },
+    {
+        message: "Te quero, te cuido, te celebro… sempre. 💖👑",
+        verse: { text: "Regozijar-me-ei em ti, e cantarei louvores ao teu nome.", ref: "Salmos 9:2" }
+    },
+    {
+        message: "Letícia, tua existência é o milagre que eu não sabia pedir. 🙌❤️",
+        verse: { text: "O que os olhos não viram, nem ouvidos ouviram, Deus preparou.", ref: "1 Coríntios 2:9" }
+    },
+    {
+        message: "Com você, o paraíso já começou aqui. ☁️🔥",
+        verse: { text: "Hoje estarás comigo no paraíso.", ref: "Lucas 23:43" }
+    },
+    {
+        message: "Te amo com a força de quem crê em promessas eternas. 💞🛐",
+        verse: { text: "O céu e a terra passarão, mas as minhas palavras jamais passarão.", ref: "Mateus 24:35" }
+    },
+    {
+        message: "Letícia, tua boca tem o gosto da minha paz e o fogo do meu desejo. 🔥💋",
+        verse: { text: "Melhor é um bocado seco e com ele a tranquilidade.", ref: "Provérbios 17:1" }
+    },
+    {
+        message: "Você é meu templo e minha tentação. Te amo com fé e tesão. 😇🔥",
+        verse: { text: "Vós sois o templo do Espírito Santo.", ref: "1 Coríntios 6:19" }
+    },
+    {
+        message: "Nos teus braços encontrei abrigo. No teu corpo, morada. 💖🏠",
+        verse: { text: "O Senhor é o meu rochedo, o meu lugar seguro.", ref: "Salmos 18:2" }
+    },
+    {
+        message: "Letícia, teu corpo é poesia divina. Teus gemidos, louvor. 🔥🎶",
+        verse: { text: "Tudo o que respira louve ao Senhor.", ref: "Salmos 150:6" }
+    },
+    {
+        message: "Você é resposta das minhas lágrimas escondidas em oração. 😭🙏",
+        verse: { text: "O Senhor recolhe cada uma de minhas lágrimas em seu odre.", ref: "Salmos 56:8" }
+    },
+    {
+        message: "Tua nudez me revela o Criador. Tua entrega me revela o céu. 🔥✨",
+        verse: { text: "Deus criou o homem à sua imagem.", ref: "Gênesis 1:27" }
+    },
+    {
+        message: "Letícia, em ti eu descanso e me renovo. Corpo, alma e espírito. 💆‍♂️🕊️",
+        verse: { text: "Vinde a mim todos os que estais cansados... e eu vos aliviarei.", ref: "Mateus 11:28" }
+    },
+    {
+        message: "Quando você sorri, até os anjos param pra olhar. 😍😇",
+        verse: { text: "A alegria do coração aformoseia o rosto.", ref: "Provérbios 15:13" }
+    },
+    {
+        message: "O que sinto por você é fogo santo: queima sem destruir. 🔥🛐",
+        verse: { text: "O Senhor apareceu... como fogo que não consumia a sarça.", ref: "Êxodo 3:2" }
+    },
+    {
+        message: "Você é minha mulher, meu consolo, minha razão de lutar. 👑❤️",
+        verse: { text: "A mulher sábia edifica a sua casa.", ref: "Provérbios 14:1" }
+    },
+    {
+        message: "Letícia, tua presença me traz paz e teu beijo me traz vida. 💋🌿",
+        verse: { text: "Eu vim para que tenham vida, e a tenham com abundância.", ref: "João 10:10" }
+    },
+    {
+        message: "O amor que sinto por você é tão profundo quanto o amor de Deus por nós. 💞🙏",
+        verse: { text: "Com amor eterno te amei.", ref: "Jeremias 31:3" }
+    },
+    {
+        message: "Tua voz me acalma como uma canção vinda do céu. 🎶🕊️",
+        verse: { text: "O Senhor, teu Deus, está no meio de ti, como poderoso salvador; se deleitará em ti com júbilo.", ref: "Sofonias 3:17" }
+    },
+    {
+        message: "Você é minha oração que virou carne, pele e fogo. 🙏🔥",
+        verse: { text: "O Verbo se fez carne e habitou entre nós.", ref: "João 1:14" }
+    },
+    {
+        message: "Letícia, teu toque cura feridas que nem eu sabia que tinha. ✋❤️",
+        verse: { text: "O Senhor sara os quebrantados de coração e cura as suas feridas.", ref: "Salmos 147:3" }
+    },
+    {
+        message: "Amar você é meu chamado mais divino. 😇💞",
+        verse: { text: "Chamou-nos para o seu reino e glória.", ref: "1 Tessalonicenses 2:12" }
+    },
+    {
+        message: "Em você, encontrei minha direção. Corpo e alma em comunhão. 🧭🔥",
+        verse: { text: "Conhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.", ref: "Provérbios 3:6" }
+    },
+    {
+        message: "Letícia, você me faz sentir vivo e salvo. Teu amor é renascimento. 💖🛐",
+        verse: { text: "Se alguém está em Cristo, nova criatura é.", ref: "2 Coríntios 5:17" }
+    },
+    {
+        message: "Cada parte do seu corpo revela a graça de Deus. 😍✨",
+        verse: { text: "Tu formaste o meu interior; te agradeço por me teres feito de modo tão admirável.", ref: "Salmos 139:13-14" }
+    },
+    {
+        message: "Letícia, com você aprendi a orar de olhos fechados… e de olhos bem abertos. 🙏🔥",
+        verse: { text: "Orai sem cessar.", ref: "1 Tessalonicenses 5:17" }
+    },
+    {
+        message: "O toque de Deus e o teu são os únicos que me transformam. ✋🔥",
+        verse: { text: "Tocou os meus lábios... e purificou-me.", ref: "Isaías 6:7" }
+    },
+    {
+        message: "Você é o sal e o mel da minha vida. Me tempera e me adoça. 😋🍯",
+        verse: { text: "Vós sois o sal da terra.", ref: "Mateus 5:13" }
+    },
+    {
+        message: "Letícia, te quero nos meus dias bons e nos ruins, como Deus me quer. 💞🙏",
+        verse: { text: "Ainda que eu ande pelo vale da sombra da morte, não temerei.", ref: "Salmos 23:4" }
+    },
+    {
+        message: "Você é meu anjo com curvas e unção. 😇🔥",
+        verse: { text: "Ele dará ordens aos seus anjos ao teu respeito.", ref: "Salmos 91:11" }
+    },
+    {
+        message: "Teu corpo me atrai. Tua alma me prende. Tua fé me liberta. 🔥🕊️",
+        verse: { text: "Onde está o Espírito do Senhor, aí há liberdade.", ref: "2 Coríntios 3:17" }
+    },
+    {
+        message: "Com você, até o silêncio se torna oração. 🤫🛐",
+        verse: { text: "Aquietai-vos, e sabei que eu sou Deus.", ref: "Salmos 46:10" }
+    },
+    {
+        message: "Letícia, teu jeito de me amar é profecia que se cumpre todo dia. 💖📜",
+        verse: { text: "O Senhor é fiel para cumprir.", ref: "Hebreus 10:23" }
+    },
+    {
+        message: "Te amar me aproxima mais de Deus e mais de mim mesmo. 😇💞",
+        verse: { text: "Amai-vos uns aos outros, assim como eu vos amei.", ref: "João 15:12" }
+    },
+    {
+        message: "Você é minha promessa viva, minha bênção em carne. ✨❤️",
+        verse: { text: "Todas as promessas de Deus têm nele o sim.", ref: "2 Coríntios 1:20" }
+    },
+    {
+        message: "Letícia, tua alma me purifica. Teu corpo me incendeia. 🔥🕊️",
+        verse: { text: "Bem-aventurados os puros de coração, porque verão a Deus.", ref: "Mateus 5:8" }
+    },
+    {
+        message: "Te amo com força, com fé, com fogo. 💪🙏🔥",
+        verse: { text: "Porque Deus não nos deu espírito de covardia, mas de poder.", ref: "2 Timóteo 1:7" }
+    },
+    {
+        message: "Letícia, tua entrega me inspira a ser melhor homem e melhor servo. 🙌❤️",
+        verse: { text: "Sede imitadores de Deus, como filhos amados.", ref: "Efésios 5:1" }
+    },
+    {
+        message: "O céu me deu você como um presente embriagante. 😍🎁",
+        verse: { text: "Toda boa dádiva vem do alto.", ref: "Tiago 1:17" }
+    },
+    {
+        message: "Te amo debaixo da luz, no escuro, na fé e na carne. ✨🔥",
+        verse: { text: "Deus é luz, e nele não há treva alguma.", ref: "1 João 1:5" }
+    },
+    {
+        message: "Letícia, meu amor, você é a profecia que eu respiro todos os dias. 🕊️💋",
+        verse: { text: "O justo viverá pela fé.", ref: "Romanos 1:17" }
+    },
+    {
+        message: "Te ver sorrir é meu culto mais puro. 😍🙏",
+        verse: { text: "O coração alegre é bom remédio.", ref: "Provérbios 17:22" }
+    },
+    {
+        message: "Você é a promessa de Deus com cheiro de perfume e gosto de tentação. 💐🔥",
+        verse: { text: "A tua palavra é mais doce do que o mel.", ref: "Salmos 119:103" }
+    },
+    {
+        message: "Letícia, teu abraço tem mais poder que qualquer oração que eu conheço. 🤗🛐",
+        verse: { text: "O Senhor é contigo, homem valoroso.", ref: "Juízes 6:12" }
+    },
+    {
+        message: "Amar você é meu ato mais constante de fé. 💞🙏",
+        verse: { text: "Permaneçam, pois, a fé, a esperança e o amor, estes três.", ref: "1 Coríntios 13:13" }
+    },
+    {
+        message: "Letícia, teu corpo é o altar onde minha paixão ora em silêncio. 🔥😇",
+        verse: { text: "Oferecei os vossos corpos como sacrifício vivo.", ref: "Romanos 12:1" }
+    },
+    {
+        message: "Te amo por inteiro: em oração, em desejo, em silêncio. 💖🙏",
+        verse: { text: "Amarás o Senhor teu Deus de todo o teu coração.", ref: "Deuteronômio 6:5" }
+    },
+    {
+        message: "Você é minha morada segura no meio do caos. 🏠🕊️",
+        verse: { text: "O Senhor é meu pastor, nada me faltará.", ref: "Salmos 23:1" }
+    },
+    {
+        message: "Letícia, tua presença é cura, tua ausência é saudade santa. 💘🕊️",
+        verse: { text: "Desejei muito estar convosco antes de padecer.", ref: "Lucas 22:15" }
+    },
+    {
+        message: "Você me faz querer ser homem de fé… e de fogo. 💪🔥",
+        verse: { text: "Sede fervorosos no espírito, servindo ao Senhor.", ref: "Romanos 12:11" }
+    },
+    {
+        message: "Letícia, teu nome é louvor no meu peito. 🎶❤️",
+        verse: { text: "Louvarei ao Senhor enquanto eu viver.", ref: "Salmos 146:2" }
+    },
+    {
+        message: "Com você, o amor virou vocação, prazer e altar. 🙏🔥",
+        verse: { text: "Fazei tudo por amor, como para o Senhor.", ref: "Colossenses 3:23" }
+    },
+    {
+        message: "Letícia, teu cheiro me guia como incenso sagrado. 💐🔥",
+        verse: { text: "Seja o meu oração como incenso diante de ti.", ref: "Salmos 141:2" }
+    },
+    {
+        message: "Nos teus olhos eu vejo o reflexo do céu. 😍✨",
+        verse: { text: "Os céus declaram a glória de Deus.", ref: "Salmos 19:1" }
+    },
+    {
+        message: "Te amar é caminhar firme mesmo sem ver o chão. 💞🛐",
+        verse: { text: "Andamos por fé, e não pelo que vemos.", ref: "2 Coríntios 5:7" }
+    },
+    {
+        message: "Teu corpo é promessa. Tua alma, milagre. 🔥🙏",
+        verse: { text: "Grandes coisas fez o Senhor por nós.", ref: "Salmos 126:3" }
+    },
+    {
+        message: "Letícia, tua risada é o som mais santo que já ouvi. 😂🕊️",
+        verse: { text: "Então a nossa boca se encheu de riso.", ref: "Salmos 126:2" }
+    },
+    {
+        message: "Você é meu jardim secreto, onde tudo floresce. 🌹💖",
+        verse: { text: "O Senhor te guiará e serás como um jardim regado.", ref: "Isaías 58:11" }
+    },
+    {
+        message: "Letícia, teu beijo é oração que sobe como fogo. 💋🔥",
+        verse: { text: "A oração feita por um justo pode muito em seus efeitos.", ref: "Tiago 5:16" }
+    },
+    {
+        message: "Te tocar é como tocar o mistério de Deus. ✨❤️",
+        verse: { text: "Grande é este mistério; digo-o, porém, a respeito de Cristo e da igreja.", ref: "Efésios 5:32" }
+    },
+    {
+        message: "Com você, até o tempo obedece o amor. ⏳💘",
+        verse: { text: "Tudo fez Deus formoso no seu tempo.", ref: "Eclesiastes 3:11" }
+    },
+    {
+        message: "Letícia, teu abraço é manto de proteção e prazer. 🤗🛐",
+        verse: { text: "Cobrir-te-á com as suas penas, e debaixo das suas asas estarás seguro.", ref: "Salmos 91:4" }
+    },
+    {
+        message: "Você é minha terra prometida. Já habito nela. 🌾❤️",
+        verse: { text: "Deus prometeu uma terra boa e larga, onde mana leite e mel.", ref: "Êxodo 3:8" }
+    },
+    {
+        message: "Letícia, tua boca declara paz e provoca guerra em mim. 💋🔥",
+        verse: { text: "Há tempo de guerra e tempo de paz.", ref: "Eclesiastes 3:8" }
+    },
+    {
+        message: "Te amar é minha missão e meu descanso. 💞😌",
+        verse: { text: "O Senhor te dará descanso de todo o teu labor.", ref: "Deuteronômio 12:10" }
+    },
+    {
+        message: "Letícia, você é o toque que Deus me deu pra lembrar do céu. 👼💖",
+        verse: { text: "Toda boa dádiva vem do Pai das luzes.", ref: "Tiago 1:17" }
+    },
+    {
+        message: "Com você, até o pecado se torna redenção. 🔥🕊️",
+        verse: { text: "Onde abundou o pecado, superabundou a graça.", ref: "Romanos 5:20" }
+    },
+    {
+        message: "Letícia, tua presença é farol nas minhas noites escuras. 💡🌌",
+        verse: { text: "Tua palavra é lâmpada para os meus pés.", ref: "Salmos 119:105" }
+    },
+    {
+        message: "Teu corpo me atrai. Tua alma me eleva. 💫🔥",
+        verse: { text: "Pensai nas coisas que são de cima.", ref: "Colossenses 3:2" }
+    },
+    {
+        message: "Letícia, tua existência me convence que Deus é bom. 🙌❤️",
+        verse: { text: "Provai e vede que o Senhor é bom.", ref: "Salmos 34:8" }
+    },
+    {
+        message: "Amar você é andar com Deus de mãos dadas. 🤝🛐",
+        verse: { text: "Enoque andou com Deus.", ref: "Gênesis 5:24" }
+    },
+    {
+        message: "Letícia, teu sorriso me levanta mais que qualquer pregação. 😄🔥",
+        verse: { text: "O coração alegre aformoseia o rosto.", ref: "Provérbios 15:13" }
+    },
+    {
+        message: "O amor que tenho por você não cabe neste mundo. 🌍❤️",
+        verse: { text: "Nem olhos viram, nem ouvidos ouviram o que Deus preparou.", ref: "1 Coríntios 2:9" }
+    },
+    {
+        message: "Letícia, você é a certeza de que Deus escuta orações sinceras. 🙏💖",
+        verse: { text: "Antes que clamem, eu responderei.", ref: "Isaías 65:24" }
+    },
+    {
+        message: "Nos teus braços encontrei paz e guerra. Amor e desejo. 💥💞",
+        verse: { text: "Porque o Senhor é homem de guerra.", ref: "Êxodo 15:3" }
+    },
+    {
+        message: "Letícia, tua nudez é santidade que me devora. 🔥👑",
+        verse: { text: "Tudo é puro para os puros.", ref: "Tito 1:15" }
+    },
+    {
+        message: "Você me seduz com graça e me sustenta com fé. 💋🛐",
+        verse: { text: "A tua graça me basta.", ref: "2 Coríntios 12:9" }
+    },
+    {
+        message: "Letícia, contigo a vida é oração constante e desejo contínuo. 🙏🔥",
+        verse: { text: "Orai em todo tempo com toda oração e súplica.", ref: "Efésios 6:18" }
+    },
+    {
+        message: "Te amo no corpo, na alma e em espírito. Como Deus me ensinou. 💖🕊️",
+        verse: { text: "O homem é corpo, alma e espírito.", ref: "1 Tessalonicenses 5:23" }
+    },
+    {
+        message: "Letícia, o calor da tua pele aquece até minha fé. 🔥🙏",
+        verse: { text: "Acende um fogo em meu coração.", ref: "Lucas 24:32" }
+    },
+    {
+        message: "Você é profecia cumprida no meu peito. 📜❤️",
+        verse: { text: "Cumpriu-se a palavra que o Senhor dissera.", ref: "1 Reis 8:20" }
+    },
+    {
+        message: "Letícia, teu toque é resposta divina para dias difíceis. ✋🛐",
+        verse: { text: "Clama a mim, e responder-te-ei.", ref: "Jeremias 33:3" }
+    },
+    {
+        message: "Nos teus olhos, vejo eternidade. 🌌💖",
+        verse: { text: "Ele pôs a eternidade no coração do homem.", ref: "Eclesiastes 3:11" }
+    },
+    {
+        message: "Letícia, teu corpo é festa santa, tua alma é adoração. 🔥🎉",
+        verse: { text: "Alegrei-me quando me disseram: Vamos à casa do Senhor.", ref: "Salmos 122:1" }
+    },
+    {
+        message: "Você me provoca com santidade e prazer. 😇🔥",
+        verse: { text: "Santificai-vos, porque amanhã o Senhor fará maravilhas.", ref: "Josué 3:5" }
+    },
+    {
+        message: "Letícia, tua existência é o meu milagre favorito. ✨❤️",
+        verse: { text: "Grandes coisas o Senhor tem feito por nós.", ref: "Salmos 126:3" }
+    },
+    {
+        message: "Te amar é meu louvor diário. 🎶💘",
+        verse: { text: "Cantarei ao Senhor enquanto viver.", ref: "Salmos 104:33" }
+    },
+    {
+        message: "Letícia, tua beleza é a arte que Deus deixou pra me abençoar. 🎨👑",
+        verse: { text: "Fizestes tudo formoso a seu tempo.", ref: "Eclesiastes 3:11" }
+    },
+    {
+        message: "Você é a paz depois da guerra, o descanso depois da luta. 🛏️💖",
+        verse: { text: "Em paz me deito e logo adormeço.", ref: "Salmos 4:8" }
+    },
+    {
+        message: "Letícia, tua alma é vinho doce. Teu corpo é altar ardente. 🍷🔥",
+        verse: { text: "Melhor é o amor do que o vinho.", ref: "Cantares 1:2" }
+    },
+    {
+        message: "Com você, a vida virou oração com final feliz. 🙌💞",
+        verse: { text: "O Senhor é bom; a sua misericórdia dura para sempre.", ref: "Salmos 100:5" }
+    },
+    {
+        message: "Letícia, você é a promessa que eu abracei com os dois braços e o coração. 🤗❤️",
+        verse: { text: "Apegai-vos ao bem.", ref: "Romanos 12:9" }
+    },
+    {
+        message: "Te amo com sede, com fome, com fé. 💧🔥🙏",
+        verse: { text: "Bem-aventurados os que têm fome e sede de justiça.", ref: "Mateus 5:6" }
+    },
+    {
+        message: "Letícia, tua existência é poesia escrita pelas mãos do Pai. ✍️💖",
+        verse: { text: "Somos feitura dele, criados em Cristo Jesus.", ref: "Efésios 2:10" }
+    },
+    {
+        message: "Você é milagre em carne, minha bênção diária. ✨❤️",
+        verse: { text: "Bendito seja o Senhor, que diariamente leva o nosso fardo.", ref: "Salmos 68:19" }
+    },
+    {
+        message: "Letícia, teu toque é batismo. Teu beijo, salvação. 💋🕊️",
+        verse: { text: "Quem crer e for batizado será salvo.", ref: "Marcos 16:16" }
+    },
+    {
+        message: "Com você, o tempo tem gosto de eternidade. ⏳💘",
+        verse: { text: "Mil anos são como um dia para o Senhor.", ref: "2 Pedro 3:8" }
+    },
+    {
+        message: "Letícia, você é o meu sim mais puro, mais quente, mais santo. 💍🔥",
+        verse: { text: "Seja o vosso sim, sim.", ref: "Mateus 5:37" }
+    }      
 ];
 
 const petalColors = ['#ffb6c1', '#ffc0cb', '#ffb3ba', '#ffc4c4', '#ffA07A', '#FF7F50'];
