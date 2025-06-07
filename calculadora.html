@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora | W&L❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-light: #fdf2f8;
+      --bg-gradient-start: #ffe4f0;
+      --bg-gradient-end: #fce7f3;
+      --accent-pink-light: #fbcfe8;
+      --accent-pink-medium: #f472b6;
+      --accent-pink-dark: #d63384;
+      --accent-pink-deep: #880e4f;
+      --text-dark: #333;
+      --text-light: #fff;
+      --shadow-light: rgba(0, 0, 0, 0.08);
+      --shadow-medium: rgba(0, 0, 0, 0.18);
+      --border-radius-main: 20px;
+      --border-radius-button: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .main-container {
+      background: var(--text-light);
+      border-radius: var(--border-radius-main);
+      box-shadow: 0 10px 25px var(--shadow-medium);
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo .heart {
+      color: var(--accent-pink-dark);
+      margin-left: 5px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--accent-pink-dark);
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .icon-nav {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 250px;
+      margin-bottom: 20px;
+    }
+
+    .icon-nav a {
+      color: var(--accent-pink-medium);
+      font-size: 1.5em;
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.2s ease;
+    }
+
+    .icon-nav a:hover, .icon-nav a.active {
+      color: var(--accent-pink-deep);
+      transform: translateY(-2px);
+    }
+
+    .display {
+      background-color: var(--accent-pink-light);
+      padding: 10px 15px;
+      border-radius: var(--border-radius-button);
+      text-align: right;
+      margin-bottom: 15px;
+      font-size: 1.8em;
+      box-shadow: inset 0 2px 5px var(--shadow-light);
+      width: 100%;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: var(--text-dark);
+    }
+
+    #previous-operand {
+      font-size: 0.6em;
+      opacity: 0.6;
+    }
+
+    #current-operand {
+      font-size: 1em;
+      overflow-x: auto;
+    }
+
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+
+    button {
+      padding: 18px;
+      font-size: 1.3em;
+      border: none;
+      border-radius: var(--border-radius-button);
+      cursor: pointer;
+      background-color: var(--accent-pink-light);
+      color: var(--text-dark);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px var(--shadow-light);
+    }
+
+    button:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 3px var(--shadow-light);
+    }
+
+    .btn-number:hover {
+      background-color: var(--accent-pink-medium);
+      color: var(--text-light);
+    }
+
+    .btn-operator {
+      background-color: var(--accent-pink-medium);
+      color: var(--text-light);
+    }
+
+    .btn-operator:hover {
+      background-color: var(--accent-pink-dark);
+    }
+
+    .btn-clear, .btn-del {
+      background-color: var(--accent-pink-dark);
+      color: var(--text-light);
+    }
+
+    .btn-clear:hover, .btn-del:hover {
+      background-color: #ff4d94;
+    }
+
+    .btn-equals {
+      background-color: var(--accent-pink-deep);
+      color: var(--text-light);
+      grid-column: span 2;
+    }
+
+    .btn-equals:hover {
+      background-color: #c71585;
+    }
+
+    .span-2 {
+      grid-column: span 2;
+    }
+
+    .footer {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      text-align: center;
+      font-style: italic;
+      color: var(--accent-pink-dark);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 360px) {
+      .logo {
+        font-size: 1.3rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      .display {
+        font-size: 1.5em;
+        height: 60px;
+      }
+      button {
+        padding: 14px;
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-container">
+    <div class="logo">
+      W&L <span class="heart">❤️</span>
+    </div>
+    <div class="subtitle">Calculadora</div>
+
+<div class="icon-nav">
+  <a href="calculadora.html" class="active" title="Calculadora"><i class="fas fa-calculator"></i></a>
+  <a href="quiz.html" title="Quiz"><i class="fas fa-brain"></i></a>
+  <a href="memoria.html" title="Memória"><i class="fas fa-puzzle-piece"></i></a>
+  <a href="mensagens.html" title="Mensagens"><i class="fas fa-envelope"></i></a>
+</div>
+
+
+
+    <div class="display">
+      <div id="previous-operand"></div>
+      <div id="current-operand">0</div>
+    </div>
+
+    <div class="buttons-grid">
+      <button class="btn-clear span-2" data-action="clear">C</button>
+      <button class="btn-del" data-action="delete">DEL</button>
+      <button class="btn-operator" data-operation="÷">÷</button>
+
+      <button class="btn-number">7</button>
+      <button class="btn-number">8</button>
+      <button class="btn-number">9</button>
+      <button class="btn-operator" data-operation="×">×</button>
+
+      <button class="btn-number">4</button>
+      <button class="btn-number">5</button>
+      <button class="btn-number">6</button>
+      <button class="btn-operator" data-operation="-">-</button>
+
+      <button class="btn-number">1</button>
+      <button class="btn-number">2</button>
+      <button class="btn-number">3</button>
+      <button class="btn-operator" data-operation="+">+</button>
+
+      <button class="btn-number">0</button>
+      <button class="btn-number">.</button>
+      <button class="btn-equals" data-action="equals">=</button>
+    </div>
+
+    <p class="footer">Para minha amada Letícia ❤️</p>
+  </div>
+
+  <script>
+    const previousOperandTextElement = document.getElementById('previous-operand');
+    const currentOperandTextElement = document.getElementById('current-operand');
+    const numberButtons = document.querySelectorAll('.btn-number');
+    const operatorButtons = document.querySelectorAll('.btn-operator');
+    const equalsButton = document.querySelector('[data-action="equals"]');
+    const clearButton = document.querySelector('[data-action="clear"]');
+    const deleteButton = document.querySelector('[data-action="delete"]');
+
+    class Calculator {
+      constructor(prevEl, currEl) {
+        this.prevEl = prevEl;
+        this.currEl = currEl;
+        this.clear();
+      }
+
+      clear() {
+        this.currentOperand = '0';
+        this.previousOperand = '';
+        this.operation = undefined;
+        this.readyForNewNumber = true;
+      }
+
+      delete() {
+        this.currentOperand = this.currentOperand.toString().slice(0, -1);
+        if (this.currentOperand === '') this.currentOperand = '0';
+      }
+
+      appendNumber(number) {
+        if (number === '.' && this.currentOperand.includes('.')) return;
+        if (this.readyForNewNumber) {
+          this.currentOperand = number.toString();
+          this.readyForNewNumber = false;
+        } else if (this.currentOperand === '0' && number !== '.') {
+          this.currentOperand = number.toString();
+        } else {
+          this.currentOperand += number.toString();
+        }
+      }
+
+      chooseOperation(operation) {
+        if (this.currentOperand === '') return;
+        if (this.previousOperand !== '') this.compute();
+        this.operation = operation;
+        this.previousOperand = this.currentOperand;
+        this.currentOperand = '';
+      }
+
+      compute() {
+        const prev = parseFloat(this.previousOperand);
+        const curr = parseFloat(this.currentOperand);
+        if (isNaN(prev) || isNaN(curr)) return;
+        let result;
+        switch (this.operation) {
+          case '+': result = prev + curr; break;
+          case '-': result = prev - curr; break;
+          case '×': result = prev * curr; break;
+          case '÷': result = curr === 0 ? 'Erro' : prev / curr; break;
+          default: return;
+        }
+        this.currentOperand = result.toString();
+        this.operation = undefined;
+        this.previousOperand = '';
+        this.readyForNewNumber = true;
+      }
+
+      updateDisplay() {
+        this.currEl.innerText = this.currentOperand;
+        this.prevEl.innerText = this.operation ? `${this.previousOperand} ${this.operation}` : '';
+      }
+    }
+
+    const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement);
+
+    numberButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        calculator.appendNumber(button.innerText);
+        calculator.updateDisplay();
+      });
+    });
+
+    operatorButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        calculator.chooseOperation(button.dataset.operation);
+        calculator.updateDisplay();
+      });
+    });
+
+    equalsButton.addEventListener('click', () => {
+      calculator.compute();
+      calculator.updateDisplay();
+    });
+
+    clearButton.addEventListener('click', () => {
+      calculator.clear();
+      calculator.updateDisplay();
+    });
+
+    deleteButton.addEventListener('click', () => {
+      calculator.delete();
+      calculator.updateDisplay();
+    });
+  </script>
+
+</body>
+</html>

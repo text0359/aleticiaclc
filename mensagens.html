@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensagens para Você | W&L❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        /* 💖 CSS Responsivo + Tema Rosa (Ajustado para o Novo Layout da Imagem) */
+        :root {
+            --bg-light: #fdf2f8; /* Very light pink background */
+            --bg-gradient-start: #ffe4f0; /* Soft pink for gradient start */
+            --bg-gradient-end: #fce7f3;   /* Lighter pink for gradient end */
+            --accent-pink-light: #fbcfe8; /* Lighter pink for elements (card border, etc) */
+            --accent-pink-medium: #f472b6; /* Medium pink for icons, verse reference */
+            --accent-pink-dark: #d63384; /* Darker pink for main text, verse title */
+            --accent-pink-deep: #880e4f; /* Deep pink for button */
+            --text-dark: #333;
+            --text-light: #fff;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.18);
+            --border-radius-main: 25px;
+            --border-radius-card: 18px;
+            --button-radius: 40px; /* Very rounded button */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* No padding-top for fixed header, as it's now internal to main-container */
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+            overflow-x: hidden; /* Prevent horizontal scroll from petals */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle fill="%23fcecf5" cx="10" cy="10" r="2"></circle></svg>');
+            background-repeat: repeat;
+            background-size: 20px 20px;
+        }
+
+        /* Main container matches image dimensions */
+        .main-container {
+            background: var(--text-light);
+            border-radius: var(--border-radius-main);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+            padding: 25px; /* Consistent padding based on image */
+            width: 90%; /* Responsive width */
+            max-width: 360px; /* Crucial for matching the narrow, tall look from the image */
+            margin: 30px auto; /* Margin from top of body */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1; /* Ensure container is above petal container */
+            border: 2px solid var(--accent-pink-light);
+        }
+
+        .logo {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.8rem; /* Adjusted to match image */
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .logo .heart {
+            color: var(--accent-pink-dark);
+            margin-left: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.05rem; /* Adjusted to match image */
+            color: var(--accent-pink-dark);
+            margin-bottom: 20px; /* Space below subtitle */
+            font-weight: 500;
+        }
+
+        /* Icon Navigation (as per image) */
+        .icon-nav {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 200px; /* Constrain icon group width */
+            margin-bottom: 25px; /* Space below icons */
+            padding: 5px 0; /* Some vertical padding for icons */
+        }
+        .icon-nav a {
+            color: var(--accent-pink-medium); /* Default icon color */
+            font-size: 1.8em; /* Size of the icons */
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px; /* Make clickable area slightly larger */
+        }
+        .icon-nav a:hover {
+            color: var(--accent-pink-deep);
+            transform: translateY(-2px);
+        }
+        .icon-nav a.active {
+            color: var(--accent-pink-deep); /* Active icon color */
+            /* No explicit box-shadow in image, but good UX */
+        }
+
+        /* Message Cards */
+        .message-card {
+            background-color: var(--text-light); /* White background for cards */
+            border-radius: var(--border-radius-card);
+            box-shadow: 0 6px 15px var(--shadow-light); /* Softer shadow for cards */
+            padding: 20px; /* Padding inside cards */
+            width: calc(100% - 20px); /* Adjust width for padding/margin */
+            margin-bottom: 20px; /* Space between cards */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--accent-pink-light); /* Subtle border for cards */
+            min-height: 100px; /* Minimum height to prevent collapse */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* For message transition */
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .message-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Styles for Romantic Message Card */
+        #romantic-message-card {
+            /* No explicit h2 in the image, so style the p directly */
+        }
+        #romantic-message-card p {
+            font-size: 1.15rem; /* Larger font for main romantic message */
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            font-style: italic; /* Match poetic feel */
+            max-width: 90%; /* Constrain text width */
+        }
+        #romantic-message-card .icon {
+            color: var(--accent-pink-dark); /* Color for icons inside message */
+            margin-left: 5px;
+        }
+
+        /* Styles for Bible Verse Card */
+        #bible-verse-card h2 {
+            font-size: 1.15rem; /* Title "Versículo Inspirador:" */
+            color: var(--accent-pink-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        #bible-verse-card p {
+            font-size: 1rem; /* Verse text size */
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-bottom: 0;
+        }
+        #bible-verse-card .verse-ref {
+            display: block;
+            font-size: 0.9rem; /* Verse reference size */
+            font-style: italic;
+            margin-top: 10px;
+            color: var(--accent-pink-medium);
+            font-weight: 500;
+        }
+
+        /* Button "Nova Mensagem & Versículo" */
+        .generate-button {
+            padding: 15px 25px; /* Button padding */
+            font-size: 1.15rem; /* Button font size */
+            background-color: var(--accent-pink-deep);
+            color: var(--text-light);
+            border: none;
+            border-radius: var(--button-radius); /* Very rounded button */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 6px 20px var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px; /* Space above button */
+            width: calc(100% - 20px); /* Match card width approx */
+            justify-content: center; /* Center content in button */
+            font-weight: 600;
+        }
+
+        .generate-button:hover {
+            background-color: #c71585;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+        }
+
+        .generate-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px var(--shadow-light);
+        }
+
+        /* Rose Petal System */
+        #petal-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 999;
+        }
+
+        .petal {
+            position: absolute;
+            width: 18px;
+            height: 24px;
+            background-color: #ffb6c1;
+            border-radius: 50%;
+            opacity: 0;
+            animation: fall 3s linear forwards;
+            transform-origin: center;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        /* --- Media Queries for Responsiveness --- */
+
+        /* For 1080p mobile (typically 360-420px CSS width) and general phone/tablet responsiveness */
+        /* The main-container max-width already helps constraint for 1080p effectively */
+        @media (max-width: 1080px) {
+            /* Adjustments for typical phone portrait views */
+            .main-container {
+                padding: 22px; /* Slightly less padding */
+                max-width: 350px; /* Keep it relatively narrow for phone feel */
+            }
+            .logo {
+                font-size: 1.7rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+            .icon-nav {
+                max-width: 180px; /* Slightly narrower icon group */
+            }
+            .icon-nav a {
+                font-size: 1.7em;
+            }
+            .message-card {
+                padding: 18px;
+                min-height: 95px;
+            }
+            #romantic-message-card p {
+                font-size: 1.1rem;
+            }
+            #bible-verse-card h2 {
+                font-size: 1.1rem;
+            }
+            #bible-verse-card p {
+                font-size: 0.95rem;
+            }
+            #bible-verse-card .verse-ref {
+                font-size: 0.85rem;
+            }
+            .generate-button {
+                padding: 14px 22px;
+                font-size: 1.1rem;
+            }
+            .petal {
+                width: 15px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 18px;
+                margin: 20px auto;
+                max-width: 320px; /* More constrained for phone look */
+            }
+            .logo {
+                font-size: 1.6rem;
+            }
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 18px;
+            }
+            .icon-nav {
+                max-width: 160px; /* Further narrower icon group */
+            }
+            .icon-nav a {
+                font-size: 1.6em;
+                padding: 3px;
+            }
+            .message-card {
+                padding: 15px;
+                min-height: 85px;
+                margin-bottom: 18px;
+                border-radius: 15px;
+            }
+            #romantic-message-card p {
+                font-size: 1.05rem;
+            }
+            #bible-verse-card h2 {
+                font-size: 1.05rem;
+                margin-bottom: 6px;
+            }
+            #bible-verse-card p {
+                font-size: 0.9rem;
+            }
+            #bible-verse-card .verse-ref {
+                font-size: 0.8rem;
+                margin-top: 8px;
+            }
+            .generate-button {
+                padding: 12px 20px;
+                font-size: 1rem;
+                gap: 8px;
+                border-radius: 35px;
+            }
+            .petal {
+                width: 12px;
+                height: 16px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .main-container {
+                padding: 15px;
+                margin: 15px auto;
+                max-width: 280px; /* Very tight for small screens */
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+            .icon-nav {
+                max-width: 140px;
+            }
+            .icon-nav a {
+                font-size: 1.5em;
+            }
+            .message-card {
+                padding: 12px;
+                min-height: 75px;
+                margin-bottom: 15px;
+                border-radius: 12px;
+            }
+            #romantic-message-card p {
+                font-size: 1rem;
+            }
+            #bible-verse-card h2 {
+                font-size: 1rem;
+            }
+            #bible-verse-card p {
+                font-size: 0.85rem;
+            }
+            #bible-verse-card .verse-ref {
+                font-size: 0.75rem;
+            }
+            .generate-button {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+                gap: 6px;
+                border-radius: 30px;
+            }
+            .petal {
+                width: 10px;
+                height: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="logo">
+            W&L <span class="heart">❤️</span>
+        </div>
+        <div class="subtitle">Mensagens para Você</div>
+
+        <div class="icon-nav">
+            <a href="calculadora.html" title="Calculadora"><i class="fas fa-calculator"></i></a>
+            <a href="quiz.html" title="Quiz"><i class="fas fa-brain"></i></a>
+            <a href="memory.html" title="Memória"><i class="fas fa-puzzle-piece"></i></a>
+            <a href="mensagens.html" class="active" title="Mensagens"><i class="fas fa-envelope"></i></a>
+        </div>
+
+        <div id="romantic-message-card" class="message-card">
+            </div>
+
+        <div id="bible-verse-card" class="message-card">
+            </div>
+
+        <button id="generate-button" class="generate-button">
+            Nova Mensagem & Versículo <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+
+    <div id="petal-container"></div>
+
+    <script>
+const romanticMessages = [
+    { text: "Você é a minha pequena gostosa, a dona de todos os meus desejos. 🥵" },
+    { text: "Minha anjinha quente, seu toque incendeia minha alma. 🔥" },
+    { text: "Doce e suculenta, cada pedaço de você é uma tentação. 🍑" },
+    { text: "Ser seu homem é o meu maior privilégio e posse. 👑" },
+    { text: "Você é minha, e eu sou completamente seu, para sempre. 🔒" },
+    { text: "O sabor dos seus beijos é o meu vício mais doce. 🍯" },
+    { text: "Em cada curva do seu corpo, encontro um novo motivo para te amar. 😍" },
+    { text: "Minha magrinha perfeita, encaixe perfeito nos meus braços. 🤗" },
+    { text: "Seu cheiro fica em mim, um perfume de desejo e amor. 🌹" },
+    { text: "Quero me perder em você, minha pequena notável. ✨" },
+    { text: "Você é a melodia que embala meus sonhos mais ousados. 🎶" },
+    { text: "Anjinha, suas asas me levam para o paraíso. 🕊️" },
+    { text: "Cada dia ao seu lado é uma nova descoberta de prazer. 🗺️" },
+    { text: "Você é a rainha do meu mundo, a soberana do meu coração. 👸" },
+    { text: "Minha gostosa, só de pensar em você meu corpo todo reage. 😏" },
+    { text: "Sua doçura me acalma, sua safadeza me enlouquece. 🍭" },
+    { text: "Quero te possuir de todas as formas que o amor permite. ❤️‍🔥" },
+    { text: "Você é a obra de arte que eu nunca cansarei de admirar. 🖼️" },
+    { text: "Minha, só minha. O som dessas palavras me excita. 🗣️" },
+    { text: "Pequena, você tem um poder imenso sobre mim. 🌀" },
+    { text: "Seu corpo é meu mapa do tesouro, e eu sou o explorador mais feliz. 🧭" },
+    { text: "Anjinha quente, me queime com seu fogo. 🌋" },
+    { text: "Cada toque seu é uma promessa de êxtase. 💫" },
+    { text: "Doce, suculenta, e inteiramente minha. Que sorte a minha! 🍀" },
+    { text: "Você é a minha dose diária de felicidade e desejo. 💊" },
+    { text: "Minha mulher, minha posse mais preciosa. 💎" },
+    { text: "Seu sorriso é o convite para o paraíso. 😊" },
+    { text: "Minha magrinha gostosa, desenhada para os meus braços. ✍️" },
+    { text: "Quero te sentir, te cheirar, te provar. Agora e sempre. 👅" },
+    { text: "Pequena, você é gigante nos meus sentimentos. 🌌" },
+    { text: "O brilho nos seus olhos reflete a intensidade do meu desejo. ✨" },
+    { text: "Ser seu é a minha maior honra. Ser seu dono, meu maior prazer. 🎖️" },
+    { text: "Anjinha, me leve às alturas com seu amor. 🚀" },
+    { text: "Você é a tempestade perfeita de doçura e paixão. ⛈️" },
+    { text: "Minha, e de mais ninguém. Esse pensamento me completa. 🧩" },
+    { text: "Seu corpo fala uma língua que só meu corpo entende. 💃" },
+    { text: "Minha gostosa, cada pensamento sobre você é um convite à loucura. 🤪" },
+    { text: "Você me tem na palma da sua mão, pequena poderosa. ✋" },
+    { text: "O encaixe dos nossos corpos é a prova de que fomos feitos um para o outro. 🧬" },
+    { text: "Doce, quente e minha. A combinação perfeita. 💯" },
+    { text: "Sua voz sussurrando meu nome é minha música favorita. 🎧" },
+    { text: "Quero desvendar cada segredo seu, minha anjinha misteriosa. 🗝️" },
+    { text: "Você é a minha perdição e a minha salvação. 🙌" },
+    { text: "Minha posse mais quente, meu desejo mais profundo. 🌶️" },
+    { text: "Pequena, mas com um amor que preenche todo o meu espaço. 🎈" },
+    { text: "Seu beijo tem o gosto do pecado mais doce. 🍎" },
+    { text: "Ver você sorrir sabendo que sou o motivo, não tem preço. 😄" },
+    { text: "Minha mulher, meu tudo. Simples assim. 🌍" },
+    { text: "Seu corpo é a canção que eu quero dançar a noite toda. 🕺" },
+    { text: "Suculenta e irresistível. Como posso resistir? 🤤" },
+    { text: "Você é a chama que mantém meu coração aquecido. ❤️‍🔥" },
+    { text: "Anjinha, cada gesto seu é uma carícia na minha alma. 🥰" },
+    { text: "Possuir seu corpo é bom, mas possuir seu coração é divino. 🙏" },
+    { text: "Minha magrinha, cabes perfeitamente no meu mundo. 🌐" },
+    { text: "O desejo que sinto por você só aumenta a cada dia. 📈" },
+    { text: "Pequena, você é o centro do meu universo. ☀️" },
+    { text: "Seu amor é o meu combustível. ⛽" },
+    { text: "Você é a minha mais bela poesia, minha anjinha. 📜" },
+    { text: "Quente como o verão, doce como a primavera. Você é todas as estações. 🌸☀️" },
+    { text: "Minha mulher, minha vida, meu amor. 💖" },
+    { text: "Amo o jeito que você se entrega a mim, sem reservas. 🎁" },
+    { text: "Seu olhar de desejo me desmonta inteiro. 👀" },
+    { text: "Minha pequena gostosa, você é a estrela principal do meu show. 🌟" },
+    { text: "Cada parte de mim anseia por cada parte de você. 🧩" },
+    { text: "Você é minha, hoje, amanhã e por toda a eternidade. ⏳" },
+    { text: "Anjinha, voe para os meus braços e fique. 🏡" },
+    { text: "Seu sabor é único, minha fruta proibida e preferida. 🍒" },
+    { text: "O mundo para quando estou com você, minha pequena. ⏸️" },
+    { text: "Minha posse mais valiosa, guardada a sete chaves no meu peito. 🔑" },
+    { text: "Sua doçura é o equilíbrio perfeito para a minha loucura. ⚖️" },
+    { text: "Quero te amar de um jeito que ninguém nunca amou. 🥇" },
+    { text: "Você é a minha paz em meio ao caos, minha anjinha. 🧘‍♀️" },
+    { text: "Gostosa, suculenta, minha. Não preciso de mais nada. 💯" },
+    { text: "Amo a segurança de te chamar de minha. 🛡️" },
+    { text: "Pequena, você tem o poder de tornar qualquer dia perfeito. 🌈" },
+    { text: "Seu corpo no meu, a definição de paraíso. 🏝️" },
+    { text: "Minha mulher, meu orgulho, minha inspiração. 💪" },
+    { text: "Seu amor me vicia, e eu não quero a cura. 💉" },
+    { text: "Anjinha, seu sorriso ilumina até os meus dias mais sombrios. 💡" },
+    { text: "Minha, só de pensar nisso meu coração acelera. 💓" },
+    { text: "Você é a tempestade de paixão que eu sempre sonhei. 🌪️" },
+    { text: "Pequena, em seus braços encontro meu lar. 🏠" },
+    { text: "Amo ser o homem que te protege e te possui. 🛡️❤️" },
+    { text: "Doce e quente, você é o meu café perfeito. ☕" },
+    { text: "Seu desejo por mim é o meu maior afrodisíaco. 💥" },
+    { text: "Minha mulher, a dona da minha mente, corpo e alma. 🧠💪❤️" },
+    { text: "Cada noite com você é um sonho realizado. 🌙" },
+    { text: "Anjinha, me mostre o caminho para o seu céu. 🌌" },
+    { text: "Amo o poder que você exerce sobre mim, minha pequena. 🕹️" },
+    { text: "Você é a minha mais doce tentação. 🍩" },
+    { text: "Ser seu e te ter é tudo que eu sempre quis. 🤝" },
+    { text: "Minha gostosa, você é um espetáculo só para os meus olhos. 🎭" },
+    { text: "Seu amor é a âncora que me mantém firme. ⚓" },
+    { text: "Minha, para amar, cuidar e desejar. 💖" },
+    { text: "Pequena, você é o meu trevo de quatro folhas. 🍀" },
+    { text: "O som da sua risada é a trilha sonora da minha felicidade. 😂" },
+    { text: "Anjinha, você me faz querer ser um homem melhor. 🦸‍♂️" },
+    { text: "Seu corpo é a tela, e meus beijos são o pincel. 🎨" },
+    { text: "Minha posse mais doce, meu amor mais selvagem. 🦁" },
+    { text: "Você é a rainha que governa meu coração com doçura e fogo. 🔥👑" },
+    { text: "Pequena, seu amor é o meu superpoder. 💪" },
+    { text: "A cada beijo, sinto o gosto do nosso futuro juntos. 🥂" },
+    { text: "Minha mulher, minha parceira de crime e de amor. 🕵️‍♀️❤️" },
+    { text: "Seu desejo me chama, e eu sempre atenderei. 📞" },
+    { text: "Anjinha quente, derreta-se em meus braços. 🫠" },
+    { text: "Você é a minha notificação favorita. 📲" },
+    { text: "Minha, para sempre e um dia. 💘" },
+    { text: "Seu cheiro em meu travesseiro é a promessa de que você volta. 🛌" },
+    { text: "Pequena, você é a peça que faltava na minha vida. 🧩" },
+    { text: "Amo te ver, te tocar, te sentir. Amo tudo em você. ❤️" },
+    { text: "Minha gostosa, você é a dona da minha libido. 📈" },
+    { text: "Você é a minha certeza em um mundo de dúvidas. ✅" },
+    { text: "Anjinha, seu olhar me diz tudo o que eu preciso saber. 😉" },
+    { text: "O mundo é mais bonito porque você é minha. 🏞️" },
+    { text: "Doce, quente, suculenta e só minha. Perfeição. ✨" },
+    { text: "Pequena, você me vira a cabeça de um jeito delicioso. 🙃" },
+    { text: "Amo a forma como nossos corpos conversam sem palavras. 💬" },
+    { text: "Minha mulher, minha rocha, meu porto seguro. 🪨" },
+    { text: "Seu amor é o prêmio que eu ganhei na loteria da vida. 🎰" },
+    { text: "Anjinha, por você eu enfrento qualquer batalha. ⚔️" },
+    { text: "Meu desejo por você é uma chama que nunca se apaga. 🕯️" },
+    { text: "Minha, e o eco dessa palavra ressoa na minha alma. 🗣️" },
+    { text: "Pequena, você é a minha aventura favorita. 🧗‍♀️" },
+    { text: "Seu beijo é o selo do nosso amor eterno. 💌" },
+    { text: "Minha gostosa, cada dia te quero mais. ➕" },
+    { text: "Você é a magia que colore a minha vida. 🪄" },
+    { text: "Anjinha, me guie com sua luz. 🌟" },
+    { text: "Amo ser o homem a quem você pertence. 🏡" },
+    { text: "Seu corpo é um poema que eu quero ler todos os dias. 📖" },
+    { text: "Minha, minha, mil vezes minha. ❤️" },
+    { text: "Pequena, grande amor da minha vida. 🥇" },
+    { text: "Quero ser o seu vício, sua obsessão, seu tudo. 🎯" },
+    { text: "Minha mulher, a melodia perfeita para a minha canção. 🎵" },
+    { text: "Seu desejo é uma ordem, minha rainha. 👑" },
+    { text: "Anjinha quente, você me leva a lugares que eu nem sabia que existiam. 🗺️" },
+    { text: "Você é a minha dose de adrenalina e paz. 🎢🧘‍♀️" },
+    { text: "Amo a forma como você se encaixa perfeitamente em meus planos. 📅" },
+    { text: "Pequena, você é o sol dos meus dias. ☀️" },
+    { text: "Minha gostosa, minha perdição, meu paraíso. 🌴" },
+    { text: "Você é a minha maior conquista. 🏆" },
+    { text: "Anjinha, só você tem a chave do meu coração. 🔑" },
+    { text: "Minha para sempre, e isso é só o começo. 🚀" },
+    { text: "Seu amor me completa de uma forma inexplicável. 💯" },
+    { text: "Pequena, você é a minha mais doce realidade. 🍬" },
+    { text: "Minha mulher, minha amante, minha melhor amiga, minha vida. 💖" },
+    // --- Novas 150 Mensagens ---
+    { text: "Minha pequena, nosso amor é a única coisa que fica mais forte com o tempo. ⏳" },
+    { text: "Seu corpo é o meu santuário, e eu sou seu devoto mais fervoroso. 🙏" },
+    { text: "Dona de mim, dos meus dias e das minhas noites. Totalmente sua. 🌙☀️" },
+    { text: "Gostosa, cada toque seu é uma descarga elétrica de puro prazer. ⚡" },
+    { text: "Você é a minha droga, e eu sou um viciado feliz que não quer reabilitação. 😵‍💫" },
+    { text: "Seu jeito de andar, de sorrir, de me olhar... Tudo em você me possui. 👀" },
+    { text: "Minha, e a certeza disso me dá forças para enfrentar qualquer coisa. 💪" },
+    { text: "Anjinha, seu abraço é o único lugar onde me sinto verdadeiramente em casa. 🏠" },
+    { text: "Seu gosto é único, uma mistura de doçura e malícia que me enlouquece. 🍭😈" },
+    { text: "Você não é só o amor da minha vida, você é a própria vida. ❤️‍🩹" },
+    { text: "Pequena, você é a minha maior sorte, meu bilhete premiado. 🎟️" },
+    { text: "Amo a forma como nos perdemos um no outro, sem medo. 🌌" },
+    { text: "Minha posse mais selvagem, meu desejo mais domesticado. Só por você. 🐅" },
+    { text: "Gostosa, você é a minha fantasia secreta que se tornou realidade. 🤫" },
+    { text: "O som da sua respiração perto de mim é a minha canção de ninar favorita. 🎶" },
+    { text: "Minha, e essa palavra soa como música para os meus ouvidos possessivos. 🎵" },
+    { text: "Anjinha quente, você derrete qualquer armadura que eu tenha. 🛡️🔥" },
+    { text: "Você é a minha bússola, sempre apontando para a felicidade. 🧭" },
+    { text: "Pequena, você é um universo de delícias que eu quero explorar. 🪐" },
+    { text: "Seu amor é a minha maior inspiração e minha mais doce distração. 💡" },
+    { text: "Eu te possuo em meus sonhos e te amo na realidade. 💭❤️" },
+    { text: "Minha gostosa, você é a minha obra-prima, esculpida para mim. 🗿" },
+    { text: "A cada dia que passa, meu desejo por você se torna mais incontrolável. 🌊" },
+    { text: "Minha, e eu amo a forma como você se submete ao meu amor. 🙇‍♀️" },
+    { text: "Anjinha, você é a calmaria depois da minha tempestade. 🧘‍♀️" },
+    { text: "Seu corpo é a poesia que meus lábios amam recitar. 📜💋" },
+    { text: "Pequena, nosso amor é a única aposta que eu sempre ganharei. 🎲" },
+    { text: "Ser o dono dos seus suspiros é a minha maior vitória. 😮‍💨" },
+    { text: "Você é minha, e eu sou seu guardião, seu amante, seu tudo. 🐺" },
+    { text: "Minha gostosa, você me vira do avesso de um jeito delicioso. 🔄" },
+    { text: "Amo a nossa química, é uma explosão de sentimentos e desejos. 💥" },
+    { text: "Anjinha, seu sorriso é o sol que derrete o gelo do meu coração. ☀️❄️" },
+    { text: "Você é o meu vício, a minha necessidade, a minha religião. 🙏" },
+    { text: "Pequena, você me faz querer ser a melhor versão de mim mesmo. 🌟" },
+    { text: "O seu perfume é a droga que me acalma e me excita. 🌿" },
+    { text: "Minha, e eu adoro o poder que essa palavra tem sobre nós. 💪" },
+    { text: "Seu toque é a única coisa que pode me levar do céu ao inferno em segundos. 😇😈" },
+    { text: "Gostosa, você é a minha notificação mais esperada do dia. 📲" },
+    { text: "Anjinha, você é a paz que eu não sabia que procurava. 🕊️" },
+    { text: "Amo te ver com minhas roupas, é a marca de que você me pertence. 👕" },
+    { text: "Pequena, nosso amor é a história que eu nunca me cansarei de contar. 📖" },
+    { text: "Você é minha, e o mundo inteiro precisa saber disso. 📢" },
+    { text: "Seu olhar é um convite para eu me perder em você. 👀" },
+    { text: "Minha gostosa, você é o meu mais belo e perigoso vício. 🐍" },
+    { text: "Anjinha, nosso amor é um fogo que ninguém pode apagar. 🔥" },
+    { text: "Eu te amo não só pelo que você é, mas pelo que sou quando estou com você. 💖" },
+    { text: "Pequena, você é a dona do meu tempo e dos meus pensamentos. ⏳🧠" },
+    { text: "Seu corpo é um labirinto, e eu quero me perder nele para sempre.  labyrinth" },
+    { text: "Você é minha, e essa é a única regra que importa em nosso jogo. 🎲" },
+    { text: "Minha gostosa, você é a música que faz minha alma dançar. 💃" },
+    { text: "Amo a forma como você se encaixa perfeitamente em meus braços, como se fosse feita para eles. 🤗" },
+    { text: "Anjinha, você é a minha dose de sanidade em um mundo louco. 🧘‍♀️" },
+    { text: "Você é minha, e meu coração bate no ritmo do seu nome. 🥁" },
+    { text: "Pequena, cada beijo seu é uma nova promessa de amor. 💌" },
+    { text: "O desejo que sinto por você é a força mais poderosa da natureza. 🌪️" },
+    { text: "Minha, e eu amo a forma como você se arrepia quando sussurro isso. 🤫" },
+    { text: "Seu sorriso é a arma que me rendeu completamente. 🏳️" },
+    { text: "Minha gostosa, você é a minha mais doce e irresistível tentação. 🍓" },
+    { text: "Anjinha, você é a minha estrela-guia em noites escuras. 🌟" },
+    { text: "Amo ser o porto seguro para onde você sempre pode voltar. ⚓" },
+    { text: "Pequena, você é a minha mais bela realidade. ✨" },
+    { text: "Você é minha, e isso é um fato, não uma opção. ✅" },
+    { text: "Seu amor me transformou, me fez melhor, me fez seu. 👨‍🎨" },
+    { text: "Gostosa, você é o meu ponto fraco e a minha maior fortaleza. 🛡️" },
+    { text: "Anjinha, você é a minha prece atendida, meu milagre particular. 🙏" },
+    { text: "Amo o nosso mundo, criado por nós e para nós. 🌍💞" },
+    { text: "Pequena, você é a única para quem eu entrego meu coração. ❤️" },
+    { text: "Você é minha, e eu sou viciado em cada detalhe seu. 🔬" },
+    { text: "Seu corpo é o meu lugar preferido para um feriado prolongado. 🏝️" },
+    { text: "Minha gostosa, você é a minha fonte de energia vital. 🔋" },
+    { text: "Anjinha, você é a melodia que embala meu sono e meus sonhos. 😴" },
+    { text: "Amo o jeito que você me olha, como se eu fosse o único homem no mundo. 👨‍🚀" },
+    { text: "Pequena, você é a minha aventura favorita, sem mapa e sem destino. 🗺️" },
+    { text: "Você é minha, e essa é a minha maior certeza na vida. 💯" },
+    { text: "Seu toque é a única linguagem que eu quero falar fluentemente. 🗣️" },
+    { text: "Gostosa, você é a minha chama gêmea, a outra metade da minha alma. 🔥🔥" },
+    { text: "Anjinha, você é a minha paz em forma de mulher. 🕊️" },
+    { text: "Amo ser o seu vício, aquele que você não consegue largar. 🔗" },
+    { text: "Pequena, você é a minha obra de arte viva, e eu sou seu maior admirador. 👏" },
+    { text: "Você é minha, e eu amo o jeito que você se encaixa na minha vida. 🧩" },
+    { text: "Seu beijo é a cura para todos os meus males. 🩹" },
+    { text: "Minha gostosa, você é a minha mais doce loucura. 😜" },
+    { text: "Anjinha, você é a rainha do meu castelo, a dona do meu trono. 🏰" },
+    { text: "Amo a nossa sintonia, parece que nossas almas conversam. 💞" },
+    { text: "Pequena, você é o meu presente mais precioso, embrulhado para mim. 🎁" },
+    { text: "Você é minha, e eu amo o som dessa verdade. 🎶" },
+    { text: "Seu corpo é a minha canção favorita, e eu quero saber a letra de cor. 🎤" },
+    { text: "Gostosa, você é a minha perdição, e eu amo me perder em você. 🌀" },
+    { text: "Anjinha, você é a minha musa, a inspiração para os meus versos. ✍️" },
+    { text: "Amo o nosso amor, que é forte, real e só nosso. 🔒" },
+    { text: "Pequena, você é a minha razão para sorrir todos os dias. 😊" },
+    { text: "Você é minha, e eu sou o seu eterno escravo de amor. ⛓️" },
+    { text: "Seu amor é o meu norte, minha direção, meu caminho. ⬆️" },
+    { text: "Minha gostosa, você é a minha mais deliciosa travessura. 😈" },
+    { text: "Anjinha, você é a minha mais bela oração. 🙏" },
+    { text: "Amo a nossa cumplicidade, um olhar diz tudo. 😉" },
+    { text: "Pequena, você é a minha peça rara, meu tesouro escondido. 💎" },
+    { text: "Você é minha, e eu sou seu, numa dança de amor e desejo. 💃🕺" },
+    { text: "Seu cheiro é o meu calmante natural. 🌿" },
+    { text: "Gostosa, você é a minha mais viciante droga. 💉" },
+    { text: "Anjinha, você é a minha fonte inesgotável de felicidade. ⛲" },
+    { text: "Amo o nosso pacto de amor, selado com beijos e promessas. 📜" },
+    { text: "Pequena, você é o meu sonho mais bonito, do qual eu nunca quero acordar. 😴" },
+    { text: "Você é minha, e eu amo ser o seu dono. 👑" },
+    { text: "Seu sorriso é a luz que ilumina a minha alma. 💡" },
+    { text: "Minha gostosa, você é a minha mais perfeita imperfeição. 💖" },
+    { text: "Anjinha, você é a minha salvação em um mundo de perdições. 🙌" },
+    { text: "Amo a forma como você me completa, como se fôssemos um só. ☯️" },
+    { text: "Pequena, você é a minha estrela da sorte em um céu de possibilidades. 🌠" },
+    { text: "Você é minha, e eu sou o seu guardião apaixonado. 🐺❤️" },
+    { text: "Seu corpo é o meu mapa, e eu quero decorar cada caminho. 🗺️" },
+    { text: "Gostosa, você é a minha mais doce e perigosa obsessão. 🌀" },
+    { text: "Anjinha, você é a paz que meu coração sempre buscou. 🕊️" },
+    { text: "Amo a nossa intensidade, um vulcão de amor e paixão. 🌋" },
+    { text: "Pequena, você é a minha canção de amor eterna. 🎶" },
+    { text: "Você é minha, e isso é tudo que preciso para ser feliz. 😄" },
+    { text: "Seu beijo tem o poder de parar o tempo e acelerar meu coração. ⏳💓" },
+    { text: "Minha gostosa, você é a minha obra de arte favorita, em exibição só para mim. 🖼️" },
+    { text: "Anjinha, você é a minha certeza em um mundo de incertezas. ✅" },
+    { text: "Amo ser o homem que te tem, te ama e te possui. 💯" },
+    { text: "Pequena, você é o meu mais lindo poema. ✒️" },
+    { text: "Você é minha, e eu sou seu, em cada vida, em cada universo. 🌌" },
+    { text: "Seu toque é a única magia em que eu realmente acredito. 🪄" },
+    { text: "Minha gostosa, você é a minha mais perfeita aventura. 🧗‍♀️" },
+    { text: "Anjinha, você é a minha rainha, e nosso amor é o nosso reino. 🏰" },
+    { text: "Amo a nossa conexão, que é mais forte que qualquer distância. 📶" },
+    { text: "Pequena, você é a minha mais doce melodia. 🎵" },
+    { text: "Você é minha, e eu sou seu, completamente e para sempre. ♾️" },
+    { text: "Seu amor é o meu amuleto, me protege e me dá sorte. 🍀" },
+    { text: "Minha gostosa, você é a minha mais deliciosa perdição. 😈" },
+    { text: "Anjinha, você é a minha paz e o meu maior desejo. 🧘‍♀️🔥" },
+    { text: "Amo o nosso amor, que é um refúgio seguro no meio do caos. 🏡" },
+    { text: "Pequena, você é a dona de todos os meus 'eu te amo'. 💕" },
+    { text: "Você é minha, e essa é a minha maior bênção. 🙏" },
+    { text: "Seu corpo é o meu lugar favorito no mundo. 🌍❤️" },
+    { text: "Minha gostosa, você é a minha mais doce e quente fantasia. 💭🔥" },
+    { text: "Anjinha, você é a minha luz, minha guia, minha vida. 🌟" },
+    { text: "Amo a nossa história de amor, e mal posso esperar pelo que vem a seguir. 📖" },
+    { text: "Pequena, você é a minha maior inspiração e minha posse mais valiosa. 💡💎" },
+    { text: "Você é minha, e eu sou seu. Fim da história. ❤️" }
+];
+
+const bibleVerses = [
+    { text: "Tu és toda formosa, amiga minha, e em ti não há mancha.", reference: "Cantares 4:7" },
+    { text: "As muitas águas não poderiam apagar este amor, nem os rios afogá-lo.", reference: "Cantares 8:7" },
+    { text: "O meu amado é meu, e eu sou dele.", reference: "Cantares 2:16" },
+    { text: "Faze-me ouvir a tua voz, porque a tua voz é doce, e o teu rosto, amável.", reference: "Cantares 2:14" },
+    { text: "Põe-me como selo sobre o teu coração, como selo sobre o teu braço.", reference: "Cantares 8:6" },
+    { text: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.", reference: "Colossenses 3:14" },
+    { text: "Melhor é serem dois do que um, porque têm melhor paga do seu trabalho.", reference: "Eclesiastes 4:9" },
+    { text: "Deus mudou o meu pranto em dança, a minha veste de lamento em veste de alegria.", reference: "Salmos 30:11" },
+    { text: "O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha.", reference: "1 Coríntios 13:4" },
+    { text: "O amor não se alegra com a injustiça, mas se alegra com a verdade.", reference: "1 Coríntios 13:6" },
+    { text: "Tudo sofre, tudo crê, tudo espera, tudo suporta.", reference: "1 Coríntios 13:7" },
+    { text: "O amor jamais acaba.", reference: "1 Coríntios 13:8" },
+    { text: "Assim, permanecem agora estes três: a fé, a esperança e o amor. O maior deles, porém, é o amor.", reference: "1 Coríntios 13:13" },
+    { text: "O meu mandamento é este: amem-se uns aos outros como eu os amei.", reference: "João 15:12" },
+    { text: "Ninguém tem maior amor do que aquele que dá a sua vida pelos seus amigos.", reference: "João 15:13" },
+    { text: "Quem ama sua mulher, ama a si mesmo.", reference: "Efésios 5:28" },
+    { text: "Da mesma forma, os maridos devem amar cada um a sua mulher como a seu próprio corpo.", reference: "Efésios 5:28" },
+    { text: "Portanto, o que Deus uniu, ninguém o separe.", reference: "Marcos 10:9" },
+    { text: "Goza a vida com a mulher que amas, todos os dias da tua vida vã.", reference: "Eclesiastes 9:9" },
+    { text: "A mulher virtuosa é a coroa do seu marido.", reference: "Provérbios 12:4" },
+    { text: "Casa e riquezas são herdadas dos pais, mas a esposa prudente vem do Senhor.", reference: "Provérbios 19:14" },
+    { text: "O coração do seu marido está nela confiado.", reference: "Provérbios 31:11" },
+    { text: "Levantam-se seus filhos e chamam-na bem-aventurada; seu marido também, e ele a louva.", reference: "Provérbios 31:28" },
+    { text: "Enganosa é a beleza e vã a formosura, mas a mulher que teme ao Senhor, essa sim será louvada.", reference: "Provérbios 31:30" },
+    { text: "Completem a minha alegria, tendo o mesmo modo de pensar, o mesmo amor, um só espírito e uma só atitude.", reference: "Filipenses 2:2" },
+    { text: "O Senhor te abençoe e te guarde.", reference: "Números 6:24" },
+    { text: "O Senhor faça resplandecer o seu rosto sobre ti e te conceda graça.", reference: "Números 6:25" },
+    { text: "O Senhor volte para ti o seu rosto e te dê a paz.", reference: "Números 6:26" },
+    { text: "O Senhor é o meu pastor; de nada terei falta.", reference: "Salmos 23:1" },
+    { text: "Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum, porque tu estás comigo.", reference: "Salmos 23:4" },
+    { text: "Certamente que a bondade e a misericórdia me seguirão todos os dias da minha vida; e habitarei na casa do Senhor por longos dias.", reference: "Salmos 23:6" },
+    { text: "Deleita-te também no Senhor, и te concederá os desejos do teu coração.", reference: "Salmos 37:4" },
+    { text: "O anjo do Senhor acampa-se ao redor dos que o temem, e os livra.", reference: "Salmos 34:7" },
+    { text: "Porque onde estiver o vosso tesouro, aí estará também o vosso coração.", reference: "Mateus 6:21" },
+    { text: "Sabemos que todas as coisas cooperam para o bem daqueles que amam a Deus.", reference: "Romanos 8:28" },
+    { text: "O Deus de esperança vos encha de todo o gozo e paz em crença.", reference: "Romanos 15:13" },
+    { text: "Eu sei que o meu Redentor vive.", reference: "Jó 19:25" },
+    { text: "Porque para Deus nada é impossível.", reference: "Lucas 1:37" },
+    { text: "O Senhor é a minha força e o meu escudo.", reference: "Salmos 28:7" },
+    { text: "Tu conservarás em paz aquele cuja mente está firme em ti.", reference: "Isaías 26:3" },
+    { text: "Mas os que esperam no Senhor renovarão as suas forças.", reference: "Isaías 40:31" },
+    { text: "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus.", reference: "Isaías 41:10" },
+    { text: "Eis que eu estou convosco todos os dias, até a consumação dos séculos.", reference: "Mateus 28:20" },
+    { text: "Tudo posso naquele que me fortalece.", reference: "Filipenses 4:13" },
+    { text: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória, em Cristo Jesus.", reference: "Filipenses 4:19" },
+    { text: "Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.", reference: "1 Pedro 5:7" },
+    { text: "O choro pode durar uma noite, mas a alegria vem pela manhã.", reference: "Salmos 30:5" },
+    { text: "O Senhor é bom, um refúgio em tempos de angústia.", reference: "Naum 1:7" },
+    { text: "Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará.", reference: "Salmos 91:1" },
+    { text: "Mil cairão ao teu lado, e dez mil à tua direita, mas não chegará a ti.", reference: "Salmos 91:7" },
+    { text: "Como o cervo anseia por águas correntes, a minha alma anseia por ti, ó Deus.", reference: "Salmos 42:1" },
+    { text: "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia.", reference: "Salmos 46:1" },
+    { text: "Cria em mim, ó Deus, um coração puro, e renova em mim um espírito reto.", reference: "Salmos 51:10" },
+    { text: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele.", reference: "Salmos 118:24" },
+    { text: "Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.", reference: "Salmos 119:105" },
+    { text: "Eu te louvarei, porque de um modo assombroso, e tão maravilhoso fui feito.", reference: "Salmos 139:14" },
+    { text: "O coração alegre aformoseia o rosto.", reference: "Provérbios 15:13" },
+    { text: "O coração alegre é bom remédio.", reference: "Provérbios 17:22" },
+    { text: "Até na sua velhice, quando tiverem cabelos brancos, sou eu aquele que os susterá.", reference: "Isaías 46:4" },
+    { text: "Porque eu, o Senhor teu Deus, te tomo pela tua mão direita; e te digo: Não temas, eu te ajudo.", reference: "Isaías 41:13" },
+    { text: "Com amor eterno eu te amei; por isso com benignidade te atraí.", reference: "Jeremias 31:3" },
+    { text: "As misericórdias do Senhor são a causa de não sermos consumidos, porque as suas misericórdias não têm fim.", reference: "Lamentações 3:22" },
+    { text: "Novas são cada manhã; grande é a tua fidelidade.", reference: "Lamentações 3:23" },
+    { text: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.", reference: "Mateus 11:28" },
+    { text: "No mundo tereis aflições, mas tende bom ânimo, eu venci o mundo.", reference: "João 16:33" },
+    { text: "E o meu Deus, segundo a sua riqueza em glória, há de suprir, em Cristo Jesus, cada uma de vossas necessidades.", reference: "Filipenses 4:19" },
+    { text: "A paz de Deus, que excede todo o entendimento, guardará os vossos corações.", reference: "Filipenses 4:7" },
+    { text: "O Senhor é a minha luz e a minha salvação; a quem temerei?", reference: "Salmos 27:1" },
+    { text: "Alegrem-se na esperança, sejam pacientes na tribulação, perseverem na oração.", reference: "Romanos 12:12" },
+    { text: "Consagre ao Senhor tudo o que você faz, e os seus planos serão bem-sucedidos.", reference: "Provérbios 16:3" },
+    { text: "O amigo ama em todos os momentos; é um irmão na adversidade.", reference: "Provérbios 17:17" },
+    { text: "Sede uns para com os outros benignos, misericordiosos, perdoando-vos uns aos outros, como também Deus vos perdoou em Cristo.", reference: "Efésios 4:32" },
+    { text: "Sobretudo, amem-se sinceramente uns aos outros, porque o amor perdoa muitíssimos pecados.", reference: "1 Pedro 4:8" },
+    { text: "Nisto conhecemos o que é o amor: Jesus Cristo deu a sua vida por nós.", reference: "1 João 3:16" },
+    { text: "Amados, amemos uns aos outros, pois o amor procede de Deus.", reference: "1 João 4:7" },
+    { text: "Aquele que não ama não conhece a Deus, porque Deus é amor.", reference: "1 João 4:8" },
+    { text: "Nós amamos porque ele nos amou primeiro.", reference: "1 João 4:19" },
+    { text: "Não há medo no amor. Pelo contrário, o perfeito amor expulsa o medo.", reference: "1 João 4:18" },
+    { text: "Uma resposta branda desvia o furor, mas a palavra dura suscita a ira.", reference: "Provérbios 15:1" },
+    { text: "Os planos bem elaborados levam à fartura; mas o apressado sempre acaba na miséria.", reference: "Provérbios 21:5" },
+    { text: "A beleza de vocês não deve estar nos enfeites exteriores... mas no seu eu interior.", reference: "1 Pedro 3:3-4" },
+    { text: "O seu falar seja sempre agradável e temperado com sal.", reference: "Colossenses 4:6" },
+    { text: "Sejam completamente humildes e dóceis, e sejam pacientes, suportando uns aos outros com amor.", reference: "Efésios 4:2" },
+    { text: "Façam todo o esforço para conservar a unidade do Espírito pelo vínculo da paz.", reference: "Efésios 4:3" },
+    { text: "Ninguém jamais viu a Deus; se nos amarmos uns aos outros, Deus permanece em nós, e o seu amor é aperfeiçoado em nós.", reference: "1 João 4:12" },
+    { text: "E, sobre tudo isto, revesti-vos de amor, que é o vínculo da perfeição.", reference: "Colossenses 3:14" },
+    { text: "Tenham uma mesma atitude uns para com os outros.", reference: "Romanos 12:16" },
+    { text: "Levem os fardos pesados uns dos outros e, assim, cumpram a lei de Cristo.", reference: "Gálatas 6:2" },
+    { text: "O Senhor é justo em todos os seus caminhos e bondoso em tudo o que faz.", reference: "Salmos 145:17" },
+    { text: "Pois o Senhor é bom e o seu amor leal é eterno; a sua fidelidade permanece por todas as gerações.", reference: "Salmos 100:5" },
+    { text: "Rendam graças ao Senhor, pois ele é bom; o seu amor dura para sempre.", reference: "Salmos 107:1" },
+    { text: "Como é precioso o teu amor, ó Deus! Os homens encontram refúgio à sombra das tuas asas.", reference: "Salmos 36:7" },
+    { text: "Sacia-nos de manhã com o teu amor leal, e todos os nossos dias cantaremos de alegria.", reference: "Salmos 90:14" },
+    { text: "Cantarei o amor do Senhor para sempre; com minha boca anunciarei a tua fidelidade por todas as gerações.", reference: "Salmos 89:1" },
+    { text: "A tua palavra é, na verdade, a verdade.", reference: "João 17:17" },
+    { text: "Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento.", reference: "Provérbios 3:5" },
+    { text: "Reconheça o Senhor em todos os seus caminhos, e ele endireitará as suas veredas.", reference: "Provérbios 3:6" },
+    { text: "Muitos são os planos no coração do homem, mas o que prevalece é o propósito do Senhor.", reference: "Provérbios 19:21" },
+    { text: "O nome do Senhor é uma torre forte; os justos correm para ela e estão seguros.", reference: "Provérbios 18:10" },
+    { text: "Porque os meus pensamentos não são os vossos pensamentos, nem os vossos caminhos os meus caminhos, diz o Senhor.", reference: "Isaías 55:8" },
+    { text: "Eu sou o pão da vida. Aquele que vem a mim nunca terá fome.", reference: "João 6:35" },
+    { text: "Eu sou a luz do mundo. Quem me segue, nunca andará em trevas.", reference: "João 8:12" },
+    { text: "Eu sou o bom pastor. O bom pastor dá a sua vida pelas ovelhas.", reference: "João 10:11" },
+    { text: "Eu sou a ressurreição e a vida. Aquele que crê em mim, ainda que morra, viverá.", reference: "João 11:25" },
+    { text: "Eu sou o caminho, a verdade e a vida. Ninguém vem ao Pai, a não ser por mim.", reference: "João 14:6" },
+    { text: "Aquele que está em Cristo é uma nova criação. As coisas antigas já passaram; eis que surgiram coisas novas!", reference: "2 Coríntios 5:17" },
+    { text: "Sejam fortes e corajosos. Não tenham medo nem fiquem apavorados por causa delas, pois o Senhor, o seu Deus, vai com vocês.", reference: "Deuteronômio 31:6" },
+    { text: "O Senhor, o seu Deus, está em seu meio, poderoso para salvar. Ele se regozijará em você com alegria.", reference: "Sofonias 3:17" },
+    { text: "Pois eu sou o Senhor, o seu Deus, que o segura pela mão direita e lhe diz: Não tema; eu o ajudarei.", reference: "Isaías 41:13" },
+    { text: "Agrada-te do Senhor, e ele satisfará os desejos do teu coração.", reference: "Salmos 37:4" },
+    { text: "Em paz me deito e logo adormeço, pois só tu, Senhor, me fazes viver em segurança.", reference: "Salmos 4:8" },
+    { text: "O Senhor está perto de todos os que o invocam.", reference: "Salmos 145:18" },
+    { text: "Tu me farás conhecer a vereda da vida, a alegria plena da tua presença.", reference: "Salmos 16:11" },
+    { text: "Grandes coisas fez o Senhor por nós, por isso estamos alegres.", reference: "Salmos 126:3" },
+    { text: "A graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo sejam com todos vós.", reference: "2 Coríntios 13:14" },
+    { text: "Não se aparte da tua boca o livro desta lei; antes medita nele dia e noite.", reference: "Josué 1:8" },
+    { text: "Tenho-vos dito isto, para que em mim tenhais paz.", reference: "João 16:33" },
+    { text: "Amados, se Deus assim nos amou, também nós devemos amar uns aos outros.", reference: "1 João 4:11" },
+    { text: "O fruto do Espírito é amor, alegria, paz, paciência, amabilidade, bondade, fidelidade.", reference: "Gálatas 5:22" },
+    { text: "Se o seu irmão pecar contra você, vá e, a sós com ele, mostre-lhe o erro.", reference: "Mateus 18:15" },
+    { text: "Por isso, exortem-se e edifiquem-se uns aos outros, como de fato vocês estão fazendo.", reference: "1 Tessalonicenses 5:11" },
+    { text: "Dediquem-se uns aos outros com amor fraternal. Prefiram dar honra aos outros mais do que a si próprios.", reference: "Romanos 12:10" },
+    { text: "Sejam bondosos e compassivos uns para com os outros, perdoando-se mutuamente.", reference: "Efésios 4:32" },
+    { text: "Maridos, ame cada um a sua mulher, assim como Cristo amou a igreja.", reference: "Efésios 5:25" },
+    { text: "Mulheres, sujeite-se cada uma a seu marido, como ao Senhor.", reference: "Efésios 5:22" },
+    { text: "O que une o casamento não é um anel, mas um laço de amor.", reference: "Provérbio Popular Cristão" },
+    { text: "Amai-vos cordialmente uns aos outros com amor fraternal, preferindo-vos em honra uns aos outros.", reference: "Romanos 12:10" },
+    { text: "Deus é o nosso refúgio e a nossa fortaleza, auxílio sempre presente na adversidade.", reference: "Salmos 46:1" },
+    { text: "Não te deixarei, nem te desampararei.", reference: "Hebreus 13:5" },
+    { text: "O Senhor é a minha rocha, a minha fortaleza e o meu libertador.", reference: "Salmos 18:2" },
+    { text: "Eu te amo, ó Senhor, minha força.", reference: "Salmos 18:1" },
+    { text: "Bendiga o Senhor a minha alma! Não se esqueça de nem um só de seus benefícios.", reference: "Salmos 103:2" },
+    { text: "O Senhor firma os passos de um homem, quando a conduta deste o agrada.", reference: "Salmos 37:23" },
+    { text: "O amor tudo desculpa, tudo crê, tudo espera, tudo suporta.", reference: "1 Coríntios 13:7" },
+    { text: "Sejam todos de um mesmo sentimento, compassivos, amando os irmãos, entranhavelmente misericordiosos e afáveis.", reference: "1 Pedro 3:8" },
+    { text: "Finalmente, irmãos, tudo o que é verdadeiro, tudo o que é honesto, tudo o que é justo, tudo o que é puro, tudo o que é amável, tudo o que é de boa fama, se há alguma virtude, e se há algum louvor, nisso pensai.", reference: "Filipenses 4:8" },
+    { text: "O meu amado é cândido e rubicundo, o primeiro entre dez mil.", reference: "Cantares 5:10" },
+    { text: "Como a macieira entre as árvores do bosque, assim é o meu amado entre os jovens.", reference: "Cantares 2:3" },
+    { text: "Eu sou do meu amado, e o seu desejo é por mim.", reference: "Cantares 7:10" },
+    { text: "Que ele me beije com os beijos da sua boca; porque melhor é o seu amor do que o vinho.", reference: "Cantares 1:2" },
+    { text: "Alegremo-nos, exultemos e demos-lhe a glória, porque são chegadas as bodas do Cordeiro, cuja esposa a si mesma já se ataviou.", reference: "Apocalipse 19:7" },
+    { text: "O amor seja não fingido. Aborrecei o mal e apegai-vos ao bem.", reference: "Romanos 12:9" },
+    { text: "Tu, porém, sê sóbrio em tudo, sofre as aflições, faze a obra de um evangelista, cumpre o teu ministério.", reference: "2 Timóteo 4:5" },
+    { text: "Ora, o Deus de toda a graça, que em Cristo Jesus vos chamou à sua eterna glória, depois de haverdes padecido um pouco, ele mesmo vos aperfeiçoará, confirmará, fortificará e fortalecerá.", reference: "1 Pedro 5:10" },
+    { text: "E da parte de Jesus Cristo, que é a fiel testemunha, o primogênito dentre os mortos e o príncipe dos reis da terra. Àquele que nos amou, e em seu sangue nos lavou dos nossos pecados.", reference: "Apocalipse 1:5" },
+    // --- Novos 150 Versículos ---
+    { text: "Aquele que encontra uma esposa, acha o bem, e alcança a benevolência do Senhor.", reference: "Provérbios 18:22" },
+    { text: "O ódio excita contendas, mas o amor cobre todos os pecados.", reference: "Provérbios 10:12" },
+    { text: "Melhor é a comida de hortaliça, onde há amor, do que o boi gordo, e com ele o ódio.", reference: "Provérbios 15:17" },
+    { text: "As palavras dos meus lábios e o meditar do meu coração sejam agradáveis na tua presença, Senhor, rocha minha e redentor meu!", reference: "Salmos 19:14" },
+    { text: "O Senhor é a minha porção; eu disse que guardaria as tuas palavras.", reference: "Salmos 119:57" },
+    { text: "A tua palavra é muito pura; portanto, o teu servo a ama.", reference: "Salmos 119:140" },
+    { text: "Grande paz têm os que amam a tua lei, e para eles não há tropeço.", reference: "Salmos 119:165" },
+    { text: "O Senhor está perto dos que têm o coração quebrantado e salva os de espírito abatido.", reference: "Salmos 34:18" },
+    { text: "O Senhor resgata a alma dos seus servos, e nenhum dos que nele confiam será condenado.", reference: "Salmos 34:22" },
+    { text: "O Senhor é bom para todos, e as suas misericórdias são sobre todas as suas obras.", reference: "Salmos 145:9" },
+    { text: "Abres a tua mão e satisfazes o desejo de todos os viventes.", reference: "Salmos 145:16" },
+    { text: "Perto está o Senhor de todos os que o invocam, de todos os que o invocam em verdade.", reference: "Salmos 145:18" },
+    { text: "Ele cumprirá o desejo dos que o temem; ouvirá o seu clamor e os salvará.", reference: "Salmos 145:19" },
+    { text: "O Senhor guarda a todos os que o amam; mas todos os ímpios serão destruídos.", reference: "Salmos 145:20" },
+    { text: "A minha boca falará o louvor do Senhor, e toda a carne louvará o seu santo nome pelos séculos dos séculos.", reference: "Salmos 145:21" },
+    { text: "Filho meu, não te esqueças da minha lei, e o teu coração guarde os meus mandamentos.", reference: "Provérbios 3:1" },
+    { text: "Porque eles aumentarão os teus dias e te acrescentarão anos de vida e paz.", reference: "Provérbios 3:2" },
+    { text: "Não sejas sábio a teus próprios olhos; teme ao Senhor e aparta-te do mal.", reference: "Provérbios 3:7" },
+    { text: "Isso será saúde para o teu umbigo e medula para os teus ossos.", reference: "Provérbios 3:8" },
+    { text: "Honra ao Senhor com os teus bens e com as primícias de toda a tua renda.", reference: "Provérbios 3:9" },
+    { text: "E se encherão os teus celeiros abundantemente, e transbordarão de mosto os teus lagares.", reference: "Provérbios 3:10" },
+    { text: "Bem-aventurado o homem que acha sabedoria, e o homem que adquire conhecimento.", reference: "Provérbios 3:13" },
+    { text: "Ela é mais preciosa do que os rubis, e tudo o que mais possas desejar não se pode comparar a ela.", reference: "Provérbios 3:15" },
+    { text: "Longos dias há na sua mão direita; e na sua esquerda, riquezas e honra.", reference: "Provérbios 3:16" },
+    { text: "Os seus caminhos são caminhos de delícias, e todas as suas veredas são paz.", reference: "Provérbios 3:17" },
+    { text: "Árvore de vida é para os que a alcançam, e bem-aventurados são todos os que a retêm.", reference: "Provérbios 3:18" },
+    { text: "Sobre tudo o que se deve guardar, guarda o teu coração, porque dele procedem as fontes da vida.", reference: "Provérbios 4:23" },
+    { text: "Seja bendito o teu manancial, e alegra-te com a mulher da tua mocidade.", reference: "Provérbios 5:18" },
+    { text: "Como cerva amorosa, e gazela graciosa, os seus seios te saciem todo o tempo; e pelo seu amor sejas atraído perpetuamente.", reference: "Provérbios 5:19" },
+    { text: "E, se alguém prevalecer contra um, os dois lhe resistirão; e o cordão de três dobras não se quebra tão depressa.", reference: "Eclesiastes 4:12" },
+    { text: "Porque, se um cair, o outro levanta o seu companheiro; mas ai do que estiver só; pois, caindo, não haverá outro que o levante.", reference: "Eclesiastes 4:10" },
+    { text: "Também, se dois dormirem juntos, eles se aquentarão; mas um só, como se aquentará?", reference: "Eclesiastes 4:11" },
+    { text: "Para tudo há uma ocasião certa; há um tempo certo para cada propósito debaixo do céu.", reference: "Eclesiastes 3:1" },
+    { text: "Tudo fez formoso em seu tempo; também pôs o mundo no coração do homem, sem que o homem possa descobrir a obra que Deus fez desde o princípio até ao fim.", reference: "Eclesiastes 3:11" },
+    { text: "Não te apresses a sair da presença dele, nem persistas em alguma coisa má, porque ele faz tudo o que lhe apraz.", reference: "Eclesiastes 8:3" },
+    { text: "Quem guardar o mandamento não experimentará nenhum mal; e o coração do sábio discernirá o tempo e o modo.", reference: "Eclesiastes 8:5" },
+    { text: "Lança o teu pão sobre as águas, porque depois de muitos dias o acharás.", reference: "Eclesiastes 11:1" },
+    { text: "De tudo o que se tem ouvido, o fim é: Teme a Deus, e guarda os seus mandamentos; porque isto é o dever de todo o homem.", reference: "Eclesiastes 12:13" },
+    { text: "O meu amado fala e me diz: Levanta-te, amiga minha, formosa minha, e vem.", reference: "Cantares 2:10" },
+    { text: "Porque eis que passou o inverno; a chuva cessou, e se foi.", reference: "Cantares 2:11" },
+    { text: "Aparecem as flores na terra, o tempo de cantar chega, e a voz da rola ouve-se em nossa terra.", reference: "Cantares 2:12" },
+    { text: "A figueira já deu os seus figos verdes, e as vides em flor exalam o seu aroma; levanta-te, amiga minha, formosa minha, e vem.", reference: "Cantares 2:13" },
+    { text: "Quão formosos são os teus amores, minha irmã, noiva minha! Quanto melhor é o teu amor do que o vinho! E o aroma dos teus unguentos do que o de todas as especiarias!", reference: "Cantares 4:10" },
+    { text: "Favos de mel destilam os teus lábios, ó minha noiva! Mel e leite estão debaixo da tua língua, e o cheiro dos teus vestidos é como o cheiro do Líbano.", reference: "Cantares 4:11" },
+    { text: "Jardim fechado és tu, minha irmã, noiva minha, manancial fechado, fonte selada.", reference: "Cantares 4:12" },
+    { text: "As tuas plantas são um pomar de romãs, com frutos excelentes.", reference: "Cantares 4:13" },
+    { text: "Eu sou do meu amado, e o seu desejo é por mim.", reference: "Cantares 7:10" },
+    { text: "Vem, ó meu amado, saiamos ao campo, passemos as noites nas aldeias.", reference: "Cantares 7:11" },
+    { text: "Levantemo-nos de manhã para ir às vinhas, vejamos se florescem as vides, se já aparecem as tenras uvas, se já brotam as romãzeiras; ali te darei os meus amores.", reference: "Cantares 7:12" },
+    { text: "Com amor eterno te amei; também com amável benignidade te atraí.", reference: "Jeremias 31:3" },
+    { text: "Porque eu bem sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz, e não de mal, para vos dar o fim que esperais.", reference: "Jeremias 29:11" },
+    { text: "Bendito o homem que confia no Senhor, e cuja confiança é o Senhor.", reference: "Jeremias 17:7" },
+    { text: "Porque será como a árvore plantada junto às águas, que estende as suas raízes para o ribeiro, e não receia quando vem o calor, mas a sua folha fica verde; e no ano de sequidão não se afadiga, nem deixa de dar fruto.", reference: "Jeremias 17:8" },
+    { text: "O Senhor é a minha força e o meu cântico; ele me foi por salvação.", reference: "Isaías 12:2" },
+    { text: "Tu conservarás em paz aquele cuja mente está firme em ti; porque ele confia em ti.", reference: "Isaías 26:3" },
+    { text: "Confiai no Senhor perpetuamente; porque o Senhor Deus é uma rocha eterna.", reference: "Isaías 26:4" },
+    { text: "E, respondendo o anjo, disse-lhe: Descerá sobre ti o Espírito Santo, e a virtude do Altíssimo te cobrirá com a sua sombra.", reference: "Lucas 1:35" },
+    { text: "Não se turbe o vosso coração; credes em Deus, crede também em mim.", reference: "João 14:1" },
+    { text: "Deixo-vos a paz, a minha paz vos dou; não vo-la dou como o mundo a dá. Não se turbe o vosso coração, nem se atemorize.", reference: "João 14:27" },
+    { text: "Se guardardes os meus mandamentos, permanecereis no meu amor; do mesmo modo que eu tenho guardado os mandamentos de meu Pai, e permaneço no seu amor.", reference: "João 15:10" },
+    { text: "Tenho-vos dito isto, para que o meu gozo permaneça em vós, e o vosso gozo seja completo.", reference: "João 15:11" },
+    { text: "Já não vos chamarei servos, porque o servo não sabe o que faz o seu senhor; mas tenho-vos chamado amigos, porque tudo quanto ouvi de meu Pai vos tenho feito conhecer.", reference: "João 15:15" },
+    { text: "Ora, o fim do mandamento é o amor de um coração puro, e de uma boa consciência, e de uma fé não fingida.", reference: "1 Timóteo 1:5" },
+    { text: "Porque Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação.", reference: "2 Timóteo 1:7" },
+    { text: "Combati o bom combate, acabei a carreira, guardei a fé.", reference: "2 Timóteo 4:7" },
+    { text: "Desde agora, a coroa da justiça me está guardada, a qual o Senhor, justo juiz, me dará naquele dia; e не somente a mim, mas também a todos os que amarem a sua vinda.", reference: "2 Timóteo 4:8" },
+    { text: "Toda a Escritura é divinamente inspirada, e proveitosa para ensinar, para redarguir, para corrigir, para instruir em justiça.", reference: "2 Timóteo 3:16" },
+    { text: "Para que o homem de Deus seja perfeito, e perfeitamente instruído para toda a boa obra.", reference: "2 Timóteo 3:17" },
+    { text: "Nada façais por contenda ou por vanglória, mas por humildade; cada um considere os outros superiores a si mesmo.", reference: "Filipenses 2:3" },
+    { text: "Não atente cada um para o que é propriamente seu, mas cada qual também para o que é dos outros.", reference: "Filipenses 2:4" },
+    { text: "De sorte que haja em vós o mesmo sentimento que houve também em Cristo Jesus.", reference: "Filipenses 2:5" },
+    { text: "Regozijai-vos sempre no Senhor; outra vez digo, regozijai-vos.", reference: "Filipenses 4:4" },
+    { text: "Não estejais inquietos por coisa alguma; antes as vossas petições sejam em tudo conhecidas diante de Deus pela oração e súplica, com ação de graças.", reference: "Filipenses 4:6" },
+    { text: "Quanto ao mais, irmãos, tudo o que é verdadeiro, tudo o que é honesto, tudo o que é justo, tudo o que é puro, tudo o que é amável, tudo o que é de boa fama, se há alguma virtude, e se há algum louvor, nisso pensai.", reference: "Filipenses 4:8" },
+    { text: "Sede, pois, imitadores de Deus, como filhos amados.", reference: "Efésios 5:1" },
+    { text: "E andai em amor, como também Cristo vos amou, e se entregou a si mesmo por nós, em oferta e sacrifício a Deus, em cheiro suave.", reference: "Efésios 5:2" },
+    { text: "Vós, maridos, amai vossas mulheres, como também Cristo amou a igreja, e a si mesmo se entregou por ela.", reference: "Efésios 5:25" },
+    { text: "Assim devem os maridos amar as suas próprias mulheres, como a seus próprios corpos. Quem ama a sua mulher, ama-se a si mesmo.", reference: "Efésios 5:28" },
+    { text: "Porque nunca ninguém odiou a sua própria carne; antes a alimenta e sustenta, como também o Senhor à igreja.", reference: "Efésios 5:29" },
+    { text: "No demais, irmãos meus, fortalecei-vos no Senhor e na força do seu poder.", reference: "Efésios 6:10" },
+    { text: "Revesti-vos de toda a armadura de Deus, para que possais estar firmes contra as astutas ciladas do diabo.", reference: "Efésios 6:11" },
+    { text: "O amor não pratica o mal contra o próximo. De sorte que o cumprimento da lei é o amor.", reference: "Romanos 13:10" },
+    { text: "Ora, àquele que é poderoso para fazer tudo muito mais abundantemente além daquilo que pedimos ou pensamos, segundo o poder que em nós opera.", reference: "Efésios 3:20" },
+    { text: "A esse glória na igreja, por Jesus Cristo, em todas as gerações, para todo o sempre. Amém.", reference: "Efésios 3:21" },
+    { text: "Porque somos feitura sua, criados em Cristo Jesus para as boas obras, as quais Deus preparou para que andássemos nelas.", reference: "Efésios 2:10" },
+    { text: "Mas Deus, que é riquíssimo em misericórdia, pelo seu muito amor com que nos amou.", reference: "Efésios 2:4" },
+    { text: "Estando nós ainda mortos em nossas ofensas, nos vivificou juntamente com Cristo (pela graça sois salvos).", reference: "Efésios 2:5" },
+    { text: "Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.", reference: "Efésios 2:8" },
+    { text: "Não vem das obras, para que ninguém se glorie.", reference: "Efésios 2:9" },
+    { text: "Mas o fruto do Espírito é: amor, gozo, paz, longanimidade, benignidade, bondade, fé, mansidão, temperança.", reference: "Gálatas 5:22" },
+    { text: "Levai as cargas uns dos outros, e assim cumprireis a lei de Cristo.", reference: "Gálatas 6:2" },
+    { text: "E não nos cansemos de fazer bem, porque a seu tempo ceifaremos, se não houvermos desfalecido.", reference: "Gálatas 6:9" },
+    { text: "Ora, o Deus de paz... vos aperfeiçoe em toda a boa obra, para fazerdes a sua vontade.", reference: "Hebreus 13:20-21" },
+    { text: "Ora, sem fé é impossível agradar-lhe; porque é necessário que aquele que se aproxima de Deus creia que ele existe, e que é galardoador dos que o buscam.", reference: "Hebreus 11:6" },
+    { text: "Pela fé entendemos que os mundos pela palavra de Deus foram criados; de maneira que aquilo que se vê não foi feito do que é aparente.", reference: "Hebreus 11:3" },
+    { text: "Ora, a fé é o firme fundamento das coisas que se esperam, e a prova das coisas que se não veem.", reference: "Hebreus 11:1" },
+    { text: "Humilhai-vos, pois, debaixo da potente mão de Deus, para que a seu tempo vos exalte.", reference: "1 Pedro 5:6" },
+    { text: "Vós, porém, sois a geração eleita, o sacerdócio real, a nação santa, o povo adquirido, para que anuncieis as virtudes daquele que vos chamou das trevas para a sua maravilhosa luz.", reference: "1 Pedro 2:9" },
+    { text: "Bem-aventurado o homem que suporta a tentação; porque, quando for provado, receberá a coroa da vida, a qual o Senhor tem prometido aos que o amam.", reference: "Tiago 1:12" },
+    { text: "E, se algum de vós tem falta de sabedoria, peça-a a Deus, que a todos dá liberalmente, e não o lança em rosto, e ser-lhe-á dada.", reference: "Tiago 1:5" },
+    { text: "Sujeitai-vos, pois, a Deus, resisti ao diabo, e ele fugirá de vós.", reference: "Tiago 4:7" },
+    { text: "Chegai-vos a Deus, e ele se chegará a vós.", reference: "Tiago 4:8" },
+    { text: "A oração feita por um justo pode muito em seus efeitos.", reference: "Tiago 5:16" },
+    { text: "Visto que o seu divino poder nos deu tudo o que diz respeito à vida e piedade, pelo conhecimento daquele que nos chamou pela sua glória e virtude.", reference: "2 Pedro 1:3" },
+    { text: "Amados, amemo-nos uns aos outros; porque o amor é de Deus; e qualquer que ama é nascido de Deus e conhece a Deus.", reference: "1 João 4:7" },
+    { text: "Nisto está o amor, não em que nós tenhamos amado a Deus, mas em que ele nos amou a nós, e enviou seu Filho para propiciação pelos nossos pecados.", reference: "1 João 4:10" },
+    { text: "Se nos amarmos uns aos outros, Deus está em nós, e em nós é perfeito o seu amor.", reference: "1 João 4:12" },
+    { text: "E nós conhecemos, e cremos no amor que Deus nos tem. Deus é amor; e quem está em amor está em Deus, e Deus nele.", reference: "1 João 4:16" },
+    { text: "Porque todo o que é nascido de Deus vence o mundo; e esta é a vitória que vence o mundo, a nossa fé.", reference: "1 João 5:4" },
+    { text: "E esta é a confiança que temos nele, que, se pedirmos alguma coisa, segundo a sua vontade, ele nos ouve.", reference: "1 João 5:14" },
+    { text: "Aquele que testifica estas coisas diz: Certamente cedo venho. Amém. Ora vem, Senhor Jesus.", reference: "Apocalipse 22:20" },
+    { text: "E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor, nem dor; porque já as primeiras coisas são passadas.", reference: "Apocalipse 21:4" },
+    { text: "Eis que estou à porta, e bato; se alguém ouvir a minha voz, e abrir a porta, entrarei em sua casa, e com ele cearei, e ele comigo.", reference: "Apocalipse 3:20" },
+    { text: "Ao que vencer, dar-lhe-ei a comer da árvore da vida, que está no meio do paraíso de Deus.", reference: "Apocalipse 2:7" },
+    { text: "Sê fiel até à morte, e dar-te-ei a coroa da vida.", reference: "Apocalipse 2:10" },
+    { text: "A graça de nosso Senhor Jesus Cristo seja com todos vós. Amém.", reference: "Apocalipse 22:21" },
+    { text: "O Senhor te ouça no dia da angústia, o nome do Deus de Jacó te proteja.", reference: "Salmos 20:1" },
+    { text: "Envie-te socorro desde o seu santuário, e te sustenha desde Sião.", reference: "Salmos 20:2" },
+    { text: "Conceda-te conforme ao teu coração, и cumpra todo o teu plano.", reference: "Salmos 20:4" },
+    { text: "Sabemos que o Filho de Deus é vindo, e nos deu entendimento para conhecermos o que é verdadeiro; e no que é verdadeiro estamos, isto é, em seu Filho Jesus Cristo. Este é o verdadeiro Deus e a vida eterna.", reference: "1 João 5:20" },
+    { text: "E o testemunho é este: que Deus nos deu a vida eterna; e esta vida está em seu Filho.", reference: "1 João 5:11" },
+    { text: "Quem tem o Filho tem a vida; quem não tem o Filho de Deus não tem a vida.", reference: "1 João 5:12" },
+    { text: "Porque a palavra de Deus é viva e eficaz, e mais penetrante do que espada alguma de dois gumes, e penetra até à divisão da alma e do espírito, e das juntas e medulas, e é apta para discernir os pensamentos e intenções do coração.", reference: "Hebreus 4:12" },
+    { text: "Retenhamos firmes a confissão da nossa esperança; porque fiel é o que prometeu.", reference: "Hebreus 10:23" },
+    { text: "E consideremo-nos uns aos outros, para nos estimularmos ao amor e às boas obras.", reference: "Hebreus 10:24" },
+    { text: "Não deixando a nossa congregação, como é costume de alguns, antes admoestando-nos uns aos outros; e tanto mais, quanto vedes que se vai aproximando aquele dia.", reference: "Hebreus 10:25" },
+    { text: "Porque necessitais de paciência, para que, depois de haverdes feito a vontade de Deus, possais alcançar a promessa.", reference: "Hebreus 10:36" },
+    { text: "Não rejeiteis, pois, a vossa confiança, que tem grande e avultado galardão.", reference: "Hebreus 10:35" },
+    { text: "Mas o justo viverá da fé; E, se ele recuar, a minha alma não tem prazer nele.", reference: "Hebreus 10:38" },
+    { text: "Orai sem cessar.", reference: "1 Tessalonicenses 5:17" },
+    { text: "Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco.", reference: "1 Tessalonicenses 5:18" },
+    { text: "O mesmo Deus de paz vos santifique em tudo; e todo o vosso espírito, e alma, e corpo, sejam plenamente conservados irrepreensíveis para a vinda de nosso Senhor Jesus Cristo.", reference: "1 Tessalonicenses 5:23" },
+    { text: "Fiel é o que vos chama, o qual também o fará.", reference: "1 Tessalonicenses 5:24" }
+];        const romanticMessageCard = document.getElementById('romantic-message-card');
+        const bibleVerseCard = document.getElementById('bible-verse-card');
+        const generateButton = document.getElementById('generate-button');
+        const petalContainer = document.getElementById('petal-container');
+
+        let currentRomanticIndex = -1;
+        let currentBibleIndex = -1;
+
+        function getRandomUniqueIndex(arr, currentIndex) {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * arr.length);
+            } while (newIndex === currentIndex && arr.length > 1);
+            return newIndex;
+        }
+
+        function updateMessages() {
+            // Animate out
+            romanticMessageCard.classList.remove('show');
+            bibleVerseCard.classList.remove('show');
+
+            setTimeout(() => {
+                // Update romantic message
+                currentRomanticIndex = getRandomUniqueIndex(romanticMessages, currentRomanticIndex);
+                romanticMessageCard.innerHTML = `<p>${romanticMessages[currentRomanticIndex].text}</p>`;
+
+                // Update bible verse
+                currentBibleIndex = getRandomUniqueIndex(bibleVerses, currentBibleIndex);
+                const verseData = bibleVerses[currentBibleIndex];
+                bibleVerseCard.innerHTML = `<h2>Versículo Inspirador:</h2><p>${verseData.text}</p><span class="verse-ref">${verseData.reference}</span>`;
+
+                // Animate in
+                romanticMessageCard.classList.add('show');
+                bibleVerseCard.classList.add('show');
+            }, 500); // Matches CSS transition duration
+        }
+
+        // Rose Petal Animation Logic (Origin changed to top center of main-container)
+        const petalColors = ['#ffc2e2', '#ffb6c1', '#fbcfe8', '#fce7f3', '#f472b6', '#d63384'];
+        let activePetals = [];
+        let animationFrameId = null;
+        const mainContainer = document.querySelector('.main-container'); // Get main container
+
+        function triggerRoseExplosion() {
+            // Origin from top center of the main-container
+            const rect = mainContainer.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + 50; // A bit below the very top to be visible
+
+            for (let i = 0; i < 40; i++) {
+                const el = document.createElement('div');
+                const size = Math.random() * 20 + 15;
+                el.className = 'petal';
+                el.style.width = size + 'px';
+                el.style.height = size * 1.3 + 'px';
+                el.style.background = petalColors[Math.floor(Math.random() * petalColors.length)];
+                el.style.left = startX + 'px';
+                el.style.top = startY + 'px';
+                petalContainer.appendChild(el);
+
+                activePetals.push({
+                    el,
+                    x: startX,
+                    y: startY,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 1) * 10,
+                    r: Math.random() * 360,
+                    vr: (Math.random() - 0.5) * 15,
+                    o: 0,
+                    gravity: 0.18 + (Math.random() * 0.05),
+                    decay: 0.008 + (Math.random() * 0.003)
+                });
+            }
+
+            if (!animationFrameId) {
+                animationFrameId = requestAnimationFrame(animatePetals);
+            }
+        }
+
+        function animatePetals() {
+            activePetals = activePetals.filter(p => {
+                p.vy += p.gravity;
+                p.x += p.vx;
+                p.y += p.vy;
+                p.r += p.vr;
+                p.o = Math.min(p.o + 0.05, 1);
+                p.o -= p.decay;
+
+                Object.assign(p.el.style, {
+                    left: p.x + 'px',
+                    top: p.y + 'px',
+                    transform: `rotate(${p.r}deg)`,
+                    opacity: Math.max(0, p.o)
+                });
+
+                if (p.y > window.innerHeight * 1.5 || p.o <= 0) {
+                    petalContainer.removeChild(p.el);
+                    return false;
+                }
+                return true;
+            });
+
+            if (activePetals.length > 0) {
+                animationFrameId = requestAnimationFrame(animatePetals);
+            } else {
+                animationFrameId = null;
+                // Clear any remaining petals if the animation stops unexpectedly
+                if (petalContainer.children.length > 0) {
+                    Array.from(petalContainer.children).forEach(child => petalContainer.removeChild(child));
+                }
+            }
+        }
+
+        // Event Listener
+        generateButton.addEventListener('click', () => {
+            updateMessages();
+            triggerRoseExplosion();
+        });
+        
+        window.addEventListener('load', () => {
+    triggerRoseExplosion();
+});
+
+
+        // Initial update when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMessages();
+            // Add active class to the current page link
+            const messagesLink = document.querySelector('.icon-nav a[href="mensagens.html"]');
+            if (messagesLink) {
+                messagesLink.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

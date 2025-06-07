@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jogo da Memória | W&L❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        /* 💖 CSS Responsivo + Tema Rosa (Baseado no Layout da Imagem) */
+        :root {
+            --bg-light: #fdf2f8; /* Very light pink background */
+            --bg-gradient-start: #ffe4f0; /* Soft pink for gradient start */
+            --bg-gradient-end: #fce7f3;   /* Lighter pink for gradient end */
+            --accent-pink-light: #fbcfe8; /* Lighter pink for card backs, selects */
+            --accent-pink-medium: #f472b6; /* Medium pink for icons, revealed cards */
+            --accent-pink-dark: #d63384; /* Darker pink for theme text, restart button, logo heart, matched cards */
+            --accent-pink-deep: #880e4f; /* Deep pink for specific elements/active state */
+            --text-dark: #333;
+            --text-light: #fff;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.18);
+            --border-radius-main: 25px;
+            --border-radius-card: 18px; /* Card corners, similar to message cards */
+            --button-radius: 30px; /* Restart button */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* No padding-top para header fixo, pois agora está dentro do main-container */
+            min-height: 100vh;
+            color: var(--text-dark);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle fill="%23fcecf5" cx="10" cy="10" r="2"></circle></svg>');
+            background-repeat: repeat;
+            background-size: 20px 20px;
+        }
+
+        /* Main container (similar to image, calculator, memory) */
+        .main-container {
+            background: var(--text-light);
+            border-radius: var(--border-radius-main);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+            padding: 25px; /* Consistent padding */
+            width: 90%; /* Responsive width */
+            max-width: 360px; /* Constrain width to match image appearance */
+            margin: 30px auto; /* Margin from top of body */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            border: 2px solid var(--accent-pink-light);
+            text-align: center; /* Center content horizontally */
+        }
+
+        .logo {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .logo .heart {
+            color: var(--accent-pink-dark);
+            margin-left: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: var(--accent-pink-dark);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Icon Navigation */
+        .icon-nav {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 25px;
+            padding: 5px 0;
+        }
+        .icon-nav a {
+            color: var(--accent-pink-medium);
+            font-size: 1.8em;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+        }
+        .icon-nav a:hover {
+            color: var(--accent-pink-deep);
+            transform: translateY(-2px);
+        }
+        .icon-nav a.active {
+            color: var(--accent-pink-deep);
+        }
+
+        /* Game Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%; /* Take full width of container */
+        }
+        .controls label {
+            margin-bottom: 10px; /* More space for label */
+            font-weight: 600;
+            color: var(--accent-pink-dark);
+            font-size: 1.05rem;
+        }
+        .controls select, .controls button {
+            margin: 8px 0; /* Vertical margin for controls */
+            padding: 12px 18px; /* Consistent padding */
+            font-size: 1rem;
+            border-radius: var(--button-radius); /* Rounded buttons */
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            width: calc(100% - 20px); /* Fill width similar to cards */
+            max-width: 250px; /* Max width for controls */
+            font-weight: 600;
+        }
+        .controls select {
+            background-color: var(--accent-pink-light);
+            color: var(--text-dark);
+            border: 1px solid var(--accent-pink-medium);
+            box-shadow: 0 2px 5px var(--shadow-light);
+            -webkit-appearance: none; /* Remove default arrow for custom styling */
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23F472B6%22%20d%3D%22M208.5%2088.5L128%20169L47.5%2088.5%2032%20104l96%2096%2096-96-15.5-15.5z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 18px;
+        }
+        .controls select:hover {
+            background-color: var(--accent-pink-medium);
+            color: var(--text-light);
+            border-color: var(--accent-pink-dark);
+        }
+        .controls button {
+            background-color: var(--accent-pink-dark); /* Darker pink for button */
+            color: var(--text-light);
+            box-shadow: 0 4px 10px var(--shadow-medium);
+        }
+        .controls button:hover {
+            background-color: #ff4d94; /* Lighter pink on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+        .controls button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        /* Score styling */
+        .score {
+            font-size: 1.2rem;
+            margin-top: 15px; /* Space above score */
+            font-weight: bold;
+            color: var(--accent-pink-deep);
+        }
+
+        /* Grid styling */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns for 12 cards */
+            gap: 10px; /* Standard gap */
+            width: calc(100% - 20px); /* Adjust for container padding */
+            max-width: 320px; /* Constrain grid width for better card size */
+            margin-top: 1rem;
+        }
+        .card {
+            background-color: var(--accent-pink-light); /* Light pink for card back */
+            border-radius: var(--border-radius-card);
+            height: 70px; /* Fixed card height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem; /* Emoji size */
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 10px var(--shadow-light);
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            color: transparent; /* Hide emoji initially */
+            line-height: 1; /* Helps vertical alignment of emojis */
+        }
+        .card.revealed {
+            background-color: var(--accent-pink-medium); /* Medium pink when revealed */
+            cursor: default;
+            transform: scale(1.05);
+            color: var(--text-light); /* Visible emoji color */
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+        .card.matched {
+            background-color: var(--accent-pink-dark); /* Darker pink for matched cards */
+            color: var(--text-light);
+            cursor: default;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
+            transform: scale(1); /* No zoom when matched */
+        }
+        .card:not(.revealed):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+        /* Confetti animation */
+        #confetti-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f;
+            opacity: 0.7;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            opacity: 0.7;
+            color: var(--accent-pink-dark);
+            width: 100%;
+        }
+
+        /* --- Media Queries for Responsiveness --- */
+
+        /* For 1080p mobile and general phone/tablet responsiveness */
+        @media (max-width: 1080px) {
+            .main-container {
+                padding: 22px;
+                max-width: 350px;
+            }
+            .logo {
+                font-size: 1.7rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+            .icon-nav {
+                max-width: 180px;
+            }
+            .icon-nav a {
+                font-size: 1.7em;
+            }
+            .controls label {
+                font-size: 1rem;
+            }
+            .controls select, .controls button {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+                max-width: 220px;
+            }
+            .score {
+                font-size: 1.15rem;
+            }
+            .grid {
+                gap: 8px;
+                max-width: 300px;
+            }
+            .card {
+                height: 65px;
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 18px;
+                margin: 20px auto;
+                max-width: 320px;
+            }
+            .logo {
+                font-size: 1.6rem;
+            }
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 18px;
+            }
+            .icon-nav {
+                max-width: 160px;
+            }
+            .icon-nav a {
+                font-size: 1.6em;
+            }
+            .controls label {
+                font-size: 0.95rem;
+            }
+            .controls select, .controls button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                max-width: 200px;
+                border-radius: 25px;
+            }
+            .score {
+                font-size: 1.1rem;
+            }
+            .grid {
+                gap: 7px;
+                max-width: 280px; /* Adjust grid width */
+            }
+            .card {
+                height: 60px;
+                font-size: 1.8rem;
+                border-radius: 15px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .main-container {
+                padding: 15px;
+                margin: 15px auto;
+                max-width: 280px;
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+            .icon-nav {
+                max-width: 140px;
+            }
+            .icon-nav a {
+                font-size: 1.5em;
+            }
+            .controls label {
+                font-size: 0.9rem;
+            }
+            .controls select, .controls button {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+                max-width: 180px;
+                border-radius: 20px;
+            }
+            .score {
+                font-size: 1rem;
+            }
+            .grid {
+                gap: 5px;
+                max-width: 250px;
+            }
+            .card {
+                height: 55px;
+                font-size: 1.6rem;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main container now holds everything as per the image layout -->
+    <div class="main-container">
+        <div class="logo">
+            W&L <span class="heart">❤️</span>
+        </div>
+        <div class="subtitle">Jogo da Memória</div>
+
+    </div>
+    <div class="icon-nav">
+    <a href="calculadora.html" class="active" title="Calculadora"><i class="fas fa-calculator"></i></a>
+    <a href="quiz.html" title="Quiz"><i class="fas fa-brain"></i></a>
+    <a href="memory.html" title="Memória"><i class="fas fa-puzzle-piece"></i></a>
+    <a href="mensagens.html" title="Mensagens"><i class="fas fa-envelope"></i></a>
+</div>
+        <div class="controls">
+            <label for="theme">Escolha um tema:</label>
+            <select id="theme">
+                <option value="frutas">Frutas</option>
+                <option value="emocoes">Emoções</option>
+                <option value="lugares">Lugares</option>
+                <option value="objetos">Objetos</option>
+                <option value="animais">Animais</option>
+                <option value="veiculos">Veículos</option>
+                <option value="coracoes">Corações</option>
+                <option value="clima">Clima</option>
+            </select>
+            <button id="restart">Reiniciar Jogo</button>
+            <div class="score">Pares Encontrados: <span id="score">0</span></div>
+        </div>
+        <div class="grid" id="grid"></div>
+        <p class="footer">Para minha amada Letícia ❤️</p>
+    </div>
+
+    <!-- Confetti container (outside main-container for full screen effect) -->
+    <div id="confetti-container"></div>
+
+    <script>
+        const themes = {
+            frutas: ['🍉','🍇','🍓','🍌','🍍','🍑','🍊','🥝','🍏','🍒'],
+            emocoes: ['😄','😭','😡','😍','😱','😴','🤔','🥰','😜','😎'],
+            lugares: ['🏖️','🏔️','🏛️','🏕️','🗽','🗼','🌉','🛕','🏜','🚢'],
+            objetos: ['📆','📱','🎸','📚','🕹️','🧸','⛳','🎩','🎨','🎁'],
+            animais: ['🐶','🐱','🐮','🐰','🐼','🦁','🐹','🐴','🐵','🐷'],
+            veiculos: ['🚗','🚀','✈️','🚁','🚓','🚛','🚍','🚤','🛴','🚂'],
+            coracoes: ['❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','🩷'],
+            clima: ['⚡','🌞','❄️','☄️','🌜','🌦️','☔','🌈','💧','🔥']
+        };
+
+        const grid = document.getElementById('grid');
+        const themeSelect = document.getElementById('theme');
+        const restartBtn = document.getElementById('restart');
+        const scoreDisplay = document.getElementById('score');
+        const confettiContainer = document.getElementById('confetti-container');
+
+        let selectedTheme = 'frutas';
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matchesFound = 0; // Track actual matches for win condition
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createBoard() {
+            grid.innerHTML = '';
+            const emojis = themes[selectedTheme];
+            // Select 6 unique emojis for the game (12 cards total for 4x3 grid)
+            const selectedEmojis = shuffle([...emojis]).slice(0, 6);
+            const gameEmojis = shuffle([...selectedEmojis, ...selectedEmojis]);
+            
+            // Adjust grid-template-columns based on game size (always 12 cards, so 4 cols * 3 rows for fixed size)
+            // CSS media queries will handle adapting grid layout for smaller screens to 3 cols if needed.
+
+            gameEmojis.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.addEventListener('click', flipCard);
+                grid.appendChild(card);
+            });
+            matchesFound = 0;
+            scoreDisplay.textContent = matchesFound;
+            resetBoard(); // Ensure board state is clean
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return; // Prevent clicking the same card twice
+            if (this.classList.contains('matched')) return; // Prevent clicking already matched cards
+
+            this.textContent = this.dataset.emoji;
+            this.classList.add('revealed');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            lockBoard = true;
+
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
+                disableCards();
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            firstCard.classList.remove('revealed'); // Remove revealed to show matched color
+            secondCard.classList.remove('revealed');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            matchesFound++;
+            scoreDisplay.textContent = matchesFound;
+
+            if (matchesFound === 6) { // If all 6 pairs are found (6 pairs * 2 cards = 12 cards total)
+                setTimeout(() => {
+                    triggerConfetti();
+                }, 500);
+            }
+            resetBoard();
+        }
+
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.textContent = '';
+                secondCard.textContent = '';
+                firstCard.classList.remove('revealed');
+                secondCard.classList.remove('revealed');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard] = [null, null];
+            lockBoard = false;
+        }
+
+        function triggerConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`; // Brighter confetti colors
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confettiContainer.appendChild(confetti);
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+
+        themeSelect.addEventListener('change', () => {
+            selectedTheme = themeSelect.value;
+            createBoard();
+        });
+
+        restartBtn.addEventListener('click', createBoard);
+
+        // Start the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createBoard();
+            // Add active class to the current page link
+            const memoryLink = document.querySelector('.icon-nav a[href="memory.html"]');
+            if (memoryLink) {
+                memoryLink.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
